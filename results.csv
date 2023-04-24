@@ -1,0 +1,57 @@
+model_type,bldgname,y,time_step,rmse,mae,r2,model_file
+ensembles,Energy Innovation Center,present_elec_kwh,1,7.6868509710472495,5.374608574245909,0.32422174496037615,./models/ensembles/Energy Innovation Center_present_elec_kwh_1_model.pkl
+ensembles,Energy Innovation Center,present_elec_kwh,12,6.293271579271077,4.609485294676198,0.5470274425344301,./models/ensembles/Energy Innovation Center_present_elec_kwh_12_model.pkl
+ensembles,Energy Innovation Center,present_elec_kwh,24,5.314088690661884,3.8284871855360025,0.6771711907751897,./models/ensembles/Energy Innovation Center_present_elec_kwh_24_model.pkl
+ensembles,Energy Innovation Center,present_elec_kwh,36,5.276436462356535,3.8088500947368074,0.6817062501024223,./models/ensembles/Energy Innovation Center_present_elec_kwh_36_model.pkl
+ensembles,Energy Innovation Center,present_elec_kwh,72,5.481291498274535,3.953690328176674,0.6543137558724021,./models/ensembles/Energy Innovation Center_present_elec_kwh_72_model.pkl
+ensembles,Energy Innovation Center,present_elec_kwh,168,5.184361590238282,3.8045611641998396,0.6891537780444114,./models/ensembles/Energy Innovation Center_present_elec_kwh_168_model.pkl
+ensembles,Energy Innovation Center,present_elec_kwh,288,5.2773077269939925,3.913349758493275,0.6776166792281035,./models/ensembles/Energy Innovation Center_present_elec_kwh_288_model.pkl
+ensembles,Energy Innovation Center,present_htwt_mmbtu,1,6.91158850123125,3.3097414504841245,0.5229179609556822,./models/ensembles/Energy Innovation Center_present_htwt_mmbtu_1_model.pkl
+ensembles,Energy Innovation Center,present_htwt_mmbtu,12,5.562990111727528,3.1070026309662437,0.6914714707701339,./models/ensembles/Energy Innovation Center_present_htwt_mmbtu_12_model.pkl
+ensembles,Energy Innovation Center,present_htwt_mmbtu,24,5.608386858295952,2.6372895687226428,0.6867153892631144,./models/ensembles/Energy Innovation Center_present_htwt_mmbtu_24_model.pkl
+ensembles,Energy Innovation Center,present_htwt_mmbtu,36,5.827358915344687,3.510083159581813,0.6624040801375846,./models/ensembles/Energy Innovation Center_present_htwt_mmbtu_36_model.pkl
+ensembles,Energy Innovation Center,present_htwt_mmbtu,72,5.783001392914185,3.3059157550564944,0.6692733339456655,./models/ensembles/Energy Innovation Center_present_htwt_mmbtu_72_model.pkl
+ensembles,Energy Innovation Center,present_htwt_mmbtu,168,6.822112908098519,4.618947897579731,0.5456966314015776,./models/ensembles/Energy Innovation Center_present_htwt_mmbtu_168_model.pkl
+ensembles,Energy Innovation Center,present_htwt_mmbtu,288,118.22053774555222,117.83733759057098,-139.1061789184201,./models/ensembles/Energy Innovation Center_present_htwt_mmbtu_288_model.pkl
+ensembles,Energy Innovation Center,present_chll_tonhr,1,0.11476100953014479,0.09047284473389175,0.4298904416538146,./models/ensembles/Energy Innovation Center_present_chll_tonhr_1_model.pkl
+ensembles,Energy Innovation Center,present_chll_tonhr,12,0.10640614540788626,0.0778627533248223,0.5101145925632073,./models/ensembles/Energy Innovation Center_present_chll_tonhr_12_model.pkl
+ensembles,Energy Innovation Center,present_chll_tonhr,24,0.23085841242580626,0.18117338160397006,-1.3082562462628928,./models/ensembles/Energy Innovation Center_present_chll_tonhr_24_model.pkl
+ensembles,Energy Innovation Center,present_chll_tonhr,36,0.09600976789583648,0.07057731749396673,0.6008224179780083,./models/ensembles/Energy Innovation Center_present_chll_tonhr_36_model.pkl
+ensembles,Energy Innovation Center,present_chll_tonhr,72,0.0968743313388345,0.0710062422574565,0.594573017684134,./models/ensembles/Energy Innovation Center_present_chll_tonhr_72_model.pkl
+ensembles,Energy Innovation Center,present_chll_tonhr,168,0.09847731271430595,0.07285352165509205,0.5794267435404259,./models/ensembles/Energy Innovation Center_present_chll_tonhr_168_model.pkl
+ensembles,Energy Innovation Center,present_chll_tonhr,288,0.20467184629365157,0.15888762784160745,-0.8335978944656095,./models/ensembles/Energy Innovation Center_present_chll_tonhr_288_model.pkl
+ensembles,Stadium,present_elec_kwh,1,39.00510996274009,29.139856499838228,0.6226293248353117,./models/ensembles/Stadium_present_elec_kwh_1_model.pkl
+ensembles,Stadium,present_elec_kwh,12,24.68562420376435,15.474025132010407,0.8489217671094895,./models/ensembles/Stadium_present_elec_kwh_12_model.pkl
+ensembles,Stadium,present_elec_kwh,24,23.340354069285592,14.859442796284418,0.8649632327887526,./models/ensembles/Stadium_present_elec_kwh_24_model.pkl
+ensembles,Stadium,present_elec_kwh,36,22.650928559389946,14.648440516738697,0.8728817931218391,./models/ensembles/Stadium_present_elec_kwh_36_model.pkl
+ensembles,Stadium,present_elec_kwh,72,23.897878619006626,15.485151063217243,0.8586402637168681,./models/ensembles/Stadium_present_elec_kwh_72_model.pkl
+ensembles,Stadium,present_elec_kwh,168,22.187688765853945,14.978443801459562,0.8783125409174822,./models/ensembles/Stadium_present_elec_kwh_168_model.pkl
+ensembles,Stadium,present_elec_kwh,288,25.69411721840173,18.910267022072325,0.8368734501625344,./models/ensembles/Stadium_present_elec_kwh_288_model.pkl
+solos,Energy Innovation Center,present_elec_kwh,1,7.751451897545987,5.444257397296436,0.3128154238445806,./models/solos/Energy Innovation Center_present_elec_kwh_1_model.pkl
+solos,Energy Innovation Center,present_elec_kwh,12,6.383516225404126,4.6640570515762,0.5339431690928511,./models/solos/Energy Innovation Center_present_elec_kwh_12_model.pkl
+solos,Energy Innovation Center,present_elec_kwh,24,5.535024190015201,3.965954270319843,0.649769685683871,./models/solos/Energy Innovation Center_present_elec_kwh_24_model.pkl
+solos,Energy Innovation Center,present_elec_kwh,36,5.439650321792476,3.900776915282582,0.6617103968132789,./models/solos/Energy Innovation Center_present_elec_kwh_36_model.pkl
+solos,Energy Innovation Center,present_elec_kwh,72,5.569978389095441,4.023454759670977,0.6430369029710108,./models/solos/Energy Innovation Center_present_elec_kwh_72_model.pkl
+solos,Energy Innovation Center,present_elec_kwh,168,5.184361590238282,3.8045611641998396,0.6891537780444114,./models/solos/Energy Innovation Center_present_elec_kwh_168_model.pkl
+solos,Energy Innovation Center,present_elec_kwh,288,5.335239060231137,3.9220510488577203,0.6704999430345114,./models/solos/Energy Innovation Center_present_elec_kwh_288_model.pkl
+solos,Energy Innovation Center,present_htwt_mmbtu,1,7.0035463197540295,3.1826848408563695,0.5101384746033599,./models/solos/Energy Innovation Center_present_htwt_mmbtu_1_model.pkl
+solos,Energy Innovation Center,present_htwt_mmbtu,12,5.816972359692956,2.496366013357649,0.6626561840341807,./models/solos/Energy Innovation Center_present_htwt_mmbtu_12_model.pkl
+solos,Energy Innovation Center,present_htwt_mmbtu,24,5.978570211366306,2.5820152923965964,0.643993601452127,./models/solos/Energy Innovation Center_present_htwt_mmbtu_24_model.pkl
+solos,Energy Innovation Center,present_htwt_mmbtu,36,6.890735559385797,4.778549388965669,0.5279534575159919,./models/solos/Energy Innovation Center_present_htwt_mmbtu_36_model.pkl
+solos,Energy Innovation Center,present_htwt_mmbtu,72,5.916396217024428,2.8966594807461963,0.653839810047516,./models/solos/Energy Innovation Center_present_htwt_mmbtu_72_model.pkl
+solos,Energy Innovation Center,present_htwt_mmbtu,168,6.479289184125283,3.802582218682532,0.5902085630743161,./models/solos/Energy Innovation Center_present_htwt_mmbtu_168_model.pkl
+solos,Energy Innovation Center,present_htwt_mmbtu,288,118.22053774555222,117.83733759057098,-139.1061789184201,./models/solos/Energy Innovation Center_present_htwt_mmbtu_288_model.pkl
+solos,Energy Innovation Center,present_chll_tonhr,1,0.11862379802326817,0.09410100422985215,0.39086542355685516,./models/solos/Energy Innovation Center_present_chll_tonhr_1_model.pkl
+solos,Energy Innovation Center,present_chll_tonhr,12,0.11059705083535093,0.08186359869009346,0.47076546822558907,./models/solos/Energy Innovation Center_present_chll_tonhr_12_model.pkl
+solos,Energy Innovation Center,present_chll_tonhr,24,0.10170520395862291,0.07640779736653036,0.5519990240632794,./models/solos/Energy Innovation Center_present_chll_tonhr_24_model.pkl
+solos,Energy Innovation Center,present_chll_tonhr,36,0.09649885952595938,0.07089254431414602,0.5967450892058584,./models/solos/Energy Innovation Center_present_chll_tonhr_36_model.pkl
+solos,Energy Innovation Center,present_chll_tonhr,72,0.09704501606878439,0.07128240546707967,0.5931431000453804,./models/solos/Energy Innovation Center_present_chll_tonhr_72_model.pkl
+solos,Energy Innovation Center,present_chll_tonhr,168,0.09917214850906604,0.07361603994956789,0.5734708477077206,./models/solos/Energy Innovation Center_present_chll_tonhr_168_model.pkl
+solos,Energy Innovation Center,present_chll_tonhr,288,0.20467184629365157,0.15888762784160745,-0.8335978944656095,./models/solos/Energy Innovation Center_present_chll_tonhr_288_model.pkl
+solos,Stadium,present_elec_kwh,1,39.09546959578302,29.202276507505694,0.6208788581454927,./models/solos/Stadium_present_elec_kwh_1_model.pkl
+solos,Stadium,present_elec_kwh,12,25.45585721926245,15.717262000312411,0.8393468954564621,./models/solos/Stadium_present_elec_kwh_12_model.pkl
+solos,Stadium,present_elec_kwh,24,24.584071128349738,15.77291037783046,0.850188635354733,./models/solos/Stadium_present_elec_kwh_24_model.pkl
+solos,Stadium,present_elec_kwh,36,22.97419960889945,14.593339602813526,0.8692274725049715,./models/solos/Stadium_present_elec_kwh_36_model.pkl
+solos,Stadium,present_elec_kwh,72,23.870937893378944,15.324649110518228,0.8589588013838922,./models/solos/Stadium_present_elec_kwh_72_model.pkl
+solos,Stadium,present_elec_kwh,168,22.093521843840826,14.926171054198663,0.8793432581878583,./models/solos/Stadium_present_elec_kwh_168_model.pkl
+solos,Stadium,present_elec_kwh,288,22.466391593148444,15.490657050603886,0.8752835048431159,./models/solos/Stadium_present_elec_kwh_288_model.pkl
