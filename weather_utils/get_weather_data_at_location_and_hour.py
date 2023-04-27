@@ -35,7 +35,7 @@ def local_time_to_utc_str(dt_str, tz_str):
     dt_utc = dt_tz.astimezone(pytz.utc)
     
     # Format the UTC datetime object as a string
-    dt_utc_str = dt_utc.strftime("%Y%m%d%H")
+    dt_utc_str = dt_utc.strftime("%Y-%m-%dT%H:%M")
 
     return dt_utc_str, time_diff_hrs
 
@@ -126,7 +126,7 @@ def get_weather_data_at_location_and_hour(latitude, longitude, altitude, query_h
         latitude (float): The latitude in decimal degrees format.
         longitude (float): The longitude in decimal degrees format.
         altitude (int): The altitude in meters.
-        query_hour_str (str): The forecast hour in YYYYMMDDHH format. Defaults to the current UTC time.
+        query_hour_str (str): The forecast hour in '%Y-%m-%dT%H:%M' format. Defaults to the current UTC time.
 
     Returns:
         wind_speed (float): The wind speed in meters per second.
@@ -134,10 +134,10 @@ def get_weather_data_at_location_and_hour(latitude, longitude, altitude, query_h
     """
     # Set the query hour to the current UTC hour if not specified
     if query_hour_str is None:
-        query_hour_dt = datetime.utcnow().strftime('%Y%m%d%H')
+        query_hour_dt = datetime.utcnow().strftime('%Y-%m-%dT%H:%M')
     else:
         # Parse the forecast time string into a datetime object
-        query_hour_dt = datetime.strptime(query_hour_str, '%Y%m%d%H')
+        query_hour_dt = datetime.strptime(query_hour_str, '%Y-%m-%dT%H:%M')
 
         # Calculate the time difference from the current UTC time
         time_diff = query_hour_dt - datetime.utcnow()
@@ -152,7 +152,7 @@ def get_weather_data_at_location_and_hour(latitude, longitude, altitude, query_h
         if time_diff.days > 16:
             # Limit the forecast time to 16 days in the future
             query_hour_dt = datetime.utcnow() + timedelta(days=16)
-            query_hour = query_hour_dt.strftime('%Y%m%d%H')
+            query_hour = query_hour_dt.strftime('%Y-%m-%dT%H:%M')
             print('Warning: Forecast time limited to 16 days from the current UTC time.')
 
     # Surface level parameters
