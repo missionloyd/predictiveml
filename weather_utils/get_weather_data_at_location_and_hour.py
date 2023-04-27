@@ -208,7 +208,7 @@ def get_weather_data_at_location_and_hour(latitude, longitude, altitude, query_h
         url = url_template_past.format(params=urlencode(params_past, doseq=True))
 
     # print(url)
-    print(f':: --- Query weather data @ GPS[{latitude, longitude})-({altitude})] @ open-meteo.com.')
+    #print(f':: --- Query weather @ GPS[{latitude, longitude})-({altitude})] @ open-meteo.com.')
 
     # Send a request to the API endpoint
     response = requests.get(url)
