@@ -114,6 +114,7 @@ import numpy as np
 from datetime import datetime, timedelta
 from urllib.parse import urlencode
 import json
+import time
 
 def get_weather_data_at_location_and_hour(latitude, longitude, altitude, query_hour_str, timezone_diff_hrs, get_24hour_data=False):
     """
@@ -210,9 +211,22 @@ def get_weather_data_at_location_and_hour(latitude, longitude, altitude, query_h
     # print(url)
     #print(f':: --- Query weather @ GPS[{latitude, longitude})-({altitude})] @ open-meteo.com.')
 
-    # Send a request to the API endpoint
-    response = requests.get(url)
+    # Send a request to the API endpoint, using Try/Except to catch errors
 
+    timeout_seconds = 300  # 5 minutes
+    retry_interval_seconds = 10
+    end_time = time.time() + timeout_seconds
+
+    while time.time() < end_time:
+        try:
+            response = requests.get(url, timeout=retry_interval_seconds)
+            break  # If the request is successful, exit the loop
+        except requests.exceptions.Timeout:
+            print(f':: -- Timeout occurred, retrying in {retry_interval_seconds} seconds...')
+            time.sleep(retry_interval_seconds)
+    else:
+        raise Exception(f':: -- Failed to get a response within {timeout_seconds}.')
+    
     # Debug check response
     #print(response.status_code)
     #print(json.dumps(json.loads(response.content), indent=2))
