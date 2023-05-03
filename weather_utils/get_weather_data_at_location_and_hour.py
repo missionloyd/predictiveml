@@ -213,19 +213,20 @@ def get_weather_data_at_location_and_hour(latitude, longitude, altitude, query_h
 
     # Send a request to the API endpoint, using Try/Except to catch errors
 
-    timeout_seconds = 300  # 5 minutes
-    retry_interval_seconds = 10
-    end_time = time.time() + timeout_seconds
+    total_timeout_seconds = 300  # 5 minutes
+    request_timeout = 10
+    retry_interval_seconds = 20
+    end_time = time.time() + total_timeout_seconds
 
     while time.time() < end_time:
         try:
-            response = requests.get(url, timeout=retry_interval_seconds)
+            response = requests.get(url, timeout=request_timeout)
             break  # If the request is successful, exit the loop
         except requests.exceptions.Timeout:
             print(f':: -- Timeout occurred, retrying in {retry_interval_seconds} seconds...')
             time.sleep(retry_interval_seconds)
     else:
-        raise Exception(f':: -- Failed to get a response within {timeout_seconds}.')
+        raise Exception(f':: -- Failed to get a response within {total_timeout_seconds}.')
     
     # Debug check response
     #print(response.status_code)
