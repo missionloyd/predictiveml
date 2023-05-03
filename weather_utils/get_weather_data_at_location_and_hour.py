@@ -213,9 +213,9 @@ def get_weather_data_at_location_and_hour(latitude, longitude, altitude, query_h
 
     # Send a request to the API endpoint, using Try/Except to catch errors
 
-    total_timeout_seconds = 300  # 5 minutes
-    request_timeout = 10
-    retry_interval_seconds = 20
+    total_timeout_seconds = 600  # 10 minutes
+    request_timeout = 30
+    retry_interval_seconds = 30
     end_time = time.time() + total_timeout_seconds
 
     while time.time() < end_time:
@@ -225,6 +225,10 @@ def get_weather_data_at_location_and_hour(latitude, longitude, altitude, query_h
         except requests.exceptions.Timeout:
             print(f':: -- Timeout occurred, retrying in {retry_interval_seconds} seconds...')
             time.sleep(retry_interval_seconds)
+            # wait longer if requests.exceptions.ConnectionError
+        except requests.exceptions.ConnectionError:
+            print(f':: -- Connection rejected by API, retrying in {retry_interval_seconds*10} seconds...')
+            time.sleep(retry_interval_seconds * 10)
     else:
         raise Exception(f':: -- Failed to get a response within {total_timeout_seconds}.')
     
