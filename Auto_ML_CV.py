@@ -6,33 +6,33 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.decomposition import PCA
 from autosklearn.regression import AutoSklearnRegressor
 from sklearn.linear_model import LinearRegression
+from pmdarima import auto_arima
 
 from sklearn.linear_model import LassoCV
 from sklearn.feature_selection import RFECV
 from sklearn.preprocessing import StandardScaler
 
+from prophet import Prophet
 
-from fbprophet import Prophet
-
+# Settings
+# PATH = '.' # if running locally
+PATH = '/home/lmacy1/predictiveml' # if running on ARCC
+data_path = f'{PATH}/clean_data_extended'
 buildings_list = ['Stadium_Data_Extended.csv']
+save_model_file = False
+save_model_plot = False
+min_number_of_days = 365
+memory_limit = 102400
+exclude_column = 'present_co2_tons'
 
-in_path = './clean_data_extended/'
+y_columns = ['present_elec_kwh', 'present_htwt_mmbtu', 'present_wtr_usgal', 'present_chll_tonhr', 'present_co2_tons']
+add_features = ['temp_c', 'rel_humidity_%', 'surface_pressure_hpa', 'cloud_cover_%', 'direct_radiation_w/m2', 'precipitation_mm', 'wind_speed_ground_km/h', 'wind_dir_ground_deg']
 
 # Training scope
 models = {}
 model_types = ['ensembles', 'solos']
 preprocessing_methods = ['linear regression', 'linear interpolation', 'prophet']
-feature_modes = ['rfe']
-
-# Settings
-min_number_of_days = 365
-memory_limit = 102400
-save_model_file = False
-save_model_plot = True
-exclude_column = 'present_co2_tons'
-
-y_columns = ['present_elec_kwh', 'present_htwt_mmbtu', 'present_wtr_usgal', 'present_chll_tonhr', 'present_co2_tons']
-add_features = ['temp_c', 'rel_humidity_%', 'surface_pressure_hpa', 'cloud_cover_%', 'direct_radiation_w/m2', 'precipitation_mm', 'wind_speed_ground_km/h', 'wind_dir_ground_deg']
+feature_modes = ['rfe', 'lasso']
 
 # Hyperparameters
 n_features_list = list(range(1, len(add_features)))
@@ -42,10 +42,10 @@ minutes_per_model = 2
 split_rate = 0.8
 
 for model_type in model_types:
-    out_path = f'./models/{model_type}/'
+    out_path = f'{PATH}/models/{model_type}/'
 
     for building in buildings_list:
-        df = pd.read_csv(in_path + building)
+        df = pd.read_csv(f'{data_path}/{building}')
 
         # Convert the data into a Pandas dataframe
         df['ts'] = pd.to_datetime(df['ts'])
@@ -234,8 +234,8 @@ for model_type in model_types:
                                     y_train = scaler.inverse_transform(y_train.reshape(-1, 1))
 
                                     # save the model name
-                                    model_file = f'{out_path}{bldgname}_{y}_{preprocessing_method}_{feature_mode}_{n_features}_{time_step}'
-                                    model_file = model_file.replace(' ', '_').lower()
+                                    model_file = f'{out_path}/{bldgname}_{y}_{preprocessing_method}_{feature_mode}_{n_features}_{time_step}'
+                                    model_file = model_file.replace(' ', '-').lower()
 
                                     # calculate metrics
                                     print(f'{bldgname}, {y}, Time Step: {time_step}')
@@ -284,7 +284,7 @@ for model_type in model_types:
                                         ax.legend()
                                         plt.grid(True)
                                         plt.savefig(model_file + '.png')
-                                        plt.close(fig)
+                                        plt.close(fig)         
 
 
 # Create a CSV files to save the results
@@ -293,9 +293,9 @@ rows = []
 
 # create csv file for each model folder
 for m_type in model_types:
-    out_path = f'./models/{m_type}/'
+    out_path = f'{PATH}/models/{m_type}'
 
-    with open(f'{out_path}results.csv', mode='w') as results_file:
+    with open(f'{out_path}/results.csv', mode='w') as results_file:
         writer = csv.writer(results_file)
         writer.writerow(header)
 
@@ -309,10 +309,9 @@ for m_type in model_types:
                 rows.append(row)
 
 # create master results csv
-with open('results.csv', mode='w') as results_file:
+with open(f'{PATH}/results.csv', mode='w') as results_file:
     writer = csv.writer(results_file)
     writer.writerow(header)
 
     for row in rows:
         writer.writerow(row)
-
