@@ -167,10 +167,10 @@ for model_type in model_types:
                                     add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
                                     add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
 
-                                # handle case where n_features is less than selected features
+                                # handle case where n_features is greater than or equal to selected features
                                 n_components = n_features
-                                if (n_features < len(add_data_scaled)):
-                                    n_components = len(add_data_scaled)
+                                if (n_features >= add_data_scaled.shape[1]):
+                                    n_components = add_data_scaled.shape[1]
 
                                 # train PCA (Linear Dimensionality Reduction) with multi feature output
                                 pca = PCA(n_components=n_components)
