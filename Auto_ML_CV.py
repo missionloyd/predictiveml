@@ -1,4 +1,10 @@
-import csv, pickle
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import csv, pickle, sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,13 +20,17 @@ from sklearn.preprocessing import StandardScaler
 
 from prophet import Prophet
 
+
+# In[2]:
+
+
 # Settings
-# PATH = '.' # if running locally
-PATH = '/home/lmacy1/predictiveml' # if running on ARCC
+PATH = '.' # if running locally
+# PATH = '/home/lmacy1/predictiveml' # if running on ARCC
 data_path = f'{PATH}/clean_data_extended'
 buildings_list = ['Stadium_Data_Extended.csv']
 save_model_file = False
-save_model_plot = False
+save_model_plot = True
 min_number_of_days = 365
 memory_limit = 102400
 exclude_column = 'present_co2_tons'
@@ -126,54 +136,54 @@ for model_type in model_types:
                             # model_data.loc[model_data['y'].isna(), 'y'] = y_pred
 
                         for feature_mode in feature_modes:
-                            for n_features in n_features_list:
+                            # normalize the data, save orginal data column for graphing later
+                            scaler = StandardScaler()
+                            data_scaled = scaler.fit_transform(model_data['y'].values.reshape(-1, 1))
+                            saved_data_scaled = scaler.fit_transform(model_data['y_saved'].values.reshape(-1, 1))
 
-                                # normalize the data, save orginal data column for graphing later
-                                scaler = StandardScaler()
-                                data_scaled = scaler.fit_transform(model_data['y'].values.reshape(-1, 1))
-                                saved_data_scaled = scaler.fit_transform(model_data['y_saved'].values.reshape(-1, 1))
+                            # normalize additional features
+                            add_data_scaled = np.empty((model_data.shape[0], 0))
 
-                                # normalize additional features
-                                add_data_scaled = np.empty((model_data.shape[0], 0))
+                            for feature in add_features:
+                                feature_scaler = StandardScaler()
+                                add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
+                                add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
 
-                                for feature in add_features:
-                                    feature_scaler = StandardScaler()
-                                    add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
-                                    add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
+                            # identify most important features and eliminate less important features
+                            if feature_mode == 'rfe':
+                                # RFE feature selection with linear regression estimator
+                                lin_reg = LinearRegression()
+                                rfe = RFECV(estimator=lin_reg, cv=n_folds)
+                                rfe.fit(add_data_scaled, data_scaled.ravel())
 
-                                # identify most important features and eliminate less important features
-                                if feature_mode == 'rfe':
-                                    # RFE feature selection with linear regression estimator
-                                    lin_reg = LinearRegression()
-                                    rfe = RFECV(estimator=lin_reg, cv=n_folds)
-                                    rfe.fit(add_data_scaled, data_scaled)
+                                selected_features = np.array(add_features)[rfe.support_]
+                                print(selected_features)
 
-                                    selected_features = np.array(add_features)[rfe.support_]
-                                    print(selected_features)
+                            elif feature_mode == 'lasso':
+                                # LassoCV feature selection with cross-validation
+                                lassocv = LassoCV(cv=n_folds)
+                                lassocv.fit(add_data_scaled, data_scaled.ravel())
 
-                                elif feature_mode == 'lasso':
-                                    # LassoCV feature selection with cross-validation
-                                    lassocv = LassoCV(cv=n_folds)
-                                    lassocv.fit(add_data_scaled, data_scaled)
+                                selected_features = np.array(add_features)[lassocv.coef_ != 0]
+                                print(selected_features)
 
-                                    selected_features = np.array(add_features)[lassocv.coef_ != 0]
-                                    print(selected_features)
+                            # normalize selected features
+                            add_data_scaled = np.empty((model_data.shape[0], 0))
 
-                                # normalize selected features
-                                add_data_scaled = np.empty((model_data.shape[0], 0))
+                            for feature in selected_features:
+                                feature_scaler = StandardScaler()
+                                add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
+                                add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
 
-                                for feature in selected_features:
-                                    feature_scaler = StandardScaler()
-                                    add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
-                                    add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
+                            for n_components in n_features_list:
 
                                 # handle case where n_features is greater than or equal to selected features
-                                n_components = n_features
-                                if (n_features >= add_data_scaled.shape[1]):
-                                    n_components = add_data_scaled.shape[1]
+                                n_features = n_components
+                                if (n_components >= add_data_scaled.shape[1]):
+                                    n_features = add_data_scaled.shape[1]
 
                                 # train PCA (Linear Dimensionality Reduction) with multi feature output
-                                pca = PCA(n_components=n_components)
+                                pca = PCA(n_components=n_features)
                                 pca_data = pca.fit_transform(add_data_scaled)
                                 data_scaled = np.concatenate((data_scaled, pca_data), axis=1)
                                 
@@ -243,7 +253,7 @@ for model_type in model_types:
                                     model_file = model_file.replace(' ', '-').lower()
 
                                     # calculate metrics
-                                    print(f'{bldgname}, {y}, Time Step: {time_step}')
+                                    print(f'{bldgname}, {y}, {preprocessing_method}, {feature_mode}, {n_features}, Time Step: {time_step}')
                                     print(model.leaderboard())
 
                                     rmse = np.sqrt(mean_squared_error(y_test, y_pred))
@@ -292,6 +302,9 @@ for model_type in model_types:
                                         plt.close(fig)         
 
 
+# In[3]:
+
+
 # Create a CSV files to save the results
 header = ['model_type','bldgname', 'y', 'preprocessing_method', 'feature_mode', 'n_features', 'time_step', 'rmse', 'mae', 'r2', 'model_file']
 rows = []
@@ -320,3 +333,4 @@ with open(f'{PATH}/results.csv', mode='w') as results_file:
 
     for row in rows:
         writer.writerow(row)
+
