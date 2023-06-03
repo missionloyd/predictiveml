@@ -127,13 +127,6 @@ for model_type in model_types:
                             future = m.make_future_dataframe(periods=0, freq='H')
                             forecast = m.predict(future)
                             model_data['y'] = model_data['y'].fillna(forecast['yhat'])
-                        
-                        # *** ARIMA (daily seasonality, m=24) (5/5) ***
-                        # elif(preprocessing_method == 'arima'):
-                            # m = auto_arima(model_data[model_data['y'].notna()]['y'].values, seasonal=True, m=24*365, suppress_warnings=False)
-
-                            # y_pred, conf_int = m.predict(n_periods=model_data['y'].isna().sum())
-                            # model_data.loc[model_data['y'].isna(), 'y'] = y_pred
 
                         for feature_mode in feature_modes:
                             # normalize the data, save orginal data column for graphing later
@@ -302,7 +295,7 @@ for model_type in model_types:
                                         plt.close(fig)         
 
 
-# In[3]:
+# In[ ]:
 
 
 # Create a CSV files to save the results
