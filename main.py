@@ -14,6 +14,10 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.decomposition import PCA
 from autosklearn.regression import AutoSklearnRegressor
 
+PATH = '.'
+ARCC_PATH = '/home/lmacy1/predictiveml'
+# sys.path.append(ARCC_PATH) # if running on ARCC
+
 from modules.preprocessing_methods.main import preprocessing
 from modules.feature_modes.main import feature_engineering
 
@@ -22,8 +26,6 @@ from modules.feature_modes.main import feature_engineering
 
 
 # Settings
-# PATH = '.' # if running locally
-PATH = '/home/lmacy1/predictiveml' # if running on ARCC
 data_path = f'{PATH}/clean_data_extended'
 buildings_list = ['Stadium_Data_Extended.csv']
 save_model_file = False
