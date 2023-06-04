@@ -8,29 +8,26 @@ import csv, pickle, sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.decomposition import PCA
 from autosklearn.regression import AutoSklearnRegressor
-from sklearn.linear_model import LinearRegression
-from pmdarima import auto_arima
 
-from sklearn.linear_model import LassoCV
-from sklearn.feature_selection import RFECV
-from sklearn.preprocessing import StandardScaler
-
-from prophet import Prophet
+from modules.preprocessing_methods.main import preprocessing
+from modules.feature_modes.main import feature_engineering
 
 
 # In[2]:
 
 
 # Settings
-PATH = '.' # if running locally
-# PATH = '/home/lmacy1/predictiveml' # if running on ARCC
+# PATH = '.' # if running locally
+PATH = '/home/lmacy1/predictiveml' # if running on ARCC
 data_path = f'{PATH}/clean_data_extended'
 buildings_list = ['Stadium_Data_Extended.csv']
 save_model_file = False
-save_model_plot = True
+save_model_plot = False
 min_number_of_days = 365
 memory_limit = 102400
 exclude_column = 'present_co2_tons'
@@ -41,8 +38,8 @@ add_features = ['temp_c', 'rel_humidity_%', 'surface_pressure_hpa', 'cloud_cover
 # Training scope
 models = {}
 model_types = ['ensembles', 'solos']
-preprocessing_methods = ['linear regression', 'linear interpolation', 'prophet']
-feature_modes = ['rfe', 'lasso']
+preprocessing_methods = ['linear_regression', 'linear_interpolation', 'prophet', 'lstm']
+feature_modes = ['rfecv', 'lassocv']
 
 # Hyperparameters
 n_features_list = list(range(1, len(add_features)))
@@ -92,41 +89,8 @@ for model_type in model_types:
                         # save the original values into new column
                         model_data['y_saved'] = model_data['y']
 
-                        # Fill in missing values (Preprocessing)
-
-                        # *** Linear Regression (1/5) ***
-                        if (preprocessing_method == 'linear regression'):
-                            m = LinearRegression()
-
-                            X_train = model_data[model_data['y'].notna()]['ds'].values.reshape(-1, 1)
-                            y_train = model_data[model_data['y'].notna()]['y'].values.reshape(-1, 1)
-                            m.fit(X_train, y_train)
-
-                            X_test = model_data[model_data['y'].isna()]['ds'].values.reshape(-1, 1)
-                            X_test = X_test.astype(np.float32)
-
-                            y_pred = m.predict(X_test)
-
-                            model_data.loc[model_data['y'].isna(), 'y'] = y_pred.flatten()
-
-
-                        # *** Linear Interpolation (2/5) ***
-                        elif(preprocessing_method == 'linear interpolation'):
-                            model_data['y'] = model_data['y'].interpolate(method='linear', limit_direction='both')    
-                        
-
-                        # *** Cubic Interpolation (3/5) ***
-                        elif(preprocessing_method == 'cubic interpolation'):
-                            model_data['y'] = model_data['y'].interpolate(method='cubic', limit_direction='both')
-
-
-                        # *** Prophet (4/5) ***
-                        elif(preprocessing_method == 'prophet'):
-                            m = Prophet()
-                            m.fit(model_data)
-                            future = m.make_future_dataframe(periods=0, freq='H')
-                            forecast = m.predict(future)
-                            model_data['y'] = model_data['y'].fillna(forecast['yhat'])
+                        # Fill in missing values (preprocessing)
+                        model_data = preprocessing(model_data, preprocessing_method)
 
                         for feature_mode in feature_modes:
                             # normalize the data, save orginal data column for graphing later
@@ -143,22 +107,7 @@ for model_type in model_types:
                                 add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
 
                             # identify most important features and eliminate less important features
-                            if feature_mode == 'rfe':
-                                # RFE feature selection with linear regression estimator
-                                lin_reg = LinearRegression()
-                                rfe = RFECV(estimator=lin_reg, cv=n_folds)
-                                rfe.fit(add_data_scaled, data_scaled.ravel())
-
-                                selected_features = np.array(add_features)[rfe.support_]
-                                print(selected_features)
-
-                            elif feature_mode == 'lasso':
-                                # LassoCV feature selection with cross-validation
-                                lassocv = LassoCV(cv=n_folds)
-                                lassocv.fit(add_data_scaled, data_scaled.ravel())
-
-                                selected_features = np.array(add_features)[lassocv.coef_ != 0]
-                                print(selected_features)
+                            selected_features = feature_engineering(feature_mode, n_folds, add_data_scaled, data_scaled, add_features)
 
                             # normalize selected features
                             add_data_scaled = np.empty((model_data.shape[0], 0))
@@ -249,13 +198,15 @@ for model_type in model_types:
                                     print(f'{bldgname}, {y}, {preprocessing_method}, {feature_mode}, {n_features}, Time Step: {time_step}')
                                     print(model.leaderboard())
 
-                                    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+                                    nan_mask = np.isnan(saved_y_test)  # boolean mask of NaN values in saved_y_test
+
+                                    rmse = np.sqrt(mean_squared_error(y_test[~nan_mask], y_pred[~nan_mask]))
                                     print('RMSE: %.3f' % rmse)
 
-                                    mae = mean_absolute_error(y_test, y_pred)
+                                    mae = mean_absolute_error(y_test[~nan_mask], y_pred[~nan_mask])
                                     print('MAE: %.3f' % mae)
 
-                                    r2 = r2_score(y_test, y_pred)
+                                    r2 = r2_score(y_test[~nan_mask], y_pred[~nan_mask])
                                     print('R2: %.3f' % r2)
 
                                     # save results
@@ -280,7 +231,6 @@ for model_type in model_types:
                                         # ax.plot(range(train_len, train_len + len(y_test)), y_pred, label='Predicted Values')
 
                                         # Plot the replaced missing values
-                                        nan_mask = np.isnan(saved_y_test)  # boolean mask of NaN values in saved_y_test
                                         y_test[~nan_mask] = np.nan
                                         
                                         ax.plot(y_test, label='Predicted Values', alpha=0.75)
@@ -315,7 +265,7 @@ for m_type in model_types:
 
             # Write the row to the CSV file
             if m_type == model_type:
-                row = [model_type, bldgname, y, preprocessing_method, feature_mode, n_features, time_step, rmse, mae, r2, model_file + '.pkl']
+                row = [model_type, bldgname, y, preprocessing_method, feature_mode, n_features, time_step, rmse, mae, r2, model_file]
                 writer.writerow(row)
                 rows.append(row)
 
