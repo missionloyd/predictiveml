@@ -21,10 +21,11 @@ from itertools import product
 
 PATH = '.'
 ARCC_PATH = '/home/lmacy1/predictiveml'
-# sys.path.append(ARCC_PATH) # if running on ARCC
+sys.path.append(ARCC_PATH) # if running on ARCC
 
 from modules.preprocessing_methods.main import preprocessing
 from modules.feature_methods.main import feature_engineering
+from modules.utils.match_args import match_args
 
 
 # In[ ]:
@@ -32,12 +33,12 @@ from modules.feature_methods.main import feature_engineering
 
 # Define the function to process each combination of parameters
 def train_model(
-    model_data,
+    model_data_path,
     bldgname,
     building_file,
+    y_column,
     imputation_method,
     model_type,
-    y_column,
     feature_method,
     n_features,
     time_step,
@@ -51,6 +52,10 @@ def train_model(
     minutes_per_model,
     memory_limit
 ):
+    
+    # Load model_data separately within each task
+    with open(model_data_path, 'rb') as file:
+        model_data = pickle.load(file)
 
     out_path = f'{PATH}/models/{model_type}'
 
@@ -174,67 +179,87 @@ def train_model(
 # In[ ]:
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    # Settings
-    data_path = f'{PATH}/clean_data_extended'
-    building_files_list = ['Stadium_Data_Extended.csv']
-    save_model_file = False
-    save_model_plot = False
-    min_number_of_days = 365
-    memory_limit = 102400
-    exclude_column = 'present_co2_tons'
-    warnings.filterwarnings("ignore")
+# Settings
+data_path = f'{PATH}/clean_data_extended'
+tmp_path = f'{PATH}/models/tmp'
+building_files_list = ['Stadium_Data_Extended.csv']
+save_model_file = False
+save_model_plot = False
+min_number_of_days = 365
+memory_limit = 102400
+exclude_columns = ['present_co2_tons']
+warnings.filterwarnings("ignore")
 
-    y_columns = ['present_elec_kwh', 'present_htwt_mmbtu', 'present_wtr_usgal', 'present_chll_tonhr', 'present_co2_tons']
-    add_features = ['temp_c', 'rel_humidity_%', 'surface_pressure_hpa', 'cloud_cover_%', 'direct_radiation_w/m2', 'precipitation_mm', 'wind_speed_ground_km/h', 'wind_dir_ground_deg']
-    header = ['ts'] + y_columns + add_features
+y_columns = ['present_elec_kwh', 'present_htwt_mmbtu', 'present_wtr_usgal', 'present_chll_tonhr', 'present_co2_tons']
+add_features = ['temp_c', 'rel_humidity_%', 'surface_pressure_hpa', 'cloud_cover_%', 'direct_radiation_w/m2', 'precipitation_mm', 'wind_speed_ground_km/h', 'wind_dir_ground_deg']
+header = ['ts'] + y_columns + add_features
 
-    # Training scope
-    models = {}
-    model_types = ['ensembles', 'solos']
-    imputation_methods = ['linear_regression', 'linear_interpolation', 'prophet', 'lstm']
-    feature_methods = ['rfecv', 'lassocv']
+# Training scope
+models = {}
+model_types = ['ensembles', 'solos']
+imputation_methods = ['linear_regression', 'linear_interpolation', 'prophet', 'lstm']
+feature_methods = ['rfecv', 'lassocv']
 
-    # Hyperparameters
-    n_features = list(range(1, len(add_features)))
-    n_folds = 5
-    time_steps = [1, 8, 12, 24]
-    minutes_per_model = 2
-    split_rate = 0.8
+# Hyperparameters
+n_features = list(range(1, len(add_features)))
+n_folds = 5
+time_steps = [1, 8, 12, 24]
+minutes_per_model = 2
+split_rate = 0.8
 
-    # Generate a list of arguments for model training
-    arguments = list(product(
-        building_files_list,
-        imputation_methods,
-        model_types,
-        y_columns,
-        feature_methods,
-        n_features,
-        time_steps,
-        [header],
-        [data_path],
-        [add_features],
-        [min_number_of_days],
-        [exclude_column],
-        [n_folds],
-        [split_rate],
-        [minutes_per_model],
-        [memory_limit]
-    ))
+# Generate a list of arguments for model training
+arguments = list(product(
+    building_files_list,
+    y_columns,
+    imputation_methods,
+    model_types,
+    feature_methods,
+    n_features,
+    time_steps,
+    [header],
+    [data_path],
+    [add_features],
+    [min_number_of_days],
+    [exclude_columns],
+    [n_folds],
+    [split_rate],
+    [minutes_per_model],
+    [memory_limit],
+))
 
-    # fill in missing gaps in each y_column before processing, add each updated column as an argument 
-    updated_arguments = preprocessing(arguments, imputation_methods, building_files_list, header, data_path, min_number_of_days, exclude_column, y_columns)
+preprocessing_arguments = list(product( 
+    building_files_list, 
+    y_columns,
+    imputation_methods,  
+    [header], 
+    [data_path], 
+    [tmp_path], 
+    [min_number_of_days], 
+    [exclude_columns], 
+))
 
-    # Execute the training function in parallel for each set of arguments
-    results = Parallel(n_jobs=-1, prefer="processes")(delayed(train_model)(*arg) for arg in updated_arguments)
+# fill in missing gaps in each y_column before processing, add each updated column as an argument 
+# returns: (model_data_path, y_column, imputation_method, bldgname)
+preprocessed_columns = Parallel(n_jobs=-1, prefer="processes")(delayed(preprocessing)(*arg) for arg in preprocessing_arguments)
 
-    # Create a CSV file to save the results
-    results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_features', 'time_step', 'rmse', 'mae', 'r2', 'model_file']
 
-    # Save the results to the CSV file
-    with open(f'{PATH}/results.csv', mode='w') as results_file:
-        writer = csv.writer(results_file)
-        writer.writerow(results_header)
-        writer.writerows(results)
+# In[ ]:
+
+
+# match processed columns with original argument combinations
+updated_arguments = match_args(arguments, preprocessed_columns)
+
+# Execute the training function in parallel for each set of arguments
+results = Parallel(n_jobs=-1, prefer="processes")(delayed(train_model)(*arg) for arg in updated_arguments)
+
+# Create a CSV file to save the results
+results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_features', 'time_step', 'rmse', 'mae', 'r2', 'model_file']
+
+# Save the results to the CSV file
+with open(f'{PATH}/results.csv', mode='w') as results_file:
+    writer = csv.writer(results_file)
+    writer.writerow(results_header)
+    writer.writerows(results)
 
