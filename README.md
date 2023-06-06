@@ -1,4 +1,4 @@
-# Building Energy Modeling using Prophet and AutoML
+# Building Energy Modeling
 This script performs building energy modeling using Prophet and AutoML. It takes in preprocessed CSV files for building energy data and produces trained models for energy usage prediction.
 
 ## Required Libraries
@@ -19,17 +19,39 @@ If you experience any issues installing Prophet, please follow the steps to fix:
 
 ## Usage
 1. Place preprocessed CSV files in the ./clean_data/ folder.
-2. Run the script with the command python Auto_ML.py.
+2. Run the script with the command python main.py.
 
 ## Configuration
 The script contains the following configurations:
 
-- buildings_list: List of preprocessed CSV files for building energy data.
-- model_types: List of model types to train. Can be ensembles or solos.
-- time_steps: List of time steps to use for training.
-The models will be saved in the ./models/ folder according to their model type.
+### Settings
+- data_path: Path to the directory containing the preprocessed CSV files for building energy data. The default value is f'{PATH}/clean_data_extended'.
+- buildings_list: List of preprocessed CSV files for building energy data. The default value is ['Stadium_Data_Extended.csv'].
+save_model_file: Boolean indicating whether to save the trained models as .pkl files. The default value is False.
+- save_model_plot: Boolean indicating whether to save the model plots. The default value is False.
+- min_number_of_days: Minimum number of days required for a column to be considered for training. The default value is 365.
+- memory_limit: Memory limit (in KB) for the AutoSklearnRegressor. The default value is 102400.
+- exclude_column: The column to exclude from training. The default value is 'present_co2_tons'.
+- warnings.filterwarnings("ignore"): Ignore warnings during execution.
 
-## Data Preprocessing
+### Data Preprocessing
+- y_columns: List of energy usage column names. The default value is ['present_elec_kwh', 'present_htwt_mmbtu', 'present_wtr_usgal', 'present_chll_tonhr', 'present_co2_tons'].
+- add_features: List of additional features to include in the model. The default value is ['temp_c', 'rel_humidity_%', 'surface_pressure_hpa', 'cloud_cover_%', 'direct_radiation_w/m2', 'precipitation_mm', 'wind_speed_ground_km/h', 'wind_dir_ground_deg'].
+- header: List of column names in the preprocessed CSV files. The default value is ['ts'] + y_columns + add_features.
+
+### Training Scope
+- model_types: List of model types to train. Can be 'ensembles' or 'solos'.
+- preprocessing_methods: List of preprocessing methods to use. The default value is ['linear_regression', 'linear_interpolation', 'prophet', 'lstm'].
+- feature_modes: List of feature selection modes. The default value is ['rfecv', 'lassocv'].
+
+### Hyperparameters
+- n_features: List of the number of features to consider. The default value is list(range(1, len(add_features))).
+- n_folds: Number of folds for cross-validation. The default value is 5.
+- time_steps: List of time steps to use for training. The default value is [1, 8, 12, 24].
+- minutes_per_model: Maximum time in minutes for training each model. The default value is 2.
+- split_rate: Train-test data split rate. The default value is 0.8.
+
+## Input Data
 The CSV files should contain the following columns:
 
 - ts: Timestamps in YYYY-MM-DD HH:MM:SS format.
@@ -61,4 +83,4 @@ The trained models are evaluated using various metrics, including:
 - R-squared (R2)
 
 ## Results
-The trained models are saved as .pkl files in the ./models/ folder. The evaluation metrics are saved as .txt files in the same folder.
+The trained models are saved as .pkl files in the ./models/ folder. The evaluation metrics are saved in the project directory in results.csv
