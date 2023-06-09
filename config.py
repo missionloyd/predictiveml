@@ -4,8 +4,6 @@ from modules.utils.get_file_names import get_file_names
 def load_config():
 
   path = '.'
-  arcc_path = '/home/lmacy1/predictiveml'
-  sys.path.append(arcc_path) # if running on ARCC
   print()
 
   data_path = f"{path}/clean_data_extended"

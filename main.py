@@ -4,7 +4,9 @@
 # In[ ]:
 
 
-import time
+import time, sys
+arcc_path = '/home/lmacy1/predictiveml'
+sys.path.append(arcc_path) # if running on ARCC
 from config import load_config
 from modules.utils.create_args import create_args
 from modules.utils.process_batch_args import process_batch_args
