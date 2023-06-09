@@ -4,9 +4,12 @@
 # In[ ]:
 
 
-import time, sys
+import time
+import sys
+from multiprocessing import Lock, Process, Queue
+
 arcc_path = '/home/lmacy1/predictiveml'
-sys.path.append(arcc_path) # if running on ARCC
+sys.path.append(arcc_path)  # if running on ARCC
 from config import load_config
 from modules.utils.create_args import create_args
 from modules.utils.process_batch_args import process_batch_args
@@ -18,6 +21,30 @@ from modules.utils.calculate_duration import calculate_duration
 
 
 # In[ ]:
+
+
+def process_preprocessing_args(lock, preprocess_args, preprocessing, batch_size, n_jobs, queue):
+  with lock:
+    processed_args = process_batch_args(
+      'Preprocessing',
+      preprocess_args,
+      preprocessing,
+      batch_size,
+      n_jobs
+    )
+  queue.put(processed_args)
+
+
+def process_training_args(lock, updated_args, train_model, batch_size, n_jobs, queue):
+  with lock:
+    results = process_batch_args(
+      'Training',
+      updated_args,
+      train_model,
+      batch_size,
+      n_jobs
+    )
+  queue.put(results)
 
 
 if __name__ == '__main__':
@@ -33,26 +60,29 @@ if __name__ == '__main__':
   # Generate a list of arguments for model training
   args, preprocess_args = create_args(config)
 
-  # fill in missing gaps in each y_column, add each updated column as an argument 
-  processed_args = process_batch_args(
-    'Preprocessing', 
-    preprocess_args, 
-    preprocessing, 
-    batch_size, 
-    n_jobs
-  )
+  lock = Lock()
+  queue = Queue()
 
-  # match processed columns with original argument combinations
+  # Process the preprocessing arguments
+  preprocess_process = Process(target=process_preprocessing_args,
+                                args=(lock, preprocess_args, preprocessing, batch_size, n_jobs, queue))
+  preprocess_process.start()
+  preprocess_process.join()
+
+  # Get the processed arguments
+  processed_args = queue.get()
+
+  # Match processed columns with original argument combinations
   updated_args = match_args(args, processed_args)
 
-  # Execute the training function in parallel for each batch of arguments
-  results = process_batch_args(
-    'Training', 
-    updated_args, 
-    train_model, 
-    batch_size, 
-    n_jobs
-  )
+  # Process the training arguments
+  training_process = Process(target=process_training_args,
+                              args=(lock, updated_args, train_model, batch_size, n_jobs, queue))
+  training_process.start()
+  training_process.join()
+
+  # Get the training results
+  results = queue.get()
 
   # Convert the results to a set to remove any duplicates
   unique_results = set(results)
@@ -60,7 +90,7 @@ if __name__ == '__main__':
   # Save the results to the CSV file
   save_results(path, results_header, unique_results)
 
-  # calculate duration of script
+  # Calculate duration of the script
   duration = calculate_duration(start_time)
 
   print(f"Success... Time elapsed: {duration} hours.")
