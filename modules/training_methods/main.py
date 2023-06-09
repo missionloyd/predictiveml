@@ -62,19 +62,23 @@ def train_model(args):
     # normalize selected features
     add_data_scaled = np.empty((model_data.shape[0], 0))
 
-    for feature in selected_features:
-        feature_scaler = StandardScaler()
-        add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
-        add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
+    if len(selected_features) > 0:
+        for feature in selected_features:
+            feature_scaler = StandardScaler()
+            add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
+            add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
 
-    # handle case where n_features is greater than or equal to selected features
-    if (n_feature >= add_data_scaled.shape[1]):
-        n_feature = add_data_scaled.shape[1]
+        # handle case where n_features is greater than or equal to selected features
+        if n_feature >= add_data_scaled.shape[1]:
+            n_feature = add_data_scaled.shape[1]
 
-    # train PCA (Linear Dimensionality Reduction) with multi feature output
-    pca = PCA(n_components=n_feature)
-    pca_data = pca.fit_transform(add_data_scaled)
-    data_scaled = np.concatenate((data_scaled, pca_data), axis=1)
+        # train PCA (Linear Dimensionality Reduction) with multi-feature output
+        pca = PCA(n_components=n_feature)
+        pca_data = pca.fit_transform(add_data_scaled)
+        data_scaled = np.concatenate((data_scaled, pca_data), axis=1)
+    else:
+        # Handle the case where no features are selected
+        n_feature = 0
     
     # split the data into training and testing sets
     train_size = int(len(data_scaled) * split_rate)
@@ -86,7 +90,7 @@ def train_model(args):
     # define the window size
     window_size = time_step
 
-    # create the training and testing data sets
+    # create the training and testing data sets with sliding door 
     def create_dataset(dataset, window_size):
         X, y = [], []
 
@@ -105,6 +109,9 @@ def train_model(args):
     X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1]))
     X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1]))
     saved_X_test = np.reshape(saved_X_test, (saved_X_test.shape[0], saved_X_test.shape[1]))
+
+    # update n_features to reflect the added sliding door feature
+    n_feature += 1
     
     # minutes per each model
     time_dist = 60 * minutes_per_model

@@ -28,18 +28,31 @@ if __name__ == '__main__':
   path = config['path']
   results_header = config['results_header']
   batch_size = config['batch_size']
+  n_jobs = config['n_jobs']
 
   # Generate a list of arguments for model training
   args, preprocess_args = create_args(config)
 
   # fill in missing gaps in each y_column, add each updated column as an argument 
-  processed_args = process_batch_args('Preprocessing', preprocess_args, batch_size, preprocessing)
+  processed_args = process_batch_args(
+    'Preprocessing', 
+    preprocess_args, 
+    preprocessing, 
+    batch_size, 
+    n_jobs
+  )
 
   # match processed columns with original argument combinations
   updated_args = match_args(args, processed_args)
-  
+
   # Execute the training function in parallel for each batch of arguments
-  results = process_batch_args('Training', updated_args, batch_size, train_model)
+  results = process_batch_args(
+    'Training', 
+    updated_args, 
+    train_model, 
+    batch_size, 
+    n_jobs
+  )
 
   # Convert the results to a set to remove any duplicates
   unique_results = set(results)

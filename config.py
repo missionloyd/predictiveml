@@ -4,8 +4,6 @@ from modules.utils.get_file_names import get_file_names
 def load_config():
 
   path = '.'
-  print()
-
   data_path = f"{path}/clean_data_extended"
   tmp_path = f"{path}/models/tmp"
   file_list = get_file_names(data_path)
@@ -26,6 +24,7 @@ def load_config():
     "save_model_file": False,
     "save_model_plot": False,
     "min_number_of_days": 365,
+    "n_jobs": -1,
     "batch_size": 32,
     "memory_limit": 102400,
     "y_column": y_column,
