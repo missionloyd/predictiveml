@@ -1,4 +1,8 @@
 from joblib import Parallel, delayed
+from multiprocessing import Lock
+
+# Define a global lock object
+lock = Lock()
 
 def print_progress(title, batch_number, total_batches, progress):
     filled_length = int(progress // 10)
@@ -6,41 +10,41 @@ def print_progress(title, batch_number, total_batches, progress):
 
     batch_format = f"Batch {batch_number}/{total_batches}"
     progress_format = f"[{progress:<4.1f}%]"
-    
-    print(f"{batch_format: <14s}{progress_format: <10s}|{bar}| ({title})")
 
+    print(f"{batch_format: <14s}{progress_format: <10s}|{bar}| ({title})")
 
 def process_batch_args(title, arguments, func, batch_size, n_jobs):
     print()
     results = []
-    if not arguments:
+    if not arguments:  # Check if the arguments list is empty
         return results
 
-    total_batches = (len(arguments) + batch_size - 1) // batch_size
-    if total_batches == 0:
+    total_batches = (len(arguments) + batch_size - 1) // batch_size  # Calculate the total number of batches
+    if total_batches == 0:  # Check if total_batches is zero
         return results
 
     batch_number = 0
 
-    with Parallel(n_jobs=n_jobs, prefer="processes") as parallel:
-        for batch_start in range(0, len(arguments), batch_size):
-            batch_end = min(batch_start + batch_size, len(arguments))
-            batch_arguments = arguments[batch_start:batch_end]
+    for batch_start in range(0, len(arguments), batch_size):
+        batch_end = min(batch_start + batch_size, len(arguments))
+        batch_arguments = arguments[batch_start:batch_end]
 
-            progress_before = (batch_number / total_batches) * 100
-            print_progress(title, batch_number + 1, total_batches, progress_before)
+        progress_before = (batch_number / total_batches) * 100
+        print_progress(title, batch_number + 1, total_batches, progress_before)
 
-            # Use the parallel context manager to stall other processes until this line is complete
-            with parallel:
-                batch_results = parallel(delayed(func)(arg) for arg in batch_arguments)
-            results.extend(batch_results)
+        with lock:
+            # Acquire the lock to ensure exclusive access to Parallel execution
+            batch_results = Parallel(n_jobs=n_jobs, prefer="processes")(delayed(func)(arg) for arg in batch_arguments)
 
-            batch_number += 1
+        results.extend(batch_results)
+
+        batch_number += 1
 
     progress_after = (batch_number / total_batches) * 100
     print_progress(title, batch_number, total_batches, progress_after)
     print()
     return results
+
 
 
 
