@@ -1,5 +1,6 @@
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+import logging_config
+import tensorflow as tf
+tf.keras.utils.disable_interactive_logging()
 
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import Sequential
@@ -7,6 +8,21 @@ from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
 import numpy as np
 import pandas as pd
+
+# Move model compilation and training outside of lstm function
+def compile_and_train_model(model, X_train, y_train, epochs):
+    model.compile(optimizer='adam', loss='mean_squared_error', run_eagerly=True)
+    early_stopping = EarlyStopping(monitor='loss', patience=epochs)
+    model.fit(X_train, y_train, epochs=epochs, batch_size=32, callbacks=[early_stopping])
+
+# Train the model on the entire model_data
+def create_model_data(model_data, window_size):
+    X, y = [], []
+    for i in range(window_size, len(model_data)):
+        X.append(model_data[i-window_size:i, 0])
+        y.append(model_data[i, 0])
+    X, y = np.array(X, dtype=np.float32), np.array(y, dtype=np.float32)
+    return X, y
 
 def lstm(model_data):
     # hyperparameters
@@ -33,20 +49,9 @@ def lstm(model_data):
     if len(group) > 0:
         missing_gaps.append(group)
 
-    # print(f'# of gaps: {len(missing_gaps)}')
-
     # Normalize the data
     scaler = MinMaxScaler(feature_range=(0, 1))
     data_scaled = scaler.fit_transform(y_clean.values.reshape(-1, 1))
-
-    # Train the model on the entire model_data
-    def create_model_data(model_data, window_size):
-        X, y = [], []
-        for i in range(window_size, len(model_data)):
-            X.append(model_data[i-window_size:i, 0])
-            y.append(model_data[i, 0])
-        X, y = np.array(X), np.array(y)
-        return X, y
 
     X_train, y_train = create_model_data(data_scaled, window_size)
     X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
@@ -60,10 +65,7 @@ def lstm(model_data):
     model.add(Dropout(0.2))
     model.add(Dense(units=1))
 
-    model.compile(optimizer='adam', loss='mean_squared_error', run_eagerly=True)
-    early_stopping = EarlyStopping(monitor='loss', patience=epochs)  # Define early stopping criteria
-
-    model.fit(X_train, y_train, epochs=epochs, batch_size=32, callbacks=[early_stopping])
+    compile_and_train_model(model, X_train, y_train, epochs)  # Compile and train the model
 
     # Generate predictions for each gap and replace in model_data['y']
     for gaps in missing_gaps:

@@ -1,21 +1,32 @@
 # Building Energy Modeling
 This script performs building energy modeling using Prophet and AutoML. It takes in preprocessed CSV files for building energy data and produces trained models for energy usage prediction.
 
-## Required Libraries
-- csv
-- pickle
-- pandas
-- numpy
-- matplotlib
-- sklearn
-- autosklearn
-- fbprophet
+## Setup & Dependencies
+- https://www.tensorflow.org/install/pip#linux
 
 ```bash
-!pip install auto-sklearn
+conda create -n tf-gpu --yes python==3.9
+conda activate tf-gpu
+conda update --yes --all
+conda install --yes -c conda-forge prophet
+conda install --yes numpy pandas matplotlib
+
+pip3 install --upgrade pip
+python3 -m pip install --upgrade setuptools
+pip3 install -r requirements.txt
 ```
 
-If you experience any issues installing Prophet, please follow the steps to fix: [Link](https://stackoverflow.com/questions/66887159/im-trying-to-use-prophet-from-fbprophet-but-im-getting-this-excuciatingly-long).
+Linux/WSL2:
+```bash
+conda install --yes -c conda-forge cudatoolkit=11.8.0
+python3 -m pip install nvidia-cudnn-cu11==8.6.0.163 tensorflow==2.12.*
+mkdir -p $CONDA_PREFIX/etc/conda/activate.d
+echo 'CUDNN_PATH=$(dirname $(python -c "import nvidia.cudnn;print(nvidia.cudnn.__file__)"))' >> $CONDA_PREFIX/etc/conda/activate.d/env_vars.sh
+echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CONDA_PREFIX/lib/:$CUDNN_PATH/lib' >> $CONDA_PREFIX/etc/conda/activate.d/env_vars.sh
+source $CONDA_PREFIX/etc/conda/activate.d/env_vars.sh
+# Verify install:
+python3 -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
+```
 
 ## Usage
 1. Place preprocessed CSV files in the ./clean_data/ folder.

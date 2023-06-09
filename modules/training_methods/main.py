@@ -1,13 +1,13 @@
+import logging_config
 import csv
 import pickle
 import sys
-import warnings
 import logging
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
 from sklearn.decomposition import PCA
 from autosklearn.regression import AutoSklearnRegressor
 
@@ -142,19 +142,19 @@ def train_model(args):
     model_file = model_file.replace(' ', '-').lower()
 
     # calculate metrics
-    print(f'\n{bldgname}, {y_column}, {imputation_method}, {feature_method}, n_feature: {n_feature}, time_step: {time_step}')
+    print(f'{bldgname}, {y_column}, {imputation_method}, {feature_method}, n_feature: {n_feature}, time_step: {time_step}')
     # print(model.leaderboard())
 
     nan_mask = np.isnan(saved_y_test)  # boolean mask of NaN values in saved_y_test
 
     rmse = np.sqrt(mean_squared_error(y_test[~nan_mask], y_pred[~nan_mask]))
-    print('RMSE: %.3f' % rmse)
+    # print('RMSE: %.3f' % rmse)
 
     mae = mean_absolute_error(y_test[~nan_mask], y_pred[~nan_mask])
-    print('MAE: %.3f' % mae)
+    # print('MAE: %.3f' % mae)
 
-    r2 = r2_score(y_test[~nan_mask], y_pred[~nan_mask])
-    print('R2: %.3f' % r2)
+    mape = mean_absolute_percentage_error(y_test[~nan_mask], y_pred[~nan_mask])
+    # print('R2: %.3f' % mape)
 
     # save file
     if save_model_file == True:
@@ -189,4 +189,4 @@ def train_model(args):
         plt.close(fig) 
 
     # return results
-    return (model_type, bldgname, y_column, imputation_method, feature_method, n_feature, time_step, rmse, mae, r2, model_file)
+    return (model_type, bldgname, y_column, imputation_method, feature_method, n_feature, time_step, rmse, mae, mape, model_file)

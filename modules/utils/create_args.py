@@ -23,6 +23,7 @@ def create_args(config):
     [config["save_model_file"]],
     [config["save_model_plot"]],
     [config["path"]],
+    [config["preprocess_files"]],
   ):
     argument_dict = {
       "building_file": combo[0],
@@ -43,7 +44,8 @@ def create_args(config):
       "memory_limit": combo[15],
       "save_model_file": combo[16],
       "save_model_plot": combo[17],
-      "path": combo[18]
+      "path": combo[18],
+      "preprocess_files": combo[19],
     }
     arguments.append(argument_dict)
 
@@ -58,6 +60,7 @@ def create_args(config):
     [config["tmp_path"]],
     [config["min_number_of_days"]],
     [config["exclude_column"]],
+    [config["preprocess_files"]],
   ):
     argument_dict = {
       "building_file": combo[0],
@@ -67,7 +70,8 @@ def create_args(config):
       "data_path": combo[4],
       "tmp_path": combo[5],
       "min_number_of_days": combo[6],
-      "exclude_column": combo[7]
+      "exclude_column": combo[7],
+      "preprocess_files": combo[8],
     }
     preprocessing_arguments.append(argument_dict)
 

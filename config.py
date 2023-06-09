@@ -1,16 +1,17 @@
 import json, sys, warnings, os
-import tensorflow as tf
+from modules.utils.get_file_names import get_file_names
 
 def load_config():
 
-  warnings.filterwarnings("ignore")
-  tf.get_logger().setLevel('ERROR')  # Set the TensorFlow logger to only display errors
-
   path = '.'
   arcc_path = '/home/lmacy1/predictiveml'
-  # sys.path.append(arcc_path) # if running on ARCC
+  sys.path.append(arcc_path) # if running on ARCC
+  print()
 
-  results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_feature', 'time_step', 'rmse', 'mae', 'r2', 'model_file']
+  data_path = f"{path}/clean_data_extended"
+  tmp_path = f"{path}/models/tmp"
+  file_list = get_file_names(data_path)
+  results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_feature', 'time_step', 'rmse', 'mae', 'mape', 'model_file']
   y_column = ['present_elec_kwh', 'present_htwt_mmbtu', 'present_wtr_usgal', 'present_chll_tonhr', 'present_co2_tons']
   add_feature = ['temp_c', 'rel_humidity_%', 'surface_pressure_hpa', 'cloud_cover_%', 'direct_radiation_w/m2', 'precipitation_mm', 'wind_speed_ground_km/h', 'wind_dir_ground_deg']
   header = ['ts'] + y_column + add_feature
@@ -19,10 +20,11 @@ def load_config():
   config = {
     # settings
     "path": path,
-    "data_path": f"{path}/clean_data_extended",
-    "tmp_path": f"{path}/models/tmp",
-    "building_file": ["Stadium_Data_Extended.csv"],
+    "data_path": data_path,
+    "tmp_path": tmp_path,
+    "building_file": file_list,
     "exclude_column": ["present_co2_tons"],
+    "preprocess_files": False,
     "save_model_file": False,
     "save_model_plot": False,
     "min_number_of_days": 365,

@@ -1,1 +1,1 @@
-model_type,bldgname,y,preprocessing_method,feature_mode,n_features,time_step,rmse,mae,r2,model_file
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,time_step,rmse,mae,mape,model_file

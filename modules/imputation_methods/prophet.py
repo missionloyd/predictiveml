@@ -1,4 +1,9 @@
 from prophet import Prophet
+import logging
+logger = logging.getLogger('cmdstanpy')
+logger.addHandler(logging.NullHandler())
+logger.propagate = False
+logger.setLevel(logging.CRITICAL)
 
 def prophet(model_data):
     m = Prophet()

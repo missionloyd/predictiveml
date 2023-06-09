@@ -13,6 +13,7 @@ def preprocessing(args):
     tmp_path = args['tmp_path']
     min_number_of_days = args['min_number_of_days']
     exclude_column = args['exclude_column']
+    preprocess_files = args['preprocess_files']
 
     model_data_path = ''
 
@@ -41,17 +42,17 @@ def preprocessing(args):
             model_data = model_data.rename(columns={y_column: 'y', 'ts': 'ds'})
             model_data = model_data.sort_values(['ds'])
 
-            # Save the original values into a new column
-            model_data['y_saved'] = model_data['y']
-
-            # Fill in missing values (preprocessing)
-            model_data = imputation(model_data, imputation_method)
-
-            # Save the model_data object to a file
             model_data_path = f'{tmp_path}/{building_file.replace(".csv", "")}_{y_column}_{imputation_method}'
 
-            with open(model_data_path, 'wb') as file:
-                pickle.dump(model_data, file)
+            if preprocess_files == True:
+                # Save the original values into a new column
+                model_data['y_saved'] = model_data['y']
+
+                # Fill in missing values (preprocessing)
+                model_data = imputation(model_data, imputation_method)
+
+                with open(model_data_path, 'wb') as file:
+                    pickle.dump(model_data, file)
 
             updated_arg = {
                 'building_file': building_file,
