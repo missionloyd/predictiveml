@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
 import time
 from config import load_config
 from modules.utils.create_args import create_args
@@ -7,6 +13,9 @@ from modules.utils.match_args import match_args
 from modules.training_methods.main import train_model
 from modules.utils.save_results import save_results
 from modules.utils.calculate_duration import calculate_duration
+
+
+# In[ ]:
 
 
 if __name__ == '__main__':
@@ -40,3 +49,4 @@ if __name__ == '__main__':
   duration = calculate_duration(start_time)
 
   print(f"Success... Time elapsed: {duration} hours.")
+
