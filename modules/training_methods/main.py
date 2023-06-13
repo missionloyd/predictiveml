@@ -10,6 +10,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
 from sklearn.decomposition import PCA
 from autosklearn.regression import AutoSklearnRegressor
+import xgboost as xgb
 
 from modules.feature_methods.main import feature_engineering
 
@@ -123,20 +124,43 @@ def train_model(args):
             memory_limit = memory_limit,
             ensemble_kwargs = {'ensemble_size': 1}
         )
+        # Train the model
+        model.fit(X_train, y_train)
+        
+        # Predict on the test set
+        y_pred = model.predict(X_test)
+
     elif model_type == 'ensembles':
         model = AutoSklearnRegressor(
             time_left_for_this_task=time_dist,
             memory_limit = memory_limit,
         )
+
+        # Train the model
+        model.fit(X_train, y_train)
+        
+        # Predict on the test set
+        y_pred = model.predict(X_test)
+        
+    elif model_type == 'xgboost':
+        # Create the DMatrix for XGBoost
+        dtrain = xgb.DMatrix(X_train, label=y_train)
+        dtest = xgb.DMatrix(X_test)
+
+        # Define the parameters for XGBoost
+        params = {
+            'eval_metric': 'mae'
+        }
+
+        # Train the XGBoost model
+        model = xgb.train(params, dtrain)
+
+        # Predict on the test set
+        y_pred = model.predict(dtest)
+
     else: 
         print(f'model_type not found: {model_type}')
         sys.exit(0)
-
-    # Train the model
-    model.fit(X_train, y_train)
-    
-    # Predict on the test set
-    y_pred = model.predict(X_test)
 
     # Inverse transform the predictions and actual values
     y_pred = scaler.inverse_transform(y_pred.reshape(-1, 1))
@@ -149,7 +173,7 @@ def train_model(args):
     model_file = model_file.replace(' ', '-').lower()
 
     # calculate metrics
-    print(f'{bldgname}, {y_column}, {imputation_method}, {feature_method}, n_feature: {n_feature}, time_step: {time_step}')
+    # print(f'{bldgname}, {y_column}, {imputation_method}, {feature_method}, n_feature: {n_feature}, time_step: {time_step}')
     # print(model.leaderboard())
 
     nan_mask = np.isnan(saved_y_test)  # boolean mask of NaN values in saved_y_test
@@ -161,7 +185,7 @@ def train_model(args):
     # print('MAE: %.3f' % mae)
 
     mape = mean_absolute_percentage_error(y_test[~nan_mask], y_pred[~nan_mask])
-    # print('R2: %.3f' % mape)
+    # print('MAPE: %.3f' % mape)
 
     # save file
     if save_model_file == True:

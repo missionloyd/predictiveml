@@ -79,9 +79,9 @@ if __name__ == '__main__':
                                args=(lock, updated_args, train_model, batch_size, n_jobs, queue))
 
     # Get the training results
+    training_process.start()
     results = queue.get()
     training_process.join()
-    training_process.start()
 
     # Convert the results to a set to remove any duplicates
     unique_results = set(results)
@@ -93,3 +93,6 @@ if __name__ == '__main__':
     duration = calculate_duration(start_time)
 
     print(f"Success... Time elapsed: {duration} hours.")
+
+    # Cleanup
+    manager.shutdown()

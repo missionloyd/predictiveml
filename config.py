@@ -33,7 +33,7 @@ def load_config():
     "results_header": results_header,
 
     # training_scope
-    "model_type": ["ensembles", "solos"],
+    "model_type": ["xgboost", "solos", "ensembles"],
     "imputation_method": ["linear_regression", "linear_interpolation", "prophet", "lstm"],
     "feature_method": ["rfecv", "lassocv"],
     
