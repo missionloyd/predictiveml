@@ -1,8 +1,11 @@
-# Building Energy Modeling
-This script performs building energy modeling using Prophet and AutoML. It takes in preprocessed CSV files for building energy data and produces trained models for energy usage prediction.
+# Energy Modeling For Buildings
+This script performs energy modeling for buildings using combinations of relevant machine learning algorithms. It takes in cleaned CSV files of building energy data and produces trained models for energy usage prediction.
 
 ## Setup & Dependencies
-- https://www.tensorflow.org/install/pip#linux
+- Conda
+    - https://conda.io/projects/conda/en/latest/user-guide/install/index.html
+- Tensorflow (Steps Down Below)
+    - https://www.tensorflow.org/install/pip#linux
 
 ```bash
 conda create -n tf-gpu --yes python==3.9
@@ -28,9 +31,18 @@ source $CONDA_PREFIX/etc/conda/activate.d/env_vars.sh
 python3 -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
 ```
 
+MacOS:
+```bash
+# There is currently no official GPU support for MacOS.
+python3 -m pip install tensorflow
+# Verify install:
+python3 -c "import tensorflow as tf; print(tf.reduce_sum(tf.random.normal([1000, 1000])))"
+```
+
 ## Usage
-1. Place preprocessed CSV files in the ./clean_data/ folder.
-2. Run the script with the command python main.py.
+1. Place preprocessed CSV files in a local data folder (e.g., ./clean_data/).
+2. Verify config.py
+3. Run the script with the command python main.py.
 
 ## Configuration
 The script contains the following configurations:
@@ -72,6 +84,7 @@ The CSV files should contain the following columns:
 - present_wtr_usgal: Present water usage in US gallons.
 - present_chll_tonhr: Present chiller usage in ton-hour.
 - present_co2_tons: Present CO2 emissions in tons.
+- (Optional additional features)
 
 The data is first converted into a Pandas dataframe, sorted by building name and timestamp, and grouped by building name.
 
@@ -91,7 +104,7 @@ The trained models are evaluated using various metrics, including:
 
 - Root Mean squared error (RMSE)
 - Mean absolute error (MAE)
-- R-squared (R2)
+- Mean absolute percentage error (MAPE)
 
 ## Results
-The trained models are saved as .pkl files in the ./models/ folder. The evaluation metrics are saved in the project directory in results.csv
+The trained models are saved as .pkl files in the ./models/ folder. The evaluation metrics are saved in the root project directory in results.csv
