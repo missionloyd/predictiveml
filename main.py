@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
-
 import time
 import sys
-from multiprocessing import Process, Queue, Manager
+from multiprocessing import Process, Manager
 
 arcc_path = '/home/lmacy1/predictiveml'
 sys.path.append(arcc_path)  # if running on ARCC
@@ -18,10 +15,6 @@ from modules.utils.match_args import match_args
 from modules.training_methods.main import train_model
 from modules.utils.save_results import save_results
 from modules.utils.calculate_duration import calculate_duration
-
-
-# In[ ]:
-
 
 def process_preprocessing_args(lock, preprocess_args, preprocessing, batch_size, n_jobs, queue):
     with lock:
@@ -60,7 +53,7 @@ if __name__ == '__main__':
 
     manager = Manager()
     lock = manager.Lock()
-    queue = Queue()
+    queue = manager.Queue()
 
     # Process the preprocessing arguments
     preprocess_process = Process(target=process_preprocessing_args,

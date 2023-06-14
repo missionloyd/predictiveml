@@ -1,8 +1,4 @@
 from joblib import Parallel, delayed
-from multiprocessing import Lock
-
-# Define a global lock object
-lock = Lock()
 
 def print_progress(title, batch_number, total_batches, progress):
     filled_length = int(progress // 10)
@@ -30,11 +26,10 @@ def process_batch_args(title, arguments, func, batch_size, n_jobs):
         batch_arguments = arguments[batch_start:batch_end]
 
         progress_before = (batch_number / total_batches) * 100
-        print_progress(title, batch_number + 1, total_batches, progress_before)
+        print_progress(title, batch_number, total_batches, progress_before)
 
-        with lock:
-            # Acquire the lock to ensure exclusive access to Parallel execution
-            batch_results = Parallel(n_jobs=n_jobs, prefer="processes")(delayed(func)(arg) for arg in batch_arguments)
+        # Acquire the lock to ensure exclusive access to Parallel execution
+        batch_results = Parallel(n_jobs=n_jobs, prefer="processes")(delayed(func)(arg) for arg in batch_arguments)
 
         results.extend(batch_results)
 
