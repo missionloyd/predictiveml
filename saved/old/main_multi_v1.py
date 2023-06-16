@@ -3,7 +3,7 @@
 
 import time
 import sys
-from concurrent.futures import ThreadPoolExecutor
+from multiprocessing import Process, Manager
 
 arcc_path = '/home/lmacy1/predictiveml'
 sys.path.append(arcc_path)  # if running on ARCC
@@ -15,6 +15,28 @@ from modules.utils.match_args import match_args
 from modules.training_methods.main import train_model
 from modules.utils.save_results import save_results
 from modules.utils.calculate_duration import calculate_duration
+
+def process_preprocessing_args(lock, preprocess_args, preprocessing, batch_size, n_jobs, queue):
+    with lock:
+        processed_args = process_batch_args(
+            'Preprocessing',
+            preprocess_args,
+            preprocessing,
+            batch_size,
+            n_jobs
+        )
+    queue.put(processed_args)
+
+def process_training_args(lock, updated_args, train_model, batch_size, n_jobs, queue):
+    with lock:
+        results = process_batch_args(
+            'Training',
+            updated_args,
+            train_model,
+            batch_size,
+            n_jobs
+        )
+    queue.put(results)
 
 if __name__ == '__main__':
     start_time = time.time()
@@ -29,16 +51,30 @@ if __name__ == '__main__':
     # Generate a list of arguments for model training
     args, preprocess_args = create_args(config)
 
+    manager = Manager()
+    lock = manager.Lock()
+    queue = manager.Queue()
+
     # Process the preprocessing arguments
-    with ThreadPoolExecutor() as executor:
-        processed_args = executor.submit(process_batch_args, 'Preprocessing', preprocess_args, preprocessing, batch_size, n_jobs).result()
+    preprocess_process = Process(target=process_preprocessing_args,
+                                 args=(lock, preprocess_args, preprocessing, batch_size, n_jobs, queue))
+
+    # Get the processed arguments
+    preprocess_process.start()
+    processed_args = queue.get()
+    preprocess_process.join()
 
     # Match processed columns with original argument combinations
     updated_args = match_args(args, processed_args)
 
     # Process the training arguments
-    with ThreadPoolExecutor() as executor:
-        results = executor.submit(process_batch_args, 'Training', updated_args, train_model, batch_size, n_jobs).result()
+    training_process = Process(target=process_training_args,
+                               args=(lock, updated_args, train_model, batch_size, n_jobs, queue))
+
+    # Get the training results
+    training_process.start()
+    results = queue.get()
+    training_process.join()
 
     # Convert the results to a set to remove any duplicates
     unique_results = set(results)
@@ -50,3 +86,6 @@ if __name__ == '__main__':
     duration = calculate_duration(start_time)
 
     print(f"Success... Time elapsed: {duration} hours.")
+
+    # Cleanup
+    manager.shutdown()

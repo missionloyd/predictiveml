@@ -39,17 +39,3 @@ def process_batch_args(title, arguments, func, batch_size, n_jobs):
     print_progress(title, batch_number, total_batches, progress_after)
     print()
     return results
-
-
-
-
-
-
-# def process_batch_args(title, arguments, batch_size, func):
-#     results = []
-#     for batch_start in range(0, len(arguments), batch_size):
-#         batch_end = batch_start + batch_size
-#         batch_arguments = arguments[batch_start:batch_end]
-#         batch_results = Parallel(n_jobs=-1, prefer="processes")(delayed(func)(arg) for arg in batch_arguments)
-#         results.extend(batch_results)
-#     return results
