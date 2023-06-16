@@ -47,7 +47,6 @@ def train_model(args):
     # normalize the data, save orginal data column for graphing later
     scaler = StandardScaler()
     data_scaled = scaler.fit_transform(model_data['y'].values.reshape(-1, 1))
-    saved_data_scaled = scaler.fit_transform(model_data['y_saved'].values.reshape(-1, 1))
 
     # normalize additional features
     add_data_scaled = np.empty((model_data.shape[0], 0))
@@ -80,16 +79,18 @@ def train_model(args):
     else:
         # Handle the case where no features are selected
         n_feature = 0
-    
-    # split the data into training and testing sets
-    train_size = int(len(data_scaled) * split_rate)
-    test_size = len(data_scaled) - train_size
-    train_data = data_scaled[0:train_size,:]
-    test_data = data_scaled[train_size:len(data_scaled),:]
-    saved_test_data = saved_data_scaled[train_size:len(data_scaled),:]
 
     # define the window size
     window_size = time_step
+    
+    # split the data into training and testing sets
+    train_size = int(len(data_scaled) * split_rate)
+    train_data = data_scaled[:train_size, :]
+    test_data = data_scaled[train_size:, :]
+
+    # save y values for benchmarking/plotting
+    y_test = model_data['y'].iloc[train_size:].reset_index(drop=True)
+    saved_y_test = model_data['y_saved'].iloc[train_size:].reset_index(drop=True)
 
     # create the training and testing data sets with sliding door 
     def create_dataset(dataset, window_size):
@@ -98,21 +99,35 @@ def train_model(args):
         for i in range(window_size, len(dataset)):
             X.append(dataset[i-window_size:i, :])
             y.append(dataset[i, 0])
+
         X, y = np.array(X), np.array(y)
         X = np.reshape(X, (X.shape[0], X.shape[1]*X.shape[2]))
+
+        # # Pad with existing values if the lengths are still not equal
+        # if len(X) < len(dataset):
+        #     num_missing = len(dataset) - len(X)
+        #     missing_data = dataset[-num_missing:, :]
+        #     missing_data = np.tile(missing_data, (1, X.shape[1] // missing_data.shape[1]))
+        #     X = np.concatenate((X, missing_data), axis=0)
+        #     y = np.concatenate((y, missing_data[:, 0]))
+
+        # Pad with zeros if the lengths are still not equal
+        if len(X) < len(dataset):
+            num_missing = len(dataset) - len(X)
+            missing_data = np.zeros((num_missing, X.shape[1]))
+            X = np.concatenate((X, missing_data), axis=0)
+            y = np.concatenate((y, np.zeros(num_missing)))
+
         return X, y
 
+
+
     X_train, y_train = create_dataset(train_data, window_size)
-    X_test, y_test = create_dataset(test_data, window_size)
-    saved_X_test, saved_y_test = create_dataset(saved_test_data, window_size)
+    X_test, _ = create_dataset(test_data, window_size)
 
     # reshape the input data
     X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1]))
     X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1]))
-    saved_X_test = np.reshape(saved_X_test, (saved_X_test.shape[0], saved_X_test.shape[1]))
-
-    # update n_features to reflect the added sliding door feature
-    n_feature += 1
     
     # minutes per each model
     time_dist = 60 * minutes_per_model
@@ -164,8 +179,6 @@ def train_model(args):
 
     # Inverse transform the predictions and actual values
     y_pred = scaler.inverse_transform(y_pred.reshape(-1, 1))
-    y_test = scaler.inverse_transform(y_test.reshape(-1, 1))
-    saved_y_test = scaler.inverse_transform(saved_y_test.reshape(-1, 1))
     y_train = scaler.inverse_transform(y_train.reshape(-1, 1))
 
     # save the model name
@@ -199,11 +212,9 @@ def train_model(args):
 
         # Plot the actual values
         ax.plot(y_test, label='Actual Values', alpha=0.7)
-        # ax.plot(np.concatenate([y_train, y_test]), label='Actual Values')
 
         # Plot the predictions
         ax.plot(y_pred, label='Forecasted Values', alpha=0.8)
-        # ax.plot(range(train_len, train_len + len(y_test)), y_pred, label='Predicted Values')
 
         # Plot the replaced missing values
         y_test[~nan_mask] = np.nan

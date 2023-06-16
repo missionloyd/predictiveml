@@ -6,7 +6,8 @@ def load_config():
   path = '.'
   data_path = f"{path}/clean_data_extended"
   tmp_path = f"{path}/models/tmp"
-  file_list = get_file_names(data_path)
+  # file_list = get_file_names(data_path)
+  file_list = ['Stadium_Data_Extended.csv']
   results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_feature', 'time_step', 'rmse', 'mae', 'mape', 'model_file']
   y_column = ['present_elec_kwh', 'present_htwt_mmbtu', 'present_wtr_usgal', 'present_chll_tonhr', 'present_co2_tons']
   add_feature = ['temp_c', 'rel_humidity_%', 'surface_pressure_hpa', 'cloud_cover_%', 'direct_radiation_w/m2', 'precipitation_mm', 'wind_speed_ground_km/h', 'wind_dir_ground_deg']
