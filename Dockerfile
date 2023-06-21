@@ -11,11 +11,6 @@ WORKDIR /app
 # Copy the main.py file to the working directory
 COPY main.py /app/main.py
 
-# Create logging folders inside the container
-RUN mkdir /app/main_log \
-    && mkdir /app/error_log \
-    && mkdir /app/flask_log
-
 # Copy the requirements.txt file to the working directory
 COPY requirements.txt /app/requirements.txt
 
@@ -86,11 +81,6 @@ RUN chmod +x /etc/conda/activate.d/env_vars.sh \
 # Copy the remaining project files
 COPY . .
 
-# Create empty log files
-RUN touch /app/main_log/0.log \
-    && touch /app/error_log/0.log \
-    && touch /app/flask_log/0.log
-
 # run the crontab file
 # RUN apt-get -y install cron vim
 # COPY crontab /etc/cron.d/crontab
@@ -102,5 +92,5 @@ EXPOSE 8080
 
 # run the main.py script, and start the Flask server
 # CMD python3 main.py --preprocess >> /app/main_log/0.log 2>> /app/error_log/0.log & flask run --host=0.0.0.0 --port=8080 >> /app/flask_log.log 2>&1
-CMD python3 -m flask run --host=0.0.0.0 --port=8080 > /app/flask_log/0.log 2>&1
+CMD python3 -m flask run --host=0.0.0.0 --port=8080 > logs/flask_log/0.log 2>&1
 # CMD ["cron", "-f"]

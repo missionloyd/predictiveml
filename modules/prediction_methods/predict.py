@@ -80,15 +80,7 @@ def predict(args, model_data, model):
     # define the window size
     window_size = time_step
 
-    # calculate the size of the training and testing data
-    train_size = int(len(data_scaled) * split_rate)
-    test_size = len(data_scaled) - train_size
-
-    # determine the index to split the data for testing
-    test_start_index = train_size + int(0.2 * test_size)
-
     # split the data into training and testing sets
-    # Set the split rate to 80% for training data
     train_size = int(len(data_scaled) * split_rate)
     test_size = len(data_scaled) - train_size  # Calculate the size of the test data
     test_data = data_scaled[train_size:train_size+test_size, :]  # Select the last 20% of data points for testing

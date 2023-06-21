@@ -21,7 +21,7 @@ from modules.utils.calculate_duration import calculate_duration
 from modules.utils.save_args import *
 from modules.utils.save_results import *
 
-def main(preprocess_flag, train_flag, predict_flag, save_flag, predict_args):
+def main(predict_args, preprocess_flag, train_flag, save_flag, predict_flag):
     start_time = time.time()
 
     config = load_config()
@@ -47,7 +47,7 @@ def main(preprocess_flag, train_flag, predict_flag, save_flag, predict_args):
                 build_extended_clean_data(path)
 
             # Process the preprocessing arguments
-            processed_args = process_batch_args('Preprocessing', preprocess_args, preprocessing, batch_size)
+            processed_args = process_batch_args('Preprocessing', preprocess_args, preprocessing, batch_size, n_jobs)
             
             # Match processed columns with original argument combinations
             updated_args = match_args(args, processed_args)
@@ -59,7 +59,7 @@ def main(preprocess_flag, train_flag, predict_flag, save_flag, predict_args):
             updated_args = load_args(args_file_path)
 
             # Process the training arguments
-            results = process_batch_args('Training', updated_args, train_model, batch_size)
+            results = process_batch_args('Training', updated_args, train_model, batch_size, n_jobs)
 
             # Save the results to the CSV file
             save_training_results(results_file_path, results_header, results, winners_in_file_path)
@@ -69,7 +69,7 @@ def main(preprocess_flag, train_flag, predict_flag, save_flag, predict_args):
             updated_args = load_args(winners_out_file_path)
 
             # Process the winner training arguments
-            results = process_batch_args('Training', updated_args, train_model, batch_size)
+            results = process_batch_args('Training', updated_args, train_model, batch_size, n_jobs)
                 
         if predict_flag:
             required_columns = ['building_file', 'y_column']
@@ -85,7 +85,7 @@ def main(preprocess_flag, train_flag, predict_flag, save_flag, predict_args):
             pred_args = generate_arg(results_dict, config)
             y_pred = predict(pred_args, input_data, model)
             print(y_pred)
-            
+
     else:
         print("No flags specified. Exiting...")
 
@@ -120,6 +120,6 @@ if __name__ == '__main__':
     }
 
     if predict_flag:
-        main(False, False, True, False, predict_args)
+        main(predict_args, False, False, False, True)
     else:
-        main(preprocess_flag, train_flag, False, save_flag, predict_args)
+        main(predict_args, preprocess_flag, train_flag, save_flag, False)

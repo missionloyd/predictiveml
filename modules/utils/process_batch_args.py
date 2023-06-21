@@ -9,7 +9,7 @@ def print_progress(title, batch_number, total_batches, progress):
 
     print(f"{batch_format: <14s}{progress_format: <10s}|{bar}| ({title})")
 
-def process_batch_args(title, arguments, func, batch_size):
+def process_batch_args(title, arguments, func, batch_size, n_jobs):
     print()
     results = []
     if not arguments:  # Check if the arguments list is empty
@@ -29,7 +29,7 @@ def process_batch_args(title, arguments, func, batch_size):
         print_progress(title, batch_number, total_batches, progress_before)
 
         # Acquire the lock to ensure exclusive access to Parallel execution
-        batch_results = Parallel(n_jobs=-1, prefer="processes")(delayed(func)(arg) for arg in batch_arguments)
+        batch_results = Parallel(n_jobs=n_jobs, prefer="processes")(delayed(func)(arg) for arg in batch_arguments)
 
         results.extend(batch_results)
 
