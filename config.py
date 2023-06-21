@@ -6,9 +6,9 @@ def load_config():
   path = '.'
   data_path = f"{path}/clean_data_extended"
   tmp_path = f"{path}/models/tmp"
-  # file_list = get_file_names(data_path)
-  file_list = ['Stadium_Data_Extended.csv']
-  results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_feature', 'time_step', 'rmse', 'mae', 'mape', 'model_file']
+  file_list = get_file_names(data_path)
+  # file_list = ['Stadium_Data_Extended.csv']
+  results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_feature', 'updated_n_feature', 'time_step', 'rmse', 'mae', 'mape', 'model_file', 'model_data_path', 'building_file']
   y_column = ['present_elec_kwh', 'present_htwt_mmbtu', 'present_wtr_usgal', 'present_chll_tonhr', 'present_co2_tons']
   add_feature = ['temp_c', 'rel_humidity_%', 'surface_pressure_hpa', 'cloud_cover_%', 'direct_radiation_w/m2', 'precipitation_mm', 'wind_speed_ground_km/h', 'wind_dir_ground_deg']
   header = ['ts'] + y_column + add_feature
@@ -21,6 +21,7 @@ def load_config():
     "tmp_path": tmp_path,
     "building_file": file_list,
     "exclude_column": ["present_co2_tons"],
+    "update_add_feature": False,
     "preprocess_files": False,
     "save_model_file": False,
     "save_model_plot": False,
@@ -28,6 +29,7 @@ def load_config():
     "n_jobs": -1,
     "batch_size": 32,
     "memory_limit": 102400,
+    "updated_n_feature": 0,
     "y_column": y_column,
     "add_feature": add_feature,
     "header": header,

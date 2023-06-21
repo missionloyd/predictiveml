@@ -1,0 +1,2 @@
+# run cronjob every day at 1:00PM MST
+0 13 * * * cd /app && /usr/local/bin/python3 main.py --preprocess --train --save >> /app/main_log_0.log 2>> /app/error_log_0.log & flask run --host=0.0.0.0 --port=8080 >> /app/flask_log.log 2>&1

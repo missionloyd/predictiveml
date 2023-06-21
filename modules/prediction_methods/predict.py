@@ -15,7 +15,7 @@ import xgboost as xgb
 from modules.feature_methods.main import feature_engineering
 
 # Define the function to process each combination of parameters
-def train_model(args):
+def predict(args, model_data, model):
     model_data_path = args['model_data_path']
     bldgname = args['bldgname']
     building_file = args['building_file']
@@ -40,12 +40,6 @@ def train_model(args):
 
     # Save original n_feature value
     updated_n_feature = n_feature
-    
-    # Load model_data separately within each task
-    with open(model_data_path, 'rb') as file:
-        model_data = pickle.load(file)
-
-    out_path = f'{path}/models/{model_type}'
 
     # normalize the data, save orginal data column for graphing later
     scaler = StandardScaler()
@@ -85,16 +79,21 @@ def train_model(args):
 
     # define the window size
     window_size = time_step
-    
-    # split the data into training and testing sets
+
+    # calculate the size of the training and testing data
     train_size = int(len(data_scaled) * split_rate)
-    train_data = data_scaled[:train_size, :]
-    test_data = data_scaled[train_size:, :]
+    test_size = len(data_scaled) - train_size
 
-    # save y values for benchmarking/plotting
-    y_test = model_data['y'].iloc[train_size:].reset_index(drop=True)
-    saved_y_test = model_data['y_saved'].iloc[train_size:].reset_index(drop=True)
+    # determine the index to split the data for testing
+    test_start_index = train_size + int(0.2 * test_size)
 
+    # split the data into training and testing sets
+    # Set the split rate to 80% for training data
+    train_size = int(len(data_scaled) * split_rate)
+    test_size = len(data_scaled) - train_size  # Calculate the size of the test data
+    test_data = data_scaled[train_size:train_size+test_size, :]  # Select the last 20% of data points for testing
+    # train_data = data_scaled[:train_size, :]  # Use the remaining 80% of data points for training
+    
     # create the training and testing data sets with sliding door 
     def create_dataset(dataset, window_size):
         X, y = [], []
@@ -123,55 +122,24 @@ def train_model(args):
 
         return X, y
 
-
-
-    X_train, y_train = create_dataset(train_data, window_size)
     X_test, _ = create_dataset(test_data, window_size)
 
     # reshape the input data
-    X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1]))
     X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1]))
-    
-    # minutes per each model
-    time_dist = 60 * minutes_per_model
+
 
     # Create the model (solo or ensemble)
     if model_type == 'solos':
-        model = AutoSklearnRegressor(
-            time_left_for_this_task=time_dist,
-            memory_limit = memory_limit,
-            ensemble_kwargs = {'ensemble_size': 1}
-        )
-        # Train the model
-        model.fit(X_train, y_train)
-        
         # Predict on the test set
         y_pred = model.predict(X_test)
 
     elif model_type == 'ensembles':
-        model = AutoSklearnRegressor(
-            time_left_for_this_task=time_dist,
-            memory_limit = memory_limit,
-        )
-
-        # Train the model
-        model.fit(X_train, y_train)
         
         # Predict on the test set
         y_pred = model.predict(X_test)
         
     elif model_type == 'xgboost':
-        # Create the DMatrix for XGBoost
-        dtrain = xgb.DMatrix(X_train, label=y_train)
         dtest = xgb.DMatrix(X_test)
-
-        # Define the parameters for XGBoost
-        params = {
-            'eval_metric': 'mae'
-        }
-
-        # Train the XGBoost model
-        model = xgb.train(params, dtrain)
 
         # Predict on the test set
         y_pred = model.predict(dtest)
@@ -182,56 +150,6 @@ def train_model(args):
 
     # Inverse transform the predictions and actual values
     y_pred = scaler.inverse_transform(y_pred.reshape(-1, 1))
-    y_train = scaler.inverse_transform(y_train.reshape(-1, 1))
-
-    # save the model name
-    model_file = f'{out_path}/{bldgname}_{y_column}_{imputation_method}_{feature_method}_{n_feature}_{updated_n_feature}_{time_step}'
-    model_file = model_file.replace(' ', '-').lower()
-
-    # calculate metrics
-    # print(f'{bldgname}, {y_column}, {imputation_method}, {feature_method}, n_feature: {n_feature}, time_step: {time_step}')
-    # print(model.leaderboard())
-
-    nan_mask = np.isnan(saved_y_test)  # boolean mask of NaN values in saved_y_test
-
-    rmse = np.sqrt(mean_squared_error(y_test[~nan_mask], y_pred[~nan_mask]))
-    # print('RMSE: %.3f' % rmse)
-
-    mae = mean_absolute_error(y_test[~nan_mask], y_pred[~nan_mask])
-    # print('MAE: %.3f' % mae)
-
-    mape = mean_absolute_percentage_error(y_test[~nan_mask], y_pred[~nan_mask])
-    # print('MAPE: %.3f' % mape)
-
-    # save file
-    if save_model_file == True:
-        with open(model_file, 'wb') as file:
-            pickle.dump(model, file)
-
-    # save plot 
-    if save_model_plot == True:
-        # plot results
-        fig, ax = plt.subplots()
-
-        # Plot the actual values
-        ax.plot(y_test, label='Actual Values', alpha=0.7)
-
-        # Plot the predictions
-        ax.plot(y_pred, label='Forecasted Values', alpha=0.8)
-
-        # Plot the replaced missing values
-        y_test[~nan_mask] = np.nan
-        
-        ax.plot(y_test, label='Predicted Values', alpha=0.75)
-
-        ax.set_title(f'{bldgname} Consumption')
-        ax.set_xlabel('Time (Hours)')
-        ax.set_ylabel(y_column.split('_')[-2] + ' (' + y_column.split('_')[-1] + ')')
-
-        ax.legend()
-        plt.grid(True)
-        plt.savefig(model_file + '.png')
-        plt.close(fig) 
 
     # return results
-    return (model_type, bldgname, y_column, imputation_method, feature_method, n_feature, updated_n_feature, time_step, rmse, mae, mape, model_file, model_data_path, building_file)
+    return y_pred

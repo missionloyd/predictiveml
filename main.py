@@ -4,7 +4,6 @@
 import time
 import sys
 import argparse
-from concurrent.futures import ThreadPoolExecutor
 
 arcc_path = '/home/lmacy1/predictiveml'
 sys.path.append(arcc_path)  # if running on ARCC
@@ -12,13 +11,17 @@ from config import load_config
 from modules.utils.create_args import create_args
 from modules.utils.process_batch_args import process_batch_args
 from modules.preprocessing_methods.main import preprocessing
+from weather_utils.main import build_extended_clean_data
 from modules.utils.match_args import match_args
 from modules.training_methods.main import train_model
+from modules.prediction_methods.main import setup_prediction
+from modules.prediction_methods.predict import predict
 from modules.utils.load_args import load_args
-from modules.utils.save_results import save_results
 from modules.utils.calculate_duration import calculate_duration
+from modules.utils.save_args import *
+from modules.utils.save_results import *
 
-def main(preprocess_flag):
+def main(preprocess_flag, train_flag, predict_flag, save_flag, predict_args):
     start_time = time.time()
 
     config = load_config()
@@ -27,29 +30,64 @@ def main(preprocess_flag):
     results_header = config['results_header']
     batch_size = config['batch_size']
     n_jobs = config['n_jobs']
-    args_file_path = f'{path}/models/tmp/_results.txt'
+    update_add_feature = config['update_add_feature']
+    args_file_path = f'{path}/models/tmp/_args'
+    winners_in_file_path = f'{path}/models/tmp/_winners.in'
+    winners_out_file_path = f'{path}/models/tmp/_winners.out'
     results_file_path = f'{path}/results.csv'
 
-    if preprocess_flag:
-        # Generate a list of arguments for model training
-        args, preprocess_args = create_args(config)
+    if preprocess_flag or train_flag or save_flag or predict_flag:
 
-        # Process the preprocessing arguments
-        processed_args = process_batch_args('Preprocessing', preprocess_args, preprocessing, batch_size, n_jobs)
-        
-        # Match processed columns with original argument combinations
-        updated_args= match_args(args, processed_args)
+        if preprocess_flag:
+            # Generate a list of arguments for model training
+            args, preprocess_args = create_args(config)
 
-        # Save the args to the CSV file
-        save_results(args_file_path, results_header, updated_args, preprocess_flag)
+            # Update files with add_features (weather)
+            if update_add_feature:
+                build_extended_clean_data(path)
+
+            # Process the preprocessing arguments
+            processed_args = process_batch_args('Preprocessing', preprocess_args, preprocessing, batch_size)
+            
+            # Match processed columns with original argument combinations
+            updated_args = match_args(args, processed_args)
+
+            # Save the args to the CSV file
+            save_args_results(args_file_path, updated_args)
+
+        if train_flag:
+            updated_args = load_args(args_file_path)
+
+            # Process the training arguments
+            results = process_batch_args('Training', updated_args, train_model, batch_size)
+
+            # Save the results to the CSV file
+            save_training_results(results_file_path, results_header, results, winners_in_file_path)
+
+        if save_flag: 
+            save_args(winners_in_file_path, winners_out_file_path, config)
+            updated_args = load_args(winners_out_file_path)
+
+            # Process the winner training arguments
+            results = process_batch_args('Training', updated_args, train_model, batch_size)
+                
+        if predict_flag:
+            required_columns = ['building_file', 'y_column']
+
+            if not all(key in predict_args for key in required_columns):
+            # if not all(key in predict_args for key in ['bldgname', 'startDate', 'endDate', 'datelevel', 'table']):
+                print(f"Required arguments missing for prediction. Please provide {required_columns}.")
+                return
+            
+            # Call the make_prediction function with the provided arguments
+            model, input_data, target_row = setup_prediction(predict_args, winners_in_file_path)
+            results_dict = {key: value for key, value in zip(results_header, target_row)}
+            pred_args = generate_arg(results_dict, config)
+            y_pred = predict(pred_args, input_data, model)
+            print(y_pred)
+            
     else:
-        updated_args = load_args(args_file_path)
-
-        # Process the training arguments
-        results = process_batch_args('Training', updated_args, train_model, batch_size, n_jobs)
-
-        # Save the results to the CSV file
-        save_results(results_file_path, results_header, results, preprocess_flag)
+        print("No flags specified. Exiting...")
 
     # Calculate duration of the script
     duration = calculate_duration(start_time)
@@ -57,11 +95,31 @@ def main(preprocess_flag):
     print(f"Success... Time elapsed: {duration} hours.")
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Script for preprocessing or training.')
+    parser = argparse.ArgumentParser(description='Script for preprocessing, training, or prediction.')
     parser.add_argument('--preprocess', action='store_true', help='Flag for preprocessing.')
+    parser.add_argument('--train', action='store_true', help='Flag for training.')
+    parser.add_argument('--save', action='store_true', help='Flag for saving tmp files.')
+    parser.add_argument('--predict', action='store_true', help='Flag for prediction.')
+    parser.add_argument('--bldgname', type=str, help='Building name for prediction')
+    parser.add_argument('--building_file', type=str, help='Building file name for prediction')
+    parser.add_argument('--y_column', type=str, help='Y_Column for prediction')
+    parser.add_argument('--startDate', type=str, help='Start date for prediction')
+    parser.add_argument('--endDate', type=str, help='End date for prediction')
+    parser.add_argument('--datelevel', type=str, help='Date level for prediction')
+    parser.add_argument('--table', type=str, help='Table for prediction')
 
     args = parser.parse_args()
 
     preprocess_flag = args.preprocess
+    train_flag = args.train
+    predict_flag = args.predict
+    save_flag = args.save
+    predict_args = {
+        'building_file': args.building_file,
+        'y_column': args.y_column,
+    }
 
-    main(preprocess_flag)
+    if predict_flag:
+        main(False, False, True, False, predict_args)
+    else:
+        main(preprocess_flag, train_flag, False, save_flag, predict_args)

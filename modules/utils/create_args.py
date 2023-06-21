@@ -24,6 +24,7 @@ def create_args(config):
     [config["save_model_plot"]],
     [config["path"]],
     [config["preprocess_files"]],
+    [config["updated_n_feature"]],
   ):
     argument_dict = {
       "building_file": combo[0],
@@ -46,6 +47,7 @@ def create_args(config):
       "save_model_plot": combo[17],
       "path": combo[18],
       "preprocess_files": combo[19],
+      "updated_n_feature": combo[20]
     }
     arguments.append(argument_dict)
 
@@ -74,8 +76,5 @@ def create_args(config):
       "preprocess_files": combo[8],
     }
     preprocessing_arguments.append(argument_dict)
-
-  config["arguments"] = arguments
-  config["preprocessing_arguments"] = preprocessing_arguments
 
   return arguments, preprocessing_arguments

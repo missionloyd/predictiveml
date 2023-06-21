@@ -35,9 +35,19 @@ def preprocessing(args):
 
         col_data = group[header]
 
-        # Check if column contains the min number of days and is a valid commodity to train on
-        if col_data[y_column].count() >= min_number_of_days * 24 and y_column not in exclude_column:
+        # Get the total number of rows in the dataframe
+        total_rows = col_data.shape[0]
 
+        # Calculate the index at which the last 20% split starts
+        split_index = int(0.8 * total_rows)
+
+        # Check if column contains the min number of days, is a valid commodity to train on,
+        # and has at least 80% of its last 20% split of data and contains the min number of days and is a valid commodity to train on
+        # if col_data[y_column].count() >= min_number_of_days * 24 and \
+        # y_column not in exclude_column and \
+        # col_data[y_column].iloc[split_index:].count() >= 0.8 * (total_rows - split_index):
+        if col_data[y_column].count() >= min_number_of_days * 24 and y_column not in exclude_column:
+            # Column meets the condition
             model_data = col_data.copy()
             model_data = model_data.rename(columns={y_column: 'y', 'ts': 'ds'})
             model_data = model_data.sort_values(['ds'])

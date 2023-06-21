@@ -12,7 +12,7 @@ conda create -n tf-gpu --yes python==3.9
 conda activate tf-gpu
 conda update --yes --all
 conda install --yes -c conda-forge prophet
-conda install --yes numpy pandas matplotlib
+conda install --yes numpy pandas matplotlib flask
 
 pip3 install --upgrade pip
 python3 -m pip install --upgrade setuptools
@@ -40,9 +40,42 @@ python3 -c "import tensorflow as tf; print(tf.reduce_sum(tf.random.normal([1000,
 ```
 
 ## Usage
-1. Place preprocessed CSV files in a local data folder (e.g., ./clean_data/).
-2. Verify config.py
-3. Run the script with the command python main.py.
+1. Place preprocessed CSV files in a local data folder (e.g., `./clean_data_extended/`).
+2. Verify `config.py` to ensure it has the correct configurations for your project.
+3. Run the script with the following command:
+
+```shell
+python main.py [--preprocess] [--train] [--save] [--predict] [...]
+```
+
+### Flags
+The script supports the following flags:
+
+1. --preprocess: Performs the preprocessing step on the preprocessed CSV files in the data folder. The preprocessed data will be stored in temporary files for later use in the training step.
+2. --train: Performs the training step using the preprocessed data from the previous step. It uses the temporary files generated during the preprocessing step.
+
+Examples:
+- To run only the preprocessing step:
+```shell
+python main.py --preprocess
+```
+- To run only the training step using the preprocessed data:
+```shell
+python main.py --train
+```
+- To run both preprocessing and training steps sequentially:
+```shell
+python main.py --preprocess --train
+```
+
+Note: If no flags are specified, the script will display a message and exit without performing any action.
+
+## Docker Usage
+Build the Docker image using the provided Dockerfile in the project directory:
+```shell
+docker build -t energy-modeling .
+docker run -v /dev/shm:/dev/shm --shm-size=2gb -d -p 80:8080 energy-modeling
+```
 
 ## Configuration
 The script contains the following configurations:

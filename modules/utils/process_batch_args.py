@@ -9,7 +9,7 @@ def print_progress(title, batch_number, total_batches, progress):
 
     print(f"{batch_format: <14s}{progress_format: <10s}|{bar}| ({title})")
 
-def process_batch_args(title, arguments, func, batch_size, n_jobs):
+def process_batch_args(title, arguments, func, batch_size):
     print()
     results = []
     if not arguments:  # Check if the arguments list is empty
