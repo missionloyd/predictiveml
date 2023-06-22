@@ -18,13 +18,14 @@ from modules.prediction_methods.main import setup_prediction
 from modules.prediction_methods.predict import predict
 from modules.utils.load_args import load_args
 from modules.utils.calculate_duration import calculate_duration
+from modules.logging_methods.main import *
 from modules.utils.save_args import *
 from modules.utils.save_results import *
 
-def main(predict_args, preprocess_flag, train_flag, save_flag, predict_flag):
+def main(predict_args, job_id_flag, preprocess_flag, train_flag, save_flag, predict_flag):
     start_time = time.time()
 
-    config = load_config()
+    config = load_config(job_id_flag)
 
     path = config['path']
     results_header = config['results_header']
@@ -76,7 +77,7 @@ def main(predict_args, preprocess_flag, train_flag, save_flag, predict_flag):
 
             if not all(key in predict_args for key in required_columns):
             # if not all(key in predict_args for key in ['bldgname', 'startDate', 'endDate', 'datelevel', 'table']):
-                print(f"Required arguments missing for prediction. Please provide {required_columns}.")
+                logger(f"Required arguments missing for prediction. Please provide {required_columns}.")
                 return
             
             # Call the make_prediction function with the provided arguments
@@ -84,15 +85,18 @@ def main(predict_args, preprocess_flag, train_flag, save_flag, predict_flag):
             results_dict = {key: value for key, value in zip(results_header, target_row)}
             pred_args = generate_arg(results_dict, config)
             y_pred = predict(pred_args, input_data, model)
-            print(y_pred)
+            
+            # save prediction for info logs and expose to api
+            logger(y_pred)
+            api_logger(y_pred)
 
     else:
-        print("No flags specified. Exiting...")
+        logger("No flags specified. Exiting...")
 
     # Calculate duration of the script
     duration = calculate_duration(start_time)
 
-    print(f"Success... Time elapsed: {duration} hours.")
+    logger(f"Success... Time elapsed: {duration} hours.")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Script for preprocessing, training, or prediction.')
@@ -107,19 +111,22 @@ if __name__ == '__main__':
     parser.add_argument('--endDate', type=str, help='End date for prediction')
     parser.add_argument('--datelevel', type=str, help='Date level for prediction')
     parser.add_argument('--table', type=str, help='Table for prediction')
+    parser.add_argument('--job_id', type=int, help='Flag for logging')
 
     args = parser.parse_args()
+    extract_args()
 
     preprocess_flag = args.preprocess
     train_flag = args.train
     predict_flag = args.predict
     save_flag = args.save
+    job_id_flag = args.job_id
     predict_args = {
         'building_file': args.building_file,
         'y_column': args.y_column,
     }
 
     if predict_flag:
-        main(predict_args, False, False, False, True)
+        main(predict_args, job_id_flag, False, False, False, True)
     else:
-        main(predict_args, preprocess_flag, train_flag, save_flag, False)
+        main(predict_args, job_id_flag, preprocess_flag, train_flag, save_flag, False)

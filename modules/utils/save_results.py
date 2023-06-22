@@ -1,4 +1,6 @@
 import csv
+from modules.logging_methods.main import logger
+
 
 def save_args_results(file_path, results):
 
@@ -47,8 +49,8 @@ def save_training_results(file_path, results_header, results, winners_in_file_pa
             writer.writerow(lowest_error_row)
             
             # Print the lowest error row for each bldgname and y_column
-            print(f"Lowest error for bldgname '{bldgname}' and y_column '{y_column}':")
-            print(lowest_error_row)
-            print()
+            logger(f"Lowest error for bldgname '{bldgname}' and y_column '{y_column}':")
+            logger(str(lowest_error_row))
+            logger('')
 
     return

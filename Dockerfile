@@ -91,6 +91,6 @@ COPY . .
 EXPOSE 8080
 
 # run the main.py script, and start the Flask server
-# CMD python3 main.py --preprocess >> /app/main_log/0.log 2>> /app/error_log/0.log & flask run --host=0.0.0.0 --port=8080 >> /app/flask_log.log 2>&1
+# CMD python3 main.py --preprocess >> /app/info_log/0.log 2>> /app/error_log/0.log & flask run --host=0.0.0.0 --port=8080 >> /app/flask_log.log 2>&1
 CMD python3 -m flask run --host=0.0.0.0 --port=8080 > logs/flask_log/0.log 2>&1
 # CMD ["cron", "-f"]

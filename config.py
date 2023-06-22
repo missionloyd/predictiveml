@@ -1,7 +1,9 @@
 import json, sys, warnings, os
 from modules.utils.get_file_names import get_file_names
+from modules.logging_methods.main import setup_logger
 
-def load_config():
+def load_config(job_id):
+  setup_logger(job_id or 0)
 
   path = '.'
   data_path = f"{path}/clean_data_extended"
@@ -27,7 +29,7 @@ def load_config():
     "save_model_plot": False,
     "min_number_of_days": 365,
     "n_jobs": -1,
-    "batch_size": 32,
+    "batch_size": 8,
     "memory_limit": 102400,
     "updated_n_feature": 0,
     "y_column": y_column,

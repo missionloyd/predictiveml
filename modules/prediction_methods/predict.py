@@ -10,6 +10,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
 from sklearn.decomposition import PCA
 from autosklearn.regression import AutoSklearnRegressor
+from modules.logging_methods.main import logger
 import xgboost as xgb
 
 from modules.feature_methods.main import feature_engineering
@@ -137,7 +138,8 @@ def predict(args, model_data, model):
         y_pred = model.predict(dtest)
 
     else: 
-        print(f'model_type not found: {model_type}')
+        output = f'model_type not found: {model_type}'
+        logger(f'model_type not found: {model_type}')
         sys.exit(0)
 
     # Inverse transform the predictions and actual values

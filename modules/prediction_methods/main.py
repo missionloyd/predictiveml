@@ -1,5 +1,6 @@
 import pickle, csv
 import pandas as pd
+from modules.logging_methods.main import logger
 
 # Load the pickled model or preprocessed query
 def load_object(file_path):
@@ -41,9 +42,9 @@ def setup_prediction(args, winners_in_file_path):
         model_file = target_row[model_file_index]
         model_data_path = target_row[model_data_path_index]
         
-        # print(f"Row with bldgname '{bldgname}':")
-        # print(f"model_file: {model_file}")
-        # print(f"model_data_path: {model_data_path}")
+        # logger(f"Row with bldgname '{bldgname}':")
+        # logger(f"model_file: {model_file}")
+        # logger(f"model_data_path: {model_data_path}")
 
         # Load the model
         model = load_object(model_file)
@@ -56,5 +57,5 @@ def setup_prediction(args, winners_in_file_path):
 
         return model, input_data, target_row
     else:
-        print(f"No row found with building_file '{building_file}' & y_column {y_column}.")
+        logger(f"No row found with building_file '{building_file}' & y_column {y_column}.")
         return []

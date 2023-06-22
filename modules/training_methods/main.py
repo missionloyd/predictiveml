@@ -13,6 +13,7 @@ from autosklearn.regression import AutoSklearnRegressor
 import xgboost as xgb
 
 from modules.feature_methods.main import feature_engineering
+from modules.logging_methods.main import logger
 
 # Define the function to process each combination of parameters
 def train_model(args):
@@ -177,7 +178,7 @@ def train_model(args):
         y_pred = model.predict(dtest)
 
     else: 
-        print(f'model_type not found: {model_type}')
+        logger(f'model_type not found: {model_type}')
         sys.exit(0)
 
     # Inverse transform the predictions and actual values
@@ -189,19 +190,19 @@ def train_model(args):
     model_file = model_file.replace(' ', '-').lower()
 
     # calculate metrics
-    # print(f'{bldgname}, {y_column}, {imputation_method}, {feature_method}, n_feature: {n_feature}, time_step: {time_step}')
-    # print(model.leaderboard())
+    # logger(f'{bldgname}, {y_column}, {imputation_method}, {feature_method}, n_feature: {n_feature}, time_step: {time_step}')
+    # logger(model.leaderboard())
 
     nan_mask = np.isnan(saved_y_test)  # boolean mask of NaN values in saved_y_test
 
     rmse = np.sqrt(mean_squared_error(y_test[~nan_mask], y_pred[~nan_mask]))
-    # print('RMSE: %.3f' % rmse)
+    # logger('RMSE: %.3f' % rmse)
 
     mae = mean_absolute_error(y_test[~nan_mask], y_pred[~nan_mask])
-    # print('MAE: %.3f' % mae)
+    # logger('MAE: %.3f' % mae)
 
     mape = mean_absolute_percentage_error(y_test[~nan_mask], y_pred[~nan_mask])
-    # print('MAPE: %.3f' % mape)
+    # logger('MAPE: %.3f' % mape)
 
     # save file
     if save_model_file == True:
