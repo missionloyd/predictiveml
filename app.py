@@ -70,6 +70,10 @@ def generate_command_links():
     return links
 
 def generate_log_links(job_id):
+
+    while not os.path.isfile(f'logs/info_log/{job_id}.log'):
+        time.sleep(0.1)  # Sleep for 1 second
+
     links = '<br>'.join([
         f'',
         f'<a href="{url_for("display_info_log", job_id=job_id)}">Info Job Log: #{job_id}</a>',
@@ -102,8 +106,7 @@ def display_app_log():
     }
 
     for log_type, log_file in log_files.items():
-        if not os.path.exists(log_file):
-            open(log_file, 'w').close()
+        open(log_file, 'w').close()
 
     log_content = run_info_log(log_files["flask_log"])
     command_links = generate_command_links()
@@ -135,7 +138,7 @@ def run_predict(building_file, y_column):
 
     # Wait for the API file to become available
     while not os.path.isfile(api_file):
-        time.sleep(1)  # Sleep for 1 second
+        time.sleep(0.1)  # Sleep for 1 second
 
     data = run_api_log(api_file)
 
