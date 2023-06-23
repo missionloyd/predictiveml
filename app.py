@@ -1,9 +1,9 @@
 import subprocess
 import threading
 import os, time
-from flask import Flask, url_for, jsonify, request
+from flask import Flask, url_for, jsonify, render_template
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=".")
 
 n_jobs_counter = 0
 lock = threading.Lock()
@@ -56,6 +56,7 @@ def run_api_log(api_file):
 def run_info_log(log_file):
     with open(log_file, 'r') as file:
         lines = file.readlines()
+    lines = [line.strip() for line in lines]  # Remove leading/trailing spaces
     return '<br>'.join(lines)
 
 def generate_command_links():
@@ -87,6 +88,7 @@ import os
 
 @app.route('/')
 def display_app_log():
+    job_id = 0
     log_directory = "logs/"
 
     # Create the log directories if they don't exist
@@ -110,16 +112,18 @@ def display_app_log():
 
     log_content = run_info_log(log_files["flask_log"])
     command_links = generate_command_links()
-    log_links = generate_log_links(job_id=0)
-    return f"{command_links}<br>{log_links}<br>{log_content}"
+    log_links = generate_log_links(job_id=job_id)
 
+    return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
 @app.route('/demo/predict/<string:building_file>/<string:y_column>')
 def run_predict_demo(building_file, y_column):
     job_id = run_main(['--predict', '--building_file', building_file, '--y_column', y_column])
     command_links = generate_command_links()
     log_links = generate_log_links(job_id)
-    return f"{command_links}<br>{log_links}<br><br>Job submitted (--predict --building_file {building_file} --y_column {y_column} --job_id {job_id})"
+    log_content = f'Job submitted (--predict --building_file {building_file} --y_column {y_column} --job_id {job_id})'
+    return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
+
 
 @app.route('/predict/<string:building_file>/<string:y_column>')
 def run_predict(building_file, y_column):
@@ -153,7 +157,7 @@ def display_info_log(job_id):
     log_content = run_info_log(log_file)
     command_links = generate_command_links()
     log_links = generate_log_links(job_id)
-    return f"{command_links}<br>{log_links}<br>{log_content}"
+    return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
 @app.route('/debug_log/<int:job_id>')
 def display_debug_log(job_id):
@@ -161,7 +165,7 @@ def display_debug_log(job_id):
     log_content = run_info_log(log_file)
     command_links = generate_command_links()
     log_links = generate_log_links(job_id)
-    return f"{command_links}<br>{log_links}<br>{log_content}"
+    return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
 @app.route('/error_log/<int:job_id>')
 def display_error_log(job_id):
@@ -169,28 +173,38 @@ def display_error_log(job_id):
     log_content = run_info_log(log_file)
     command_links = generate_command_links()
     log_links = generate_log_links(job_id)
-    return f"{command_links}<br>{log_links}<br>{log_content}"
+    return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
 @app.route('/preprocess')
 def run_preprocess():
     job_id = run_main(['--preprocess'])
     command_links = generate_command_links()
     log_links = generate_log_links(job_id)
-    return f"{command_links}<br>{log_links}<br><br>Job submitted (--preprocess --job_id {job_id})"
+    log_content = f'Job submitted (--preprocess --job_id {job_id})'
+    return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
 @app.route('/preprocess_train')
 def run_preprocess_train():
     job_id = run_main(['--preprocess', '--train', '--save'])
     command_links = generate_command_links()
     log_links = generate_log_links(job_id)
-    return f"{command_links}<br>{log_links}<br><br>Job submitted (--preprocess --train --save --job_id {job_id})"
+    log_content = f'Job submitted (--preprocess --train --save --job_id {job_id})'
+    return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
 @app.route('/train')
 def run_train():
     job_id = run_main(['--train', '--save'])
     command_links = generate_command_links()
     log_links = generate_log_links(job_id)
-    return f"{command_links}<br>{log_links}<br><br>Job submitted (--train --save --job_id {job_id})"
+    log_content = f'Job submitted (--train --save --job_id {job_id})'
+    return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
+
+@app.route('/<string:log_type>/<path:subpath>/log_content')
+def get_log_content(log_type, subpath):
+    log_file = f'logs/{log_type}/{subpath}.log'
+    log_content = run_info_log(log_file)    
+    return log_content
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, threaded=True)
