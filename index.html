@@ -1,43 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Flask App</title>
+    <title>Heartbeat App</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.3/socket.io.js"></script>
     <script>
-        // Function to fetch and update the log content
-        function updateLogContent() {
-            var currentURL = window.location.href;
-            var logType = '';
-    
-            if (currentURL.includes('/info_log')) {
-                logType = 'info_log';
-            } else if (currentURL.includes('/debug_log')) {
-                logType = 'debug_log';
-            } else if (currentURL.includes('/error_log')) {
-                logType = 'error_log';
-            } else {
-                return; // Do not update log content if the URL doesn't match any log types
+        var socket = io();
+
+    // Function to handle new info log lines
+        socket.on('new_info_log_line', function(data) {
+            if (data.job_id === {{ job_id }}) {
+                $('#info-log').append(data.line + '\n');
             }
+        });
     
-            var logContentURL = currentURL + '/log_content';
-            $.ajax({
-                url: logContentURL,
-                method: 'GET',
-                success: function(data) {
-                    $('#log-content').html(data);  // Update the log content
-                },
-                error: function() {
-                    console.log('Error occurred while fetching log content.');
-                }
-            });
+        // Function to handle new debug log lines
+        socket.on('new_debug_log_line', function(data) {
+            if (data.job_id === {{ job_id }}) {
+                $('#debug-log').append(data.line + '\n');
+            }
+        });
+    
+        // Function to handle new error log lines
+        socket.on('new_error_log_line', function(data) {
+            if (data.job_id === {{ job_id }}) {
+                $('#error-log').append(data.line + '\n');
+            }
+        });
+
+        var currentURL = window.location.href;
+        var logType = '';
+        var id = '';
+
+        if (currentURL.includes('/info_log')) {
+            logType = 'info_log';
+            id = '#info-log'
+            updateLogContent(currentURL, logType, id)
+        } else if (currentURL.includes('/debug_log')) {
+            logType = 'debug_log';
+            id = '#debug-log'
+            updateLogContent(currentURL, logType, id)
+        } else if (currentURL.includes('/error_log')) {
+            logType = 'error_log';
+            id = '#error-log'
+            updateLogContent(currentURL, logType, id)
         }
-    
-        // Update the log content every 1 second
-        setInterval(updateLogContent, 1000);
-    </script>    
+
+        function updateLogContent(currentURL, logType, id) {
+            var logContentURL = currentURL + '/log_content';
+                $.ajax({
+                    url: logContentURL,
+                    method: 'GET',
+                    success: function(data) {
+                        $(id).html(data);  // Update the log content
+                    },
+                    error: function() {
+                        console.log('Error occurred while fetching log content.');
+                    }
+                });
+        }
+    </script>   
 </head>
 <body>
-    <h1>Flask App</h1>
+    <h1>Heartbeat App</h1>
 
     <h2>Available Actions</h2>
     <ul>
@@ -55,9 +80,11 @@
         <li><a href="{{ url_for('display_error_log', job_id=job_id) }}">Error Job Log: #{{ job_id }}</a></li>
     </ul>
 
-    <h2>Log Content</h2>
-    <pre id="log-content">
-        {{ log_content | safe }}
-    </pre>
+    <h3>Info Log</h3>
+    <pre id="info-log"></pre>
+    <h3>Debug Log</h3>
+    <pre id="debug-log"></pre>
+    <h3>Error Log</h3>
+    <pre id="error-log"></pre>
 </body>
 </html>

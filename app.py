@@ -2,8 +2,10 @@ import subprocess
 import threading
 import os, time
 from flask import Flask, url_for, jsonify, render_template
+from flask_socketio import SocketIO
 
 app = Flask(__name__, template_folder=".")
+socketio = SocketIO(app)
 
 n_jobs_counter = 0
 lock = threading.Lock()
@@ -18,12 +20,38 @@ def run_main(flags):
         command_main = ['python3', '-u', 'main.py'] + flags + ['--job_id', str(job_id)]
 
     def run_job():
+        print(f'Starting job execution for job ID: {job_id}')
         debug_log_file = f'logs/debug_log/{job_id}.log'
         error_log_file = f'logs/error_log/{job_id}.log'
 
         with open(debug_log_file, 'w') as debug_log, open(error_log_file, 'w') as error_log:
             debug_log.write("")
             error_log.write("")
+
+        def emit_info_log_lines():
+            info_log_file = f'logs/info_log/{job_id}.log'
+
+            # Wait for the file to become available
+            while not os.path.isfile(info_log_file):
+                time.sleep(0.1)  # Sleep for 1 second
+
+            process = subprocess.Popen(
+                ['tail', '-f', info_log_file],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                bufsize=1,  # Line-buffered output
+                universal_newlines=True  # Decode output as text
+            )
+
+            for line in iter(process.stdout.readline, ''):
+                line = line.strip()
+                socketio.emit('new_info_log_line', {'job_id': job_id, 'line': line})
+
+            process.wait()  # Wait for the process to complete
+
+        # Start the info log emission in a separate thread
+        info_job_thread = threading.Thread(target=emit_info_log_lines)
+        info_job_thread.start()
 
         with open(debug_log_file, 'w') as debug_log, open(error_log_file, 'w') as error_log:
             process = subprocess.Popen(
@@ -35,9 +63,11 @@ def run_main(flags):
             )
 
             for line in process.stdout:  # Read stdout line by line in real-time
+                socketio.emit('new_debug_log_line', {'job_id': job_id, 'line': line.strip()})
                 debug_log.write(line)
 
             for line in process.stderr:  # Read stderr line by line in real-time
+                socketio.emit('new_error_log_line', {'job_id': job_id, 'line': line.strip()})
                 error_log.write(line)
 
         process.wait()  # Wait for the process to complete
@@ -83,8 +113,6 @@ def generate_log_links(job_id):
         f'',
     ])
     return links
-
-import os
 
 @app.route('/')
 def display_app_log():
@@ -207,4 +235,4 @@ def get_log_content(log_type, subpath):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, threaded=True)
+    socketio.run(app, host='0.0.0.0', port=8080, threaded=True)
