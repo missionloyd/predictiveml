@@ -83,10 +83,9 @@ def predict(args, model_data, model):
 
     # split the data into training and testing sets
     train_size = int(len(data_scaled) * split_rate)
-    test_size = len(data_scaled) - train_size  # Calculate the size of the test data
-    test_data = data_scaled[train_size:train_size+test_size, :]  # Select the last 20% of data points for testing
-    # train_data = data_scaled[:train_size, :]  # Use the remaining 80% of data points for training
-    
+    train_data = data_scaled[:train_size, :]
+    test_data = data_scaled[train_size:, :]
+
     # create the training and testing data sets with sliding door 
     def create_dataset(dataset, window_size):
         X, y = [], []
@@ -120,30 +119,40 @@ def predict(args, model_data, model):
     # reshape the input data
     X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1]))
 
+    # Get the most recent window_size days from the data
+    recent_data = data_scaled[-window_size:, :]
+    
+    # Initialize an array to store the predicted consumption for the next three days
+    y_pred_list = []
 
-    # Create the model (solo or ensemble)
-    if model_type == 'solos':
-        # Predict on the test set
-        y_pred = model.predict(X_test)
+    pred_len = window_size
 
-    elif model_type == 'ensembles':
+    for _ in range(pred_len):
+        # Take the last window_size days from the test_data to make the prediction
+        X_pred = recent_data[-window_size:, :]
+
+        # Reshape the input data
+        X_pred = np.reshape(X_pred, (1, X_pred.shape[0] * X_pred.shape[1]))
+
+        if model_type == 'xgboost':
+            X_pred = xgb.DMatrix(X_pred)
+
+        # Predict the next day's consumption
+        y_pred = model.predict(X_pred)
+
+        # Inverse transform the prediction
+        y_pred = scaler.inverse_transform(y_pred.reshape(-1, 1))
+
+        # Append the predicted consumption to the list
+        y_pred_list.append(y_pred[0, 0])
+
+        # Shift the recent_data window by one hour
+        recent_data = np.roll(recent_data, -1, axis=0)
         
-        # Predict on the test set
-        y_pred = model.predict(X_test)
-        
-    elif model_type == 'xgboost':
-        dtest = xgb.DMatrix(X_test)
-
-        # Predict on the test set
-        y_pred = model.predict(dtest)
-
-    else: 
-        output = f'model_type not found: {model_type}'
-        logger(f'model_type not found: {model_type}')
-        sys.exit(0)
-
-    # Inverse transform the predictions and actual values
-    y_pred = scaler.inverse_transform(y_pred.reshape(-1, 1))
+    # Print the predicted consumption for the next three days
+    # print(f"Predicted consumption for the next {pred_len} hours:")
+    # for i, consumption in enumerate(y_pred_list):
+    #     print(f"Hour {i+1}: {consumption} kWh")
 
     # return results
-    return y_pred
+    return y_pred_list

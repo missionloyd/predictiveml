@@ -30,13 +30,10 @@ def api_logger(message):
     # Create the log directory if it doesn't exist
     os.makedirs(log_directory, exist_ok=True)
 
-    # Convert ndarray to list
-    if isinstance(message, np.ndarray):
-        message = message.tolist()
-
     # Open the log file in append mode
     with open(log_path, "w") as file:
-        json.dump(message, file)
+        message_serializable = [float(item) for item in message]  # Convert float32 to float
+        json.dump(message_serializable, file)
 
 def setup_logger(new_job_id):
     global user_commands

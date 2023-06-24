@@ -31,21 +31,21 @@ def load_config(job_id):
     "n_jobs": -1,
     "batch_size": 8,
     "memory_limit": 102400,
-    "updated_n_feature": 0,
+    "updated_n_feature": -1,
     "y_column": y_column,
     "add_feature": add_feature,
     "header": header,
     "results_header": results_header,
 
     # training_scope
-    "model_type": ["xgboost", "solos", "ensembles"],
+    "model_type": ["xgboost"],
     "imputation_method": ["linear_regression", "linear_interpolation", "prophet", "lstm"],
     "feature_method": ["rfecv", "lassocv"],
     
     # hyperparameters
     "n_feature": n_feature,
     "n_fold": 5,
-    "time_step": [1, 8, 12, 24],
+    "time_step": [30],
     "minutes_per_model": 2,
     "split_rate": 0.8
   }
