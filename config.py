@@ -45,7 +45,7 @@ def load_config(job_id):
     # hyperparameters
     "n_feature": n_feature,
     "n_fold": 5,
-    "time_step": [30],
+    "time_step": [1],
     "minutes_per_model": 2,
     "split_rate": 0.8
   }

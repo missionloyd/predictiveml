@@ -127,7 +127,7 @@ def predict(args, pred_args, model_data, model):
     # Get the most recent window_size days from the data
     recent_data = data_scaled[-window_size:, :]
     
-    # Initialize an array to store the predicted consumption for the next three days
+    # Initialize an array to store the predicted consumption
     y_pred_list = []
 
     pred_len = window_size
@@ -154,29 +154,57 @@ def predict(args, pred_args, model_data, model):
         # Shift the recent_data window by one hour
         recent_data = np.roll(recent_data, -1, axis=0)
         
-    # Print the predicted consumption for the next three days
+    # Print the predicted consumption
     # print(f"Predicted consumption for the next {pred_len} hours:")
     # for i, consumption in enumerate(y_pred_list):
     #     print(f"Hour {i+1}: {consumption} kWh")
 
-            # frequency_mapping = {
-        #     'hour': 'H',
-        #     'day': 'D',
-        #     'month': 'M',
-        #     'year': 'Y'
-        # }
+    frequency_mapping = {
+        'hour': 'H',
+        'day': 'D',
+        'month': 'M',
+        'year': 'Y'
+    }
 
+    y_column_mapping = {
+        'present_elec_kwh': 'electricity',
+        'present_htwt_mmbtu': 'hot_water',
+        'present_wtr_usgal': 'water',
+        'present_chll_tonhr': 'chilled_water',
+        'present_co2_tons': 'co2_emissions'
+    }
 
-    # if startDate and endDate and datelevel and table and predict_startDate:
-    #     # Filter based on building name and date range
-    #     input_data = input_data[(input_data['ds'] >= startDate) & (input_data['ds'] < endDate)]
-
+    # This code aggregates and resamples a DataFrame based on given parameters,
+    # populating specific columns with data and setting the rest to None.
+    # It ensures all desired columns are present in the final result.
+    
+    if startDate and endDate and datelevel and table:
         # Group by timestamp and perform aggregation
-        # input_data['ds'] = pd.to_datetime(input_data['ds'])
-        # input_data['ds'] = input_data['ds'].dt.to_period(frequency_mapping[datelevel])
-        # select_cols = ["present_elec_kwh", "present_htwt_mmbtuh", "present_wtr_usgal", "present_chll_tonh", "present_co2_tonh", "timestamp"]
-        # input_data = input_data.groupby('timestamp')[select_cols].sum()
+        last_timestamp = model_data['ds'].iloc[-1]
+        timestamp = pd.date_range(start=last_timestamp, periods=len(y_pred_list), freq=frequency_mapping['hour'])
+        aggregated_data = pd.DataFrame({'timestamp': timestamp})
 
+        # Set y_column values
+        for column in y_column_mapping:
+            if column == y_column:
+                aggregated_data[y_column_mapping[column]] = y_pred_list
+            else:
+                aggregated_data[y_column_mapping[column]] = None
+
+        # Resample to the desired datelevel
+        aggregated_data.set_index('timestamp', inplace=True)
+        aggregated_data = aggregated_data.resample(frequency_mapping[datelevel]).sum(numeric_only=True)
+
+        # Reset the index
+        aggregated_data.reset_index(inplace=True)
+
+        # Add the missing columns after resampling
+        for column in y_column_mapping.values():
+            if column not in aggregated_data.columns:
+                aggregated_data[column] = None
+
+        # Print the columns
+        print(aggregated_data)
 
     # return results
     return y_pred_list

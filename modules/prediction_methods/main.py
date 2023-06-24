@@ -52,24 +52,6 @@ def setup_prediction(args, winners_in_file_path):
         # Load the preprocessed query
         input_data = load_object(model_data_path)
 
-        # frequency_mapping = {
-        #     'hour': 'H',
-        #     'day': 'D',
-        #     'month': 'M',
-        #     'year': 'Y'
-        # }
-
-        if startDate and endDate:
-            # Filter based on building name and date range
-            input_data = input_data[(input_data['ds'] >= startDate) & (input_data['ds'] < endDate)]
-
-            # Group by timestamp and perform aggregation
-            # input_data['ds'] = pd.to_datetime(input_data['ds'])
-            # input_data['ds'] = input_data['ds'].dt.to_period(frequency_mapping[datelevel])
-            # select_cols = ["present_elec_kwh", "present_htwt_mmbtuh", "present_wtr_usgal", "present_chll_tonh", "present_co2_tonh", "timestamp"]
-            # input_data = input_data.groupby('timestamp')[select_cols].sum()
-
-
         return model, input_data, target_row
     else:
         logger(f"No row found with bldgname '{bldgname}' & y_column {y_column}.")
