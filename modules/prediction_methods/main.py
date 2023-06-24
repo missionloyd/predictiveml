@@ -12,12 +12,12 @@ def load_object(file_path):
 def setup_prediction(args, winners_in_file_path):
 
     # Create a dictionary or DataFrame with the preprocessed query
-    building_file = args['building_file']
+    bldgname = args['bldgname'].replace('_Data', '')
     y_column = args['y_column']
-    # startDate = args['startDate']
-    # endDate = args['endDate ']
-    # datelevel = args['datelevel']
-    # table = args['table']
+    startDate = args['startDate']
+    endDate = args['endDate']
+    datelevel = args['datelevel']
+    table = args['table']
 
     # Load the CSV file
     with open(winners_in_file_path, mode='r') as results_file:
@@ -25,7 +25,7 @@ def setup_prediction(args, winners_in_file_path):
         
         # Find the indices of the 'bldgname', 'model_file', and 'model_data_path' columns
         headers = next(csv_reader)
-        building_file_index = headers.index('building_file')
+        bldgname_index = headers.index('bldgname')
         y_column_index = headers.index('y_column')
         model_file_index = headers.index('model_file')
         model_data_path_index = headers.index('model_data_path')
@@ -33,7 +33,7 @@ def setup_prediction(args, winners_in_file_path):
         # Find the row with the specific bldgname
         target_row = None
         for row in csv_reader:
-            if row[building_file_index] == building_file and row[y_column_index] == y_column:
+            if row[bldgname_index] == bldgname and row[y_column_index] == y_column:
                 target_row = row
                 break
 
@@ -52,10 +52,25 @@ def setup_prediction(args, winners_in_file_path):
         # Load the preprocessed query
         input_data = load_object(model_data_path)
 
-        # Make prediction
-        # y_pred = model.predict(input_data
+        # frequency_mapping = {
+        #     'hour': 'H',
+        #     'day': 'D',
+        #     'month': 'M',
+        #     'year': 'Y'
+        # }
+
+        if startDate and endDate:
+            # Filter based on building name and date range
+            input_data = input_data[(input_data['ds'] >= startDate) & (input_data['ds'] < endDate)]
+
+            # Group by timestamp and perform aggregation
+            # input_data['ds'] = pd.to_datetime(input_data['ds'])
+            # input_data['ds'] = input_data['ds'].dt.to_period(frequency_mapping[datelevel])
+            # select_cols = ["present_elec_kwh", "present_htwt_mmbtuh", "present_wtr_usgal", "present_chll_tonh", "present_co2_tonh", "timestamp"]
+            # input_data = input_data.groupby('timestamp')[select_cols].sum()
+
 
         return model, input_data, target_row
     else:
-        logger(f"No row found with building_file '{building_file}' & y_column {y_column}.")
+        logger(f"No row found with bldgname '{bldgname}' & y_column {y_column}.")
         return []

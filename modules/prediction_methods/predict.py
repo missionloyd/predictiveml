@@ -16,7 +16,7 @@ import xgboost as xgb
 from modules.feature_methods.main import feature_engineering
 
 # Define the function to process each combination of parameters
-def predict(args, model_data, model):
+def predict(args, pred_args, model_data, model):
     model_data_path = args['model_data_path']
     bldgname = args['bldgname']
     building_file = args['building_file']
@@ -38,6 +38,11 @@ def predict(args, model_data, model):
     save_model_file = args['save_model_file']
     save_model_plot = args['save_model_plot']
     path = args['path']
+
+    startDate = pred_args['startDate']
+    endDate = pred_args['endDate']
+    datelevel = pred_args['datelevel']
+    table = pred_args['table']
 
     # Save original n_feature value
     updated_n_feature = n_feature
@@ -83,7 +88,7 @@ def predict(args, model_data, model):
 
     # split the data into training and testing sets
     train_size = int(len(data_scaled) * split_rate)
-    train_data = data_scaled[:train_size, :]
+    # train_data = data_scaled[:train_size, :]
     test_data = data_scaled[train_size:, :]
 
     # create the training and testing data sets with sliding door 
@@ -153,6 +158,25 @@ def predict(args, model_data, model):
     # print(f"Predicted consumption for the next {pred_len} hours:")
     # for i, consumption in enumerate(y_pred_list):
     #     print(f"Hour {i+1}: {consumption} kWh")
+
+            # frequency_mapping = {
+        #     'hour': 'H',
+        #     'day': 'D',
+        #     'month': 'M',
+        #     'year': 'Y'
+        # }
+
+
+    # if startDate and endDate and datelevel and table and predict_startDate:
+    #     # Filter based on building name and date range
+    #     input_data = input_data[(input_data['ds'] >= startDate) & (input_data['ds'] < endDate)]
+
+        # Group by timestamp and perform aggregation
+        # input_data['ds'] = pd.to_datetime(input_data['ds'])
+        # input_data['ds'] = input_data['ds'].dt.to_period(frequency_mapping[datelevel])
+        # select_cols = ["present_elec_kwh", "present_htwt_mmbtuh", "present_wtr_usgal", "present_chll_tonh", "present_co2_tonh", "timestamp"]
+        # input_data = input_data.groupby('timestamp')[select_cols].sum()
+
 
     # return results
     return y_pred_list

@@ -1,10 +1,12 @@
 import subprocess
 import threading
 import os, time
-from flask import Flask, url_for, jsonify, render_template
+from flask import Flask, url_for, jsonify, request, render_template
 from flask_socketio import SocketIO
+from flask_cors import CORS
 
 app = Flask(__name__, template_folder=".")
+CORS(app, origins='http://localhost:3000')
 socketio = SocketIO(app)
 
 n_jobs_counter = 0
@@ -144,19 +146,19 @@ def display_app_log():
 
     return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
-@app.route('/demo/predict/<string:building_file>/<string:y_column>')
-def run_predict_demo(building_file, y_column):
-    job_id = run_main(['--predict', '--building_file', building_file, '--y_column', y_column])
+@app.route('/demo/predict/<string:bldgname>/<string:y_column>')
+def run_predict_demo(bldgname, y_column):
+    job_id = run_main(['--predict', '--bldgname', bldgname, '--y_column', y_column])
     command_links = generate_command_links()
     log_links = generate_log_links(job_id)
-    log_content = f'Job submitted (--predict --building_file {building_file} --y_column {y_column} --job_id {job_id})'
+    log_content = f'Job submitted (--predict --bldgname {bldgname} --y_column {y_column} --job_id {job_id})'
     return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
 
-@app.route('/predict/<string:building_file>/<string:y_column>')
-def run_predict(building_file, y_column):
+@app.route('/predict/<string:bldgname>/<string:y_column>')
+def run_predict(bldgname, y_column):
     # Create a key tuple from the input arguments
-    key = (building_file, y_column)
+    key = (bldgname, y_column)
 
     # Check if the key exists in the previous results
     if key in previous_results:
@@ -165,7 +167,7 @@ def run_predict(building_file, y_column):
         return jsonify({'job_id': 0, 'data': data, 'status': 'ok'})
 
     # No previous result found, proceed with running the prediction
-    job_id = run_main(['--predict', '--building_file', building_file, '--y_column', y_column])
+    job_id = run_main(['--predict', '--bldgname', bldgname, '--y_column', y_column])
     api_file = f'logs/api_log/{job_id}.log'
 
     # Wait for the API file to become available
@@ -178,6 +180,41 @@ def run_predict(building_file, y_column):
     previous_results[key] = api_file
 
     return jsonify({'job_id': job_id, 'data': data, 'status': 'ok'})
+
+@app.route('/forecast', methods=['POST'])
+def run_forecast():
+    # Extract parameters from the request body
+    y_column = request.json.get('y_column')
+    bldgname = request.json.get('bldgname')
+    startDate = request.json.get('startDate') 
+    endDate = request.json.get('endDate') 
+    datelevel = request.json.get('datelevel') 
+    table = request.json.get('table')
+
+    # Create a key tuple from the input arguments
+    key = (y_column, bldgname, startDate, endDate, datelevel, table)
+
+    # Check if the key exists in the previous results
+    if key in previous_results:
+        api_file = previous_results[key]
+        data = run_api_log(api_file)
+        return jsonify({'job_id': 0, 'data': data, 'status': 'ok'})
+
+    # No previous result found, proceed with running the prediction
+    job_id = run_main(['--predict', '--bldgname', bldgname, '--y_column', y_column, '--startDate', startDate, '--endDate', endDate, '--datelevel', datelevel, 'table', table])
+    api_file = f'logs/api_log/{job_id}.log'
+
+    # Wait for the API file to become available
+    while not os.path.isfile(api_file):
+        time.sleep(0.1)  # Sleep for 0.1 second
+
+    data = run_api_log(api_file)
+
+    # Save the result for future use
+    previous_results[key] = api_file
+
+    return jsonify({'job_id': job_id, 'data': data, 'status': 'ok'})
+
 
 @app.route('/info_log/<int:job_id>')
 def display_info_log(job_id):

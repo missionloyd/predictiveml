@@ -22,7 +22,7 @@ from modules.logging_methods.main import *
 from modules.utils.save_args import *
 from modules.utils.save_results import *
 
-def main(predict_args, job_id_flag, preprocess_flag, train_flag, save_flag, predict_flag):
+def main(pred_args, job_id_flag, preprocess_flag, train_flag, save_flag, predict_flag):
     start_time = time.time()
 
     config = load_config(job_id_flag)
@@ -73,18 +73,18 @@ def main(predict_args, job_id_flag, preprocess_flag, train_flag, save_flag, pred
             results = process_batch_args('Training', updated_args, train_model, batch_size, n_jobs)
                 
         if predict_flag:
-            required_columns = ['building_file', 'y_column']
+            required_columns = ['bldgname', 'y_column']
 
-            if not all(key in predict_args for key in required_columns):
+            if not all(key in pred_args for key in required_columns):
             # if not all(key in predict_args for key in ['bldgname', 'startDate', 'endDate', 'datelevel', 'table']):
                 logger(f"Required arguments missing for prediction. Please provide {required_columns}.")
                 return
             
             # Call the make_prediction function with the provided arguments
-            model, input_data, target_row = setup_prediction(predict_args, winners_in_file_path)
+            model, input_data, target_row = setup_prediction(pred_args, winners_in_file_path)
             results_dict = {key: value for key, value in zip(results_header, target_row)}
-            pred_args = generate_arg(results_dict, config)
-            y_pred = predict(pred_args, input_data, model)
+            args = generate_arg(results_dict, config)
+            y_pred = predict(args, pred_args, input_data, model)
             
             # save prediction for info logs and expose to api
             logger(y_pred)
@@ -105,7 +105,6 @@ if __name__ == '__main__':
     parser.add_argument('--save', action='store_true', help='Flag for saving tmp files.')
     parser.add_argument('--predict', action='store_true', help='Flag for prediction.')
     parser.add_argument('--bldgname', type=str, help='Building name for prediction')
-    parser.add_argument('--building_file', type=str, help='Building file name for prediction')
     parser.add_argument('--y_column', type=str, help='Y_Column for prediction')
     parser.add_argument('--startDate', type=str, help='Start date for prediction')
     parser.add_argument('--endDate', type=str, help='End date for prediction')
@@ -121,12 +120,17 @@ if __name__ == '__main__':
     predict_flag = args.predict
     save_flag = args.save
     job_id_flag = args.job_id
-    predict_args = {
-        'building_file': args.building_file,
+
+    pred_args = {
+        'bldgname': args.bldgname,
         'y_column': args.y_column,
+        'startDate': args.startDate,
+        'endDate': args.endDate,
+        'datelevel': args.datelevel,
+        'table': args.table,
     }
 
     if predict_flag:
-        main(predict_args, job_id_flag, False, False, False, True)
+        main(pred_args, job_id_flag, False, False, False, True)
     else:
-        main(predict_args, job_id_flag, preprocess_flag, train_flag, save_flag, False)
+        main(pred_args, job_id_flag, preprocess_flag, train_flag, save_flag, False)
