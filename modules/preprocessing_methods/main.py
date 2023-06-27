@@ -1,6 +1,6 @@
 import pandas as pd
 from modules.imputation_methods.main import imputation
-from modules.logging_methods.main import logger
+# from modules.logging_methods.main import logger
 import pickle
 
 def preprocessing(args):
@@ -18,7 +18,7 @@ def preprocessing(args):
     split_rate = args['split_rate']
     exclude_file = args['exclude_file']
 
-    logger(args)
+    # logger(args)
 
     model_data_path = ''
 

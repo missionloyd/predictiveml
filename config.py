@@ -25,29 +25,29 @@ def load_config(job_id):
     "exclude_file": ["Summary_Report_Extended.csv"],
     "exclude_column": ["present_co2_tons"],
     "update_add_feature": False,
-    "save_preprocessed_file": True,
+    "save_preprocessed_file": False,
     "save_model_file": False,
     "save_model_plot": False,
-    "min_number_of_days": 365,
+    "min_number_of_days": 365,    # unused at the moment
     "n_jobs": -1,
     "batch_size": 8,
     "memory_limit": 102400,
-    "updated_n_feature": -1,
+    "updated_n_feature": -1,      # placeholder
     "y_column": y_column,
     "add_feature": add_feature,
     "header": header,
     "results_header": results_header,
 
     # training_scope
-    "model_type": ["xgboost"],
+    "model_type": ["xgboost", "solos", "ensembles"],
     "imputation_method": ["linear_regression", "linear_interpolation", "prophet", "lstm"],
     "feature_method": ["rfecv", "lassocv"],
     
     # hyperparameters
     "n_feature": n_feature,
-    "n_fold": 5,
+    "n_fold": 5,                  # feature_method n_fold     
     "time_step": [1, 8, 24],
-    "minutes_per_model": 2,
+    "minutes_per_model": 1,
     "split_rate": 0.8
   }
 
