@@ -23,7 +23,7 @@ def create_args(config):
     [config["save_model_file"]],
     [config["save_model_plot"]],
     [config["path"]],
-    [config["preprocess_files"]],
+    [config["save_preprocessed_file"]],
     [config["updated_n_feature"]],
   ):
     argument_dict = {
@@ -46,7 +46,7 @@ def create_args(config):
       "save_model_file": combo[16],
       "save_model_plot": combo[17],
       "path": combo[18],
-      "preprocess_files": combo[19],
+      "save_preprocessed_file": combo[19],
       "updated_n_feature": combo[20]
     }
     arguments.append(argument_dict)
@@ -62,7 +62,9 @@ def create_args(config):
     [config["tmp_path"]],
     [config["min_number_of_days"]],
     [config["exclude_column"]],
-    [config["preprocess_files"]],
+    [config["save_preprocessed_file"]],
+    [config["split_rate"]],
+    [config["exclude_file"]],
   ):
     argument_dict = {
       "building_file": combo[0],
@@ -73,7 +75,9 @@ def create_args(config):
       "tmp_path": combo[5],
       "min_number_of_days": combo[6],
       "exclude_column": combo[7],
-      "preprocess_files": combo[8],
+      "save_preprocessed_file": combo[8],
+      "split_rate": combo[9],
+      "exclude_file": combo[10],
     }
     preprocessing_arguments.append(argument_dict)
 

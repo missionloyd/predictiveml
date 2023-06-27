@@ -1,5 +1,6 @@
 import pandas as pd
 from modules.imputation_methods.main import imputation
+from modules.logging_methods.main import logger
 import pickle
 
 def preprocessing(args):
@@ -13,7 +14,11 @@ def preprocessing(args):
     tmp_path = args['tmp_path']
     min_number_of_days = args['min_number_of_days']
     exclude_column = args['exclude_column']
-    preprocess_files = args['preprocess_files']
+    save_preprocessed_file = args['save_preprocessed_file']
+    split_rate = args['split_rate']
+    exclude_file = args['exclude_file']
+
+    logger(args)
 
     model_data_path = ''
 
@@ -39,22 +44,22 @@ def preprocessing(args):
         total_rows = col_data.shape[0]
 
         # Calculate the index at which the last 20% split starts
-        split_index = int(0.8 * total_rows)
+        split_index = int(split_rate * total_rows)
 
-        # Check if column contains the min number of days, is a valid commodity to train on,
-        # and has at least 80% of its last 20% split of data and contains the min number of days and is a valid commodity to train on
-        # if col_data[y_column].count() >= min_number_of_days * 24 and \
-        # y_column not in exclude_column and \
-        # col_data[y_column].iloc[split_index:].count() >= 0.8 * (total_rows - split_index):
-        if col_data[y_column].count() >= min_number_of_days * 24 and y_column not in exclude_column:
-            # Column meets the condition
+        # Condition: The column `y_column` has enough valid values both before and after the split point,
+        # and it is not excluded based on other conditions.
+        if col_data[y_column].iloc[:split_index].count() >= split_rate * split_index and \
+            col_data[y_column].iloc[split_index:].count() >= split_rate * (total_rows - split_index) and \
+            building_file not in exclude_file and \
+            y_column not in exclude_column:
+
             model_data = col_data.copy()
             model_data = model_data.rename(columns={y_column: 'y', 'ts': 'ds'})
             model_data = model_data.sort_values(['ds'])
 
             model_data_path = f'{tmp_path}/{building_file.replace(".csv", "")}_{y_column}_{imputation_method}'
 
-            if preprocess_files == True:
+            if save_preprocessed_file == True:
                 # Save the original values into a new column
                 model_data['y_saved'] = model_data['y']
 

@@ -41,7 +41,7 @@ def generate_arg(row, config):
         "save_model_file": True,  # Update with the desired value
         "save_model_plot": bool(config["save_model_plot"]),
         "path": str(config["path"]),
-        "preprocess_files": bool(config["preprocess_files"]),
+        "save_preprocessed_file": bool(config["save_preprocessed_file"]),
     }
 
     return argument

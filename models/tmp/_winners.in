@@ -1,2 +1,2 @@
 model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,rmse,mae,mape,model_file,model_data_path,building_file
-xgboost,Stadium,present_elec_kwh,linear_interpolation,rfecv,6,6,720,51.37713558760983,38.267564738388614,0.30054662566102747,./models/xgboost/stadium_present_elec_kwh_linear_interpolation_rfecv_6_6_720,./models/tmp/Stadium_Data_Extended_present_elec_kwh_linear_interpolation,Stadium_Data_Extended.csv
+xgboost,Stadium,present_elec_kwh,linear_interpolation,rfecv,3,3,1,20.156385443053445,13.592688709580159,0.09880141502666559,./models/xgboost/stadium_present_elec_kwh_linear_interpolation_rfecv_3_3_1,./models/tmp/Stadium_Data_Extended_present_elec_kwh_linear_interpolation,Stadium_Data_Extended.csv

@@ -116,16 +116,16 @@
 
     <h2>Job Logs</h2>
     <ul>
+        <li><a href="{{ url_for('display_error_log', job_id=job_id) }}">Error Job Log: #{{ job_id }}</a></li>
         <li><a href="{{ url_for('display_info_log', job_id=job_id) }}">Info Job Log: #{{ job_id }}</a></li>
         <li><a href="{{ url_for('display_debug_log', job_id=job_id) }}">Debug Job Log: #{{ job_id }}</a></li>
-        <li><a href="{{ url_for('display_error_log', job_id=job_id) }}">Error Job Log: #{{ job_id }}</a></li>
     </ul>
 
+    <h3>Error Log</h3>
+    <pre id="error-log"></pre>
     <h3>Info Log</h3>
     <pre id="info-log"></pre>
     <h3>Debug Log</h3>
     <pre id="debug-log"></pre>
-    <h3>Error Log</h3>
-    <pre id="error-log"></pre>
 </body>
 </html>
