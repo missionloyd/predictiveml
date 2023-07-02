@@ -1,6 +1,13 @@
 # Energy Modeling For Buildings
 This script performs energy modeling for buildings using combinations of relevant machine learning algorithms. It takes in cleaned CSV files of building energy data and produces trained models for energy usage prediction.
 
+## Docker Usage
+Build the Docker image using the provided Dockerfile in the project directory:
+```shell
+docker build -t energy-modeling .
+docker run -v /dev/shm:/dev/shm --shm-size=2gb -d -p 80:8080 energy-modeling
+```
+
 ## Setup & Dependencies
 - Conda
     - https://conda.io/projects/conda/en/latest/user-guide/install/index.html
@@ -44,8 +51,14 @@ python3 -c "import tensorflow as tf; print(tf.reduce_sum(tf.random.normal([1000,
 2. Verify `config.py` to ensure it has the correct configurations for your project.
 3. Run the script with the following command:
 
+- To run Flask App
 ```shell
-python main.py [--preprocess] [--train] [--save] [--predict] [...]
+python3 -m flask run --host=0.0.0.0 --port=8080
+```
+
+- To run inside terminal
+```shell
+python3 main.py [--preprocess] [--train] [--save] [--predict] [...]
 ```
 
 ### Flags
@@ -57,25 +70,26 @@ The script supports the following flags:
 Examples:
 - To run only the preprocessing step:
 ```shell
-python main.py --preprocess
+python3 main.py --preprocess
 ```
 - To run only the training step using the preprocessed data:
 ```shell
-python main.py --train
+python3 main.py --train
 ```
 - To run both preprocessing and training steps sequentially:
 ```shell
-python main.py --preprocess --train
+python3 main.py --preprocess --train
 ```
 
-Note: If no flags are specified, the script will display a message and exit without performing any action.
-
-## Docker Usage
-Build the Docker image using the provided Dockerfile in the project directory:
+Heartbeat Examples:
 ```shell
-docker build -t energy-modeling .
-docker run -v /dev/shm:/dev/shm --shm-size=2gb -d -p 80:8080 energy-modeling
+python3 main.py --preprocess --train --save --time_step 24 --datelevel hour
+python3 main.py --preprocess --train --save --time_step 30 --datelevel day
+python3 main.py --preprocess --train --save --time_step 12 --datelevel month
+python3 main.py --preprocess --train --save --time_step 1 --datelevel year
+python3 main.py --predict --bldgname Stadium --y_column present_elec_kwh --time_step 24 --datelevel hour
 ```
+Note: If no flags are specified, the script will display a message and exit without performing any action.
 
 ## Configuration
 The script contains the following configurations:

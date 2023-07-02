@@ -9,8 +9,7 @@ def load_config(job_id):
   data_path = f"{path}/clean_data_extended"
   tmp_path = f"{path}/models/tmp"
   file_list = get_file_names(data_path)
-  # file_list = ['Stadium_Data_Extended.csv']
-  results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_feature', 'updated_n_feature', 'time_step', 'rmse', 'mae', 'mape', 'model_file', 'model_data_path', 'building_file']
+  results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_feature', 'updated_n_feature', 'time_step', 'datelevel', 'rmse', 'mae', 'mape', 'model_file', 'model_data_path', 'building_file']
   y_column = ['present_elec_kwh', 'present_htwt_mmbtu', 'present_wtr_usgal', 'present_chll_tonhr', 'present_co2_tons']
   add_feature = ['temp_c', 'rel_humidity_%', 'surface_pressure_hpa', 'cloud_cover_%', 'direct_radiation_w/m2', 'precipitation_mm', 'wind_speed_ground_km/h', 'wind_dir_ground_deg']
   header = ['ts'] + y_column + add_feature
@@ -28,11 +27,12 @@ def load_config(job_id):
     "save_preprocessed_file": False,
     "save_model_file": False,
     "save_model_plot": False,
+    "save_at_each_delta": True,
     "min_number_of_days": 365,    # unused at the moment
     "n_jobs": -1,
     "batch_size": 8,
     "memory_limit": 102400,
-    "updated_n_feature": -1,      # placeholder
+    "updated_n_feature": n_feature,      # placeholder
     "y_column": y_column,
     "add_feature": add_feature,
     "header": header,
@@ -40,15 +40,16 @@ def load_config(job_id):
 
     # training_scope
     "model_type": ["xgboost", "solos", "ensembles"],
-    "imputation_method": ["linear_regression", "linear_interpolation", "prophet", "lstm"],
+    "imputation_method": ["linear_interpolation", "prophet", "lstm"],
     "feature_method": ["rfecv", "lassocv"],
     
     # hyperparameters
     "n_feature": n_feature,
     "n_fold": 5,                  # feature_method n_fold     
-    "time_step": [1, 8, 24],
     "minutes_per_model": 1,
-    "split_rate": 0.8
+    "split_rate": 0.8,
+    "time_step": [24],
+    "datelevel": ["hour", "day", "month"],
   }
 
   return config

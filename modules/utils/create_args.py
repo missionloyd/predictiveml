@@ -1,8 +1,17 @@
+import json
 from itertools import product    
 
 # Generate a list of arguments for model training
-def create_args(config):
+def create_args(config, cli_args):
   arguments = []
+
+  if cli_args['building_file']:
+    config['building_file'] = [cli_args['building_file']]
+
+  if cli_args['time_step'] and cli_args['datelevel']:
+    config['time_step'] = [cli_args['time_step']]
+    config['datelevel'] = [cli_args['datelevel']]
+
   for combo in product(
     config["building_file"],
     config["y_column"],
@@ -11,6 +20,7 @@ def create_args(config):
     config["feature_method"],
     config["n_feature"],
     config["time_step"],
+    config["datelevel"],
     [config["header"]],
     [config["data_path"]],
     [config["add_feature"]],
@@ -34,20 +44,21 @@ def create_args(config):
       "feature_method": combo[4],
       "n_feature": combo[5],
       "time_step": combo[6],
-      "header": combo[7],
-      "data_path": combo[8],
-      "add_feature": combo[9],
-      "min_number_of_days": combo[10],
-      "exclude_column": combo[11],
-      "n_fold": combo[12],
-      "split_rate": combo[13],
-      "minutes_per_model": combo[14],
-      "memory_limit": combo[15],
-      "save_model_file": combo[16],
-      "save_model_plot": combo[17],
-      "path": combo[18],
-      "save_preprocessed_file": combo[19],
-      "updated_n_feature": combo[20]
+      "datelevel": combo[7],
+      "header": combo[8],
+      "data_path": combo[9],
+      "add_feature": combo[10],
+      "min_number_of_days": combo[11],
+      "exclude_column": combo[12],
+      "n_fold": combo[13],
+      "split_rate": combo[14],
+      "minutes_per_model": combo[15],
+      "memory_limit": combo[16],
+      "save_model_file": combo[17],
+      "save_model_plot": combo[18],
+      "path": combo[19],
+      "save_preprocessed_file": combo[20],
+      "updated_n_feature": combo[21],
     }
     arguments.append(argument_dict)
 
@@ -81,4 +92,4 @@ def create_args(config):
     }
     preprocessing_arguments.append(argument_dict)
 
-  return arguments, preprocessing_arguments
+  return arguments, preprocessing_arguments, config

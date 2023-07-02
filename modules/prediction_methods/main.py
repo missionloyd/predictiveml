@@ -12,12 +12,18 @@ def load_object(file_path):
 def setup_prediction(args, winners_in_file_path):
 
     # Create a dictionary or DataFrame with the preprocessed query
-    bldgname = args['bldgname'].replace('_Data', '')
+    building_file = args['building_file'].replace('.csv', '')
     y_column = args['y_column']
     startDate = args['startDate']
     endDate = args['endDate']
     datelevel = args['datelevel']
+    time_step = str(args['time_step'])
     table = args['table']
+
+    if datelevel and building_file and time_step:                                                
+        winners_in_file_path = f'{winners_in_file_path}/_winners_{building_file}_{y_column}_{time_step}_{datelevel}.in'
+    else:
+        winners_in_file_path = f'{winners_in_file_path}/_winners.in'
 
     # Load the CSV file
     with open(winners_in_file_path, mode='r') as results_file:
@@ -25,15 +31,17 @@ def setup_prediction(args, winners_in_file_path):
         
         # Find the indices of the 'bldgname', 'model_file', and 'model_data_path' columns
         headers = next(csv_reader)
-        bldgname_index = headers.index('bldgname')
+        building_file_index = headers.index('building_file')
         y_column_index = headers.index('y_column')
+        time_step_index = headers.index('time_step')
+        datelevel_index = headers.index('datelevel')
         model_file_index = headers.index('model_file')
         model_data_path_index = headers.index('model_data_path')
         
         # Find the row with the specific bldgname
         target_row = None
         for row in csv_reader:
-            if row[bldgname_index] == bldgname and row[y_column_index] == y_column:
+            if row[building_file_index] == building_file + '.csv' and row[y_column_index] == y_column and row[time_step_index] == time_step and row[datelevel_index] == datelevel:
                 target_row = row
                 break
 
@@ -41,10 +49,6 @@ def setup_prediction(args, winners_in_file_path):
     if target_row is not None:
         model_file = target_row[model_file_index]
         model_data_path = target_row[model_data_path_index]
-        
-        # logger(f"Row with bldgname '{bldgname}':")
-        # logger(f"model_file: {model_file}")
-        # logger(f"model_data_path: {model_data_path}")
 
         # Load the model
         model = load_object(model_file)
@@ -54,5 +58,5 @@ def setup_prediction(args, winners_in_file_path):
 
         return model, input_data, target_row
     else:
-        logger(f"No row found with bldgname '{bldgname}' & y_column {y_column}.")
+        logger(f"No row found with building_file '{building_file}.csv', y_column '{y_column}', time_step '{time_step}', datelevel '{datelevel}'.")
         return []

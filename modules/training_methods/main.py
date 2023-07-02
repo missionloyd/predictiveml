@@ -12,6 +12,8 @@ from sklearn.decomposition import PCA
 from autosklearn.regression import AutoSklearnRegressor
 import xgboost as xgb
 
+from modules.utils.resample_data import resample_data
+from modules.utils.detect_data_frequency import detect_data_frequency
 from modules.feature_methods.main import feature_engineering
 from modules.logging_methods.main import logger
 
@@ -26,6 +28,7 @@ def train_model(args):
     feature_method = args['feature_method']
     n_feature = args['n_feature']
     time_step = args['time_step']
+    datelevel = args['datelevel']
     header = args['header']
     data_path = args['data_path']
     add_feature = args['add_feature']
@@ -47,6 +50,11 @@ def train_model(args):
         model_data = pickle.load(file)
 
     out_path = f'{path}/models/{model_type}'
+
+    original_datelevel = detect_data_frequency(model_data)
+
+    # This code aggregates and resamples a DataFrame based on given datelevel
+    model_data = resample_data(model_data, datelevel, original_datelevel)
 
     # normalize the data, save orginal data column for graphing later
     scaler = StandardScaler()
@@ -186,8 +194,8 @@ def train_model(args):
     y_train = scaler.inverse_transform(y_train.reshape(-1, 1))
 
     # save the model name
-    model_file = f'{out_path}/{bldgname}_{y_column}_{imputation_method}_{feature_method}_{n_feature}_{updated_n_feature}_{time_step}'
-    model_file = model_file.replace(' ', '-').lower()
+    model_file = f'{out_path}/{building_file}_{y_column}_{imputation_method}_{feature_method}_{n_feature}_{updated_n_feature}_{time_step}_{datelevel}'
+    model_file = model_file.replace('.csv', '')
 
     # calculate metrics
     # logger(f'{bldgname}, {y_column}, {imputation_method}, {feature_method}, n_feature: {n_feature}, time_step: {time_step}')
@@ -226,7 +234,7 @@ def train_model(args):
         ax.plot(y_test, label='Predicted Values', alpha=0.75)
 
         ax.set_title(f'{bldgname} Consumption')
-        ax.set_xlabel('Time (Hours)')
+        ax.set_xlabel(f'Time ({datelevel})')
         ax.set_ylabel(y_column.split('_')[-2] + ' (' + y_column.split('_')[-1] + ')')
 
         ax.legend()
@@ -235,4 +243,4 @@ def train_model(args):
         plt.close(fig) 
 
     # return results
-    return (model_type, bldgname, y_column, imputation_method, feature_method, n_feature, updated_n_feature, time_step, rmse, mae, mape, model_file, model_data_path, building_file)
+    return (model_type, bldgname, y_column, imputation_method, feature_method, n_feature, updated_n_feature, time_step, datelevel, rmse, mae, mape, model_file, model_data_path, building_file)

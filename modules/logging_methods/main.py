@@ -20,6 +20,7 @@ def logger(message):
     with open(log_path, "a") as file:
         file.write(f"{message}\n")
 
+
 def api_logger(message):
     global job_id  # Declare job_id as global
 
@@ -32,8 +33,28 @@ def api_logger(message):
 
     # Open the log file in append mode
     with open(log_path, "w") as file:
-        message_serializable = [float(item) for item in message]  # Convert float32 to float
-        json.dump(message_serializable, file)
+        messages_serializable = []
+
+        for index, row in message.iterrows():
+            message_serializable = {}
+
+            # Convert values to float (excluding 'timestamp')
+            for key, value in row.items():
+                if key != 'timestamp':  # Skip conversion for 'timestamp'
+                    if value is not None:
+                        try:
+                            value = float(value)
+                        except (ValueError, TypeError):
+                            value = None  # Assign None for invalid or non-convertible values
+                    else:
+                        value = None  # Assign None for None values
+                else:
+                    value = str(value.strftime("%Y-%m-%dT%H:%M:%S"))  # Extract the string value with desired format
+                message_serializable[key] = value
+
+            messages_serializable.append(message_serializable)
+
+        json.dump(messages_serializable, file, default=str, allow_nan=False)
 
 def setup_logger(new_job_id):
     global user_commands

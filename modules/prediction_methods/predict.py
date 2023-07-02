@@ -13,10 +13,12 @@ from autosklearn.regression import AutoSklearnRegressor
 from modules.logging_methods.main import logger
 import xgboost as xgb
 
+from modules.utils.resample_data import resample_data
+from modules.utils.detect_data_frequency import detect_data_frequency
 from modules.feature_methods.main import feature_engineering
 
 # Define the function to process each combination of parameters
-def predict(args, pred_args, model_data, model):
+def predict(args, cli_args, model_data, model):
     model_data_path = args['model_data_path']
     bldgname = args['bldgname']
     building_file = args['building_file']
@@ -39,10 +41,23 @@ def predict(args, pred_args, model_data, model):
     save_model_plot = args['save_model_plot']
     path = args['path']
 
-    startDate = pred_args['startDate']
-    endDate = pred_args['endDate']
-    datelevel = pred_args['datelevel']
-    table = pred_args['table']
+    startDate = cli_args['startDate']
+    endDate = cli_args['endDate']
+    datelevel = cli_args['datelevel']
+    table = cli_args['table']
+
+    # Detect the original frequency
+    frequency_mapping = {
+        'hour': 'H',
+        'day': 'D',
+        'month': 'M',
+        'year': 'Y'
+    }
+
+    original_datelevel = detect_data_frequency(model_data)
+
+    # This code aggregates and resamples a DataFrame based on given datelevel
+    model_data = resample_data(model_data, datelevel, original_datelevel)
 
     # Save original n_feature value
     updated_n_feature = n_feature
@@ -159,13 +174,6 @@ def predict(args, pred_args, model_data, model):
     # for i, consumption in enumerate(y_pred_list):
     #     print(f"Hour {i+1}: {consumption} kWh")
 
-    frequency_mapping = {
-        'hour': 'H',
-        'day': 'D',
-        'month': 'M',
-        'year': 'Y'
-    }
-
     y_column_mapping = {
         'present_elec_kwh': 'electricity',
         'present_htwt_mmbtu': 'hot_water',
@@ -174,37 +182,40 @@ def predict(args, pred_args, model_data, model):
         'present_co2_tons': 'co2_emissions'
     }
 
-    # This code aggregates and resamples a DataFrame based on given parameters,
-    # populating specific columns with data and setting the rest to None.
-    # It ensures all desired columns are present in the final result.
+    # ensure all desired columns are present in the final result. 
+    start = model_data['ds'].iloc[-1]
     
-    if startDate and endDate and datelevel and table:
-        # Group by timestamp and perform aggregation
-        last_timestamp = model_data['ds'].iloc[-1]
-        timestamp = pd.date_range(start=last_timestamp, periods=len(y_pred_list), freq=frequency_mapping['hour'])
-        aggregated_data = pd.DataFrame({'timestamp': timestamp})
+    # Assuming datelevel is a string representing the desired level of grouping: 'hour', 'day', 'month', or 'year'
+    if datelevel == 'hour':
+        freq = 'H'
+        offset = pd.DateOffset(hours=0)
+    elif datelevel == 'day':
+        freq = 'D'
+        offset = pd.DateOffset(days=0)
+    elif datelevel == 'month':
+        freq = 'M'
+        offset = pd.offsets.MonthBegin(0)
+    elif datelevel == 'year':
+        freq = 'Y'
+        offset = pd.offsets.YearBegin(0)
+    else:
+        raise ValueError("Invalid datelevel")
 
-        # Set y_column values
-        for column in y_column_mapping:
-            if column == y_column:
-                aggregated_data[y_column_mapping[column]] = y_pred_list
-            else:
-                aggregated_data[y_column_mapping[column]] = None
+    timestamp = pd.date_range(start=start, periods=len(y_pred_list), freq=freq) + offset
+    aggregated_data = pd.DataFrame({'timestamp': timestamp})
 
-        # Resample to the desired datelevel
-        aggregated_data.set_index('timestamp', inplace=True)
-        aggregated_data = aggregated_data.resample(frequency_mapping[datelevel]).sum(numeric_only=True)
+    for column in y_column_mapping:
+        if column == y_column:
+            aggregated_data[y_column_mapping[column]] = y_pred_list
+        else:
+            aggregated_data[y_column_mapping[column]] = None
 
-        # Reset the index
-        aggregated_data.reset_index(inplace=True)
+    # Add the missing columns after resampling
+    for column in y_column_mapping.values():
+        if column not in aggregated_data.columns:
+            aggregated_data[column] = None
 
-        # Add the missing columns after resampling
-        for column in y_column_mapping.values():
-            if column not in aggregated_data.columns:
-                aggregated_data[column] = None
-
-        # Print the columns
-        print(aggregated_data)
+    aggregated_data = aggregated_data.reset_index(drop=True)
 
     # return results
-    return y_pred_list
+    return aggregated_data

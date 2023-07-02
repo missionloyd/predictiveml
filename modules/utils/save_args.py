@@ -5,14 +5,14 @@ from .save_results import save_args_results
 def save_args(in_file_path, out_file_path, config):
     args = []
     
-    with open(f'{in_file_path}', mode='r') as results_file:
+    with open(f'{in_file_path}/_winners.in', mode='r') as results_file:
         csv_reader = csv.DictReader(results_file)
         
         for row in csv_reader:
             argument = generate_arg(row, config)
             args.append(argument)
 
-    save_args_results(out_file_path, args)
+    save_args_results(out_file_path, args, config)
             
     return
 
@@ -29,6 +29,7 @@ def generate_arg(row, config):
         "n_feature": int(row["n_feature"]),
         "updated_n_feature": int(row["updated_n_feature"]),
         "time_step": int(row["time_step"]),
+        "datelevel": str(row["datelevel"]),
         "header": list(config["header"]),
         "data_path": str(config["data_path"]),
         "add_feature": list(config["add_feature"]),
