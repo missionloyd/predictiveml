@@ -1,62 +1,23 @@
 import pickle, csv
 import pandas as pd
-from modules.logging_methods.main import logger
+from modules.prediction_methods.create_predictions import create_predictions
+from modules.prediction_methods.format_predictions import format_predictions
 
-# Load the pickled model or preprocessed query
-def load_object(file_path):
-    with open(file_path, 'rb') as file:
-        obj = pickle.load(file)
-    return obj
+def predict(cli_args, winners_in_file_path, config):
+    y_column_mapping = config['y_column_mapping']
+    datelevel = cli_args['datelevel']
+    y_pred_lists = list()
 
-# Preprocess the query
-def setup_prediction(args, winners_in_file_path):
-
-    # Create a dictionary or DataFrame with the preprocessed query
-    building_file = args['building_file'].replace('.csv', '')
-    y_column = args['y_column']
-    startDate = args['startDate']
-    endDate = args['endDate']
-    datelevel = args['datelevel']
-    time_step = str(args['time_step'])
-    table = args['table']
-
-    if datelevel and building_file and time_step:                                                
-        winners_in_file_path = f'{winners_in_file_path}/_winners_{building_file}_{y_column}_{time_step}_{datelevel}.in'
+    if cli_args['y_column'] == 'all':
+        for y_column in y_column_mapping:
+            cli_args['y_column'] = y_column
+            start, y_pred_list = create_predictions(cli_args, winners_in_file_path, config)
+            y_pred_lists.append((y_column, y_pred_list))
     else:
-        winners_in_file_path = f'{winners_in_file_path}/_winners.in'
+        start, y_pred_list = create_predictions(cli_args, winners_in_file_path, config)
+        y_pred_lists.append((y_column, y_pred_list))
 
-    # Load the CSV file
-    with open(winners_in_file_path, mode='r') as results_file:
-        csv_reader = csv.reader(results_file)
-        
-        # Find the indices of the 'bldgname', 'model_file', and 'model_data_path' columns
-        headers = next(csv_reader)
-        building_file_index = headers.index('building_file')
-        y_column_index = headers.index('y_column')
-        time_step_index = headers.index('time_step')
-        datelevel_index = headers.index('datelevel')
-        model_file_index = headers.index('model_file')
-        model_data_path_index = headers.index('model_data_path')
-        
-        # Find the row with the specific bldgname
-        target_row = None
-        for row in csv_reader:
-            if row[building_file_index] == building_file + '.csv' and row[y_column_index] == y_column and row[time_step_index] == time_step and row[datelevel_index] == datelevel:
-                target_row = row
-                break
+    len_y_pred_list = len(y_pred_list)
+    results = format_predictions(start, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel)
 
-    # Access the values of 'model_file' and 'model_data_path' columns in the retrieved row
-    if target_row is not None:
-        model_file = target_row[model_file_index]
-        model_data_path = target_row[model_data_path_index]
-
-        # Load the model
-        model = load_object(model_file)
-
-        # Load the preprocessed query
-        input_data = load_object(model_data_path)
-
-        return model, input_data, target_row
-    else:
-        logger(f"No row found with building_file '{building_file}.csv', y_column '{y_column}', time_step '{time_step}', datelevel '{datelevel}'.")
-        return []
+    return results

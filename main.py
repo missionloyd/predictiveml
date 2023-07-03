@@ -14,13 +14,13 @@ from modules.preprocessing_methods.main import preprocessing
 from weather_utils.main import build_extended_clean_data
 from modules.utils.match_args import match_args
 from modules.training_methods.main import train_model
-from modules.prediction_methods.main import setup_prediction
-from modules.prediction_methods.predict import predict
+from modules.prediction_methods.main import predict
 from modules.utils.load_args import load_args
 from modules.utils.calculate_duration import calculate_duration
 from modules.logging_methods.main import *
-from modules.utils.save_args import *
-from modules.utils.save_results import *
+from modules.utils.save_args import save_args
+from modules.utils.save_results import save_preprocessed_args_results
+from modules.utils.save_results import save_training_results
 
 def main(cli_args, job_id_flag, preprocess_flag, train_flag, save_flag, predict_flag):
     start_time = time.time()
@@ -28,7 +28,6 @@ def main(cli_args, job_id_flag, preprocess_flag, train_flag, save_flag, predict_
     config = load_config(job_id_flag)
 
     path = config['path']
-    results_header = config['results_header']
     batch_size = config['batch_size']
     n_jobs = config['n_jobs']
     update_add_feature = config['update_add_feature']
@@ -63,11 +62,12 @@ def main(cli_args, job_id_flag, preprocess_flag, train_flag, save_flag, predict_
             results = process_batch_args('Training', updated_args, train_model, batch_size, n_jobs)
 
             # Save the results to the CSV file
-            save_training_results(results_file_path, results_header, results, winners_in_file_path, config)
+            save_training_results(results_file_path, results, winners_in_file_path, config)
 
         if save_flag: 
             save_args(winners_in_file_path, winners_out_file_path, config)
-            updated_args = load_args(f'{winners_out_file_path}/_winners.out')
+            winners_file = f'{winners_out_file_path}/_winners.out'
+            updated_args = load_args(winners_file)
 
             # Process the winner training arguments
             results = process_batch_args('Training', updated_args, train_model, batch_size, n_jobs)
@@ -80,15 +80,12 @@ def main(cli_args, job_id_flag, preprocess_flag, train_flag, save_flag, predict_
                 return
             
             # Call the make_prediction function with the provided arguments
-            model, input_data, target_row = setup_prediction(cli_args, winners_in_file_path)
-            results_dict = {key: value for key, value in zip(results_header, target_row)}
-            args = generate_arg(results_dict, config)
-            y_pred = predict(args, cli_args, input_data, model)
-            
-            # save prediction for info logs and expose to api
-            logger(y_pred)
-            api_logger(y_pred)
+            results = predict(cli_args, winners_in_file_path, config)
 
+            # save prediction(s) for info logs and expose to api
+            logger(results)
+            api_logger(results)
+            
     else:
         logger("No flags specified. Exiting...")
 

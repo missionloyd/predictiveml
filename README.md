@@ -87,7 +87,7 @@ python3 main.py --preprocess --train --save --time_step 24 --datelevel hour
 python3 main.py --preprocess --train --save --time_step 30 --datelevel day
 python3 main.py --preprocess --train --save --time_step 12 --datelevel month
 python3 main.py --preprocess --train --save --time_step 1 --datelevel year
-python3 main.py --predict --bldgname Stadium --y_column present_elec_kwh --time_step 24 --datelevel hour
+python3 main.py --predict --building_file Stadium_Data_Extended --y_column all --time_step 24 --datelevel hour
 ```
 Note: If no flags are specified, the script will display a message and exit without performing any action.
 

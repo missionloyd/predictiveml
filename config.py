@@ -37,16 +37,23 @@ def load_config(job_id):
     "add_feature": add_feature,
     "header": header,
     "results_header": results_header,
-
+    "y_column_mapping": {
+        'present_elec_kwh': 'electricity',
+        'present_htwt_mmbtu': 'hot_water',
+        'present_wtr_usgal': 'water',
+        'present_chll_tonhr': 'chilled_water',
+        'present_co2_tons': 'co2_emissions'
+    },
+    
     # training_scope
     "model_type": ["xgboost", "solos", "ensembles"],
-    "imputation_method": ["linear_interpolation", "prophet", "lstm"],
+    "imputation_method": ["linear_regression","linear_interpolation", "prophet", "lstm"],
     "feature_method": ["rfecv", "lassocv"],
     
     # hyperparameters
     "n_feature": n_feature,
     "n_fold": 5,                  # feature_method n_fold     
-    "minutes_per_model": 1,
+    "minutes_per_model": 2,
     "split_rate": 0.8,
     "time_step": [24],
     "datelevel": ["hour", "day", "month"],
