@@ -1,4 +1,4 @@
-import pickle, csv
+import pickle, csv, os
 import pandas as pd
 from modules.logging_methods.main import logger
 
@@ -19,11 +19,6 @@ def setup_prediction(cli_args, winners_in_file_path):
     datelevel = cli_args['datelevel']
     time_step = str(cli_args['time_step'])
     table = cli_args['table']
-
-    if datelevel and building_file and time_step:                                                
-        winners_in_file_path = f'{winners_in_file_path}/_winners_{building_file}_{y_column}_{time_step}_{datelevel}.in'
-    else:
-        winners_in_file_path = f'{winners_in_file_path}/_winners.in'
 
     # Load the CSV file
     with open(winners_in_file_path, mode='r') as results_file:

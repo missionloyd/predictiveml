@@ -1,6 +1,6 @@
 import subprocess
 import threading
-import os, time
+import os, time, json
 from flask import Flask, url_for, jsonify, request, render_template
 from flask_socketio import SocketIO
 from flask_cors import CORS
@@ -82,7 +82,7 @@ def run_main(flags):
 
 def run_api_log(api_file):
     with open(api_file, 'r') as file:
-        data = eval(file.read())
+        data = json.load(file)
     return data
 
 def run_info_log(log_file):
@@ -148,52 +148,17 @@ def display_app_log():
 
 @app.route('/demo/predict/<string:building_file>/<string:y_column>')
 def run_predict_demo(building_file, y_column):
-    job_id = run_main(['--predict', '--building_file', building_file, '--y_column', y_column, '--time_step', '1', '--datelevel', 'hour'])
+    job_id = run_main(['--predict', '--building_file', building_file, '--y_column', y_column, '--time_step', '24', '--datelevel', 'hour'])
     command_links = generate_command_links()
     log_links = generate_log_links(job_id)
     log_content = f'Job submitted (--predict --building_file {building_file} --y_column {y_column} --time_step 1 --datelevel hour --job_id {job_id})'
     return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
 
-# @app.route('/predict/<string:building_file>/<string:y_column>')
-# def run_predict(building_file, y_column):
-#     # Create a key tuple from the input arguments
-#     key = (building_file, y_column)
-
-#     # Check if the key exists in the previous results
-#     if key in previous_results:
-#         api_file = previous_results[key]
-#         data = run_api_log(api_file)
-#         return jsonify({'job_id': 0, 'data': data, 'status': 'ok'})
-
-#     # No previous result found, proceed with running the prediction
-#     job_id = run_main(['--predict', '--building_file', building_file, '--y_column', y_column, '--time_step', '1', '--datelevel', 'hour'])
-#     api_file = f'logs/api_log/{job_id}.log'
-
-#     # Wait for the API file to become available
-#     while not os.path.isfile(api_file):
-#         time.sleep(0.1)  # Sleep for 1 second
-
-#     data = run_api_log(api_file)
-
-#     # Save the result for future use
-#     previous_results[key] = api_file
-
-#     return jsonify({'job_id': job_id, 'data': data, 'status': 'ok'})
-
-@app.route('/predict', methods=['POST'])
-def run_forecast():
-    # Extract parameters from the request body
-    y_column = request.json.get('y_column')
-    building_file = request.json.get('building_file')
-    startDate = request.json.get('startDate') 
-    endDate = request.json.get('endDate') 
-    time_step = request.json.get('time_step')
-    datelevel = request.json.get('datelevel') 
-    table = request.json.get('table')
-
+@app.route('/predict/<string:building_file>/<string:y_column>')
+def run_predict(building_file, y_column):
     # Create a key tuple from the input arguments
-    key = (y_column, building_file, startDate, endDate, time_step, datelevel, table)
+    key = (building_file, y_column)
 
     # Check if the key exists in the previous results
     if key in previous_results:
@@ -202,7 +167,50 @@ def run_forecast():
         return jsonify({'job_id': 0, 'data': data, 'status': 'ok'})
 
     # No previous result found, proceed with running the prediction
-    job_id = run_main(['--predict', '--building_file', building_file, '--y_column', y_column, '--startDate', startDate, '--endDate', endDate, '--time_step', time_step, '--datelevel', datelevel, 'table', table])
+    job_id = run_main(['--predict', '--building_file', building_file, '--y_column', y_column, '--time_step', '24', '--datelevel', 'hour'])
+    api_file = f'logs/api_log/{job_id}.log'
+
+    # Wait for the API file to become available
+    while not os.path.isfile(api_file):
+        time.sleep(0.1)  # Sleep for 1 second
+
+    data = run_api_log(api_file)
+
+    # Save the result for future use
+    previous_results[key] = api_file
+
+    return jsonify({'job_id': job_id, 'data': data, 'status': 'ok'})
+
+@app.route('/forecast', methods=['POST'])
+def run_forecast():
+    # Extract parameters from the request body
+    # y_column = request.json.get('y_column')
+    building_file = request.json.get('building_file')
+    # startDate = request.json.get('startDate') 
+    # endDate = request.json.get('endDate') 
+    time_step = request.json.get('time_step')
+    datelevel = request.json.get('datelevel') 
+    # table = request.json.get('table')
+
+    # Create a key tuple from the input arguments
+    # key = (y_column, building_file, startDate, endDate, time_step, datelevel, table)
+    key = (building_file, time_step, datelevel)
+
+    # Check if the key exists in the previous results
+    if key in previous_results:
+        api_file = previous_results[key]
+        data = run_api_log(api_file)
+        return jsonify({'job_id': 0, 'data': data, 'status': 'ok'})
+    
+    frequency_mapping = {
+        'hour': '24',
+        'day': '30',
+        'month': '12',
+        'year': '1'
+    }
+    
+    # No previous result found, proceed with running the prediction
+    job_id = run_main(['--predict', '--building_file', building_file, '--y_column', 'all', '--time_step', frequency_mapping[datelevel], '--datelevel', datelevel])
     api_file = f'logs/api_log/{job_id}.log'
 
     # Wait for the API file to become available

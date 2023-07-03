@@ -25,8 +25,8 @@ def format_predictions(start, y_pred_lists, y_column_mapping, len_y_pred_list, d
         for column in y_column_mapping:
             if column == y_column:
                 aggregated_data[y_column_mapping[column]] = y_pred_list
-            else:
-                aggregated_data[y_column_mapping[column]] = None
+            # else:
+            #     aggregated_data[y_column_mapping[column]] = None
 
     # Add the missing columns after resampling
     for column in y_column_mapping.values():

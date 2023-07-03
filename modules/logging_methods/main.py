@@ -1,5 +1,5 @@
 import os, sys, json
-import numpy as np
+import pandas as pd
 
 job_id = None
 user_commands = None
@@ -35,24 +35,42 @@ def api_logger(message):
     with open(log_path, "w") as file:
         messages_serializable = []
 
-        for index, row in message.iterrows():
-            message_serializable = {}
+        if isinstance(message, pd.DataFrame):
+            # Handle DataFrame input
+            for index, row in message.iterrows():
+                message_serializable = {}
 
-            # Convert values to float (excluding 'timestamp')
-            for key, value in row.items():
-                if key != 'timestamp':  # Skip conversion for 'timestamp'
-                    if value is not None:
-                        try:
-                            value = float(value)
-                        except (ValueError, TypeError):
-                            value = None  # Assign None for invalid or non-convertible values
+                # Convert values to float (excluding 'timestamp')
+                for key, value in row.items():
+                    if key != 'timestamp':  # Skip conversion for 'timestamp'
+                        if value is not None:
+                            try:
+                                value = float(value)
+                            except (ValueError, TypeError):
+                                value = None  # Assign None for invalid or non-convertible values
+                        else:
+                            value = None  # Assign None for None values
                     else:
-                        value = None  # Assign None for None values
-                else:
-                    value = str(value.strftime("%Y-%m-%dT%H:%M:%S"))  # Extract the string value with desired format
-                message_serializable[key] = value
+                        value = str(value.strftime("%Y-%m-%dT%H:%M:%S"))  # Extract the string value with desired format
+                    message_serializable[key] = value
 
-            messages_serializable.append(message_serializable)
+                messages_serializable.append(message_serializable)
+        elif isinstance(message, list):
+            # Handle list input
+            for item in message:
+                message_serializable = {}
+                for key, value in item.items():
+                    if isinstance(value, pd.Timestamp):
+                        value = str(value.strftime("%Y-%m-%dT%H:%M:%S"))
+                    elif isinstance(value, (int, float)):
+                        value = float(value)
+                    else:
+                        value = None
+                    message_serializable[key] = value
+
+                messages_serializable.append(message_serializable)
+        else:
+            raise TypeError("Unsupported input type. 'message' should be a pandas DataFrame or a list.")
 
         json.dump(messages_serializable, file, default=str, allow_nan=False)
 
