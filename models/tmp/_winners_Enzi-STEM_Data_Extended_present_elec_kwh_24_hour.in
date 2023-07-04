@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+xgboost,Enzi-STEM,present_elec_kwh,linear_regression,lassocv,3,3,24,hour,16.616063106276854,12.80099937158084,0.07726269217013047,./models/xgboost/Enzi-STEM_Data_Extended_present_elec_kwh_linear_regression_lassocv_3_3_24_hour,./models/tmp/Enzi-STEM_Data_Extended_present_elec_kwh_linear_regression,Enzi-STEM_Data_Extended.csv

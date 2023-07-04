@@ -65,7 +65,7 @@ def main(cli_args, job_id_flag, preprocess_flag, train_flag, save_flag, predict_
             save_training_results(results_file_path, results, winners_in_file_path, config)
 
         if save_flag: 
-            save_args(winners_in_file_path, winners_out_file_path, config)
+            save_args(results_file_path, winners_in_file_path, winners_out_file_path, config)
             winners_file = f'{winners_out_file_path}/_winners.out'
             updated_args = load_args(winners_file)
 

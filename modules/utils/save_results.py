@@ -1,43 +1,15 @@
 import csv
 from modules.logging_methods.main import logger
 
-def save_args_results(winners_out_file_path, results, config):
-    if config['save_at_each_delta']:
-        for arg in results:
-
-            building_file = arg['building_file'].replace('.csv', '')
-            y_column = arg['y_column']
-            time_step = arg['time_step']
-            datelevel = arg['datelevel']
-
-            with open(f'{winners_out_file_path}/_winners_{building_file}_{y_column}_{time_step}_{datelevel}.out', mode='w') as results_file:
-                results_file.write(str(arg))
-
-
-    with open(f'{winners_out_file_path}/_winners.out', mode='w') as results_file:
-        results_file.write(str(results))
-
-    return
-
-
-def save_preprocessed_args_results(file_path, results):
-
-    with open(f'{file_path}', mode='w') as results_file:
-        results_file.write(str(results))
-
-    return
-
-def save_training_results(file_path, results, winners_in_file_path, config):
+def save_winners_in(results_file_path, winners_in_file_path, config):
     results_header = config['results_header']
 
-    # Convert the results to a set to remove any duplicates
-    results = set(results)
-
-    with open(f'{file_path}', mode='w') as results_file:
-        writer = csv.writer(results_file)
-    
-        writer.writerow(results_header)
-        writer.writerows(results)
+    # Load results from the file
+    results = []
+    with open(results_file_path, mode='r') as file:
+        reader = csv.reader(file)
+        next(reader)  # Skip the header
+        results = list(reader)
 
     with open(f'{winners_in_file_path}/_winners.in', mode='w') as results_file:
         writer = csv.writer(results_file)
@@ -82,5 +54,45 @@ def save_training_results(file_path, results, winners_in_file_path, config):
                     results_writer = csv.writer(results_file)
                     results_writer.writerow(results_header)
                     results_writer.writerow(lowest_error_row)
+
+    return
+
+def save_winners_out(winners_out_file_path, results, config):
+    if config['save_at_each_delta']:
+        for arg in results:
+
+            building_file = arg['building_file'].replace('.csv', '')
+            y_column = arg['y_column']
+            time_step = arg['time_step']
+            datelevel = arg['datelevel']
+
+            with open(f'{winners_out_file_path}/_winners_{building_file}_{y_column}_{time_step}_{datelevel}.out', mode='w') as results_file:
+                results_file.write(str(arg))
+
+
+    with open(f'{winners_out_file_path}/_winners.out', mode='w') as results_file:
+        results_file.write(str(results))
+
+    return
+
+
+def save_preprocessed_args_results(file_path, results):
+
+    with open(f'{file_path}', mode='w') as results_file:
+        results_file.write(str(results))
+
+    return
+
+def save_training_results(file_path, results, winners_in_file_path, config):
+    results_header = config['results_header']
+
+    # Convert the results to a set to remove any duplicates
+    results = set(results)
+
+    with open(f'{file_path}', mode='w') as results_file:
+        writer = csv.writer(results_file)
+    
+        writer.writerow(results_header)
+        writer.writerows(results)
 
     return

@@ -1,9 +1,11 @@
 import csv
 from itertools import product  
-from .save_results import save_args_results  
+from .save_results import save_winners_in, save_winners_out 
 
-def save_args(in_file_path, out_file_path, config):
+def save_args(results_file_path, in_file_path, out_file_path, config):
     args = []
+
+    save_winners_in(results_file_path, in_file_path, config)
     
     with open(f'{in_file_path}/_winners.in', mode='r') as results_file:
         csv_reader = csv.DictReader(results_file)
@@ -12,7 +14,7 @@ def save_args(in_file_path, out_file_path, config):
             argument = generate_arg(row, config)
             args.append(argument)
 
-    save_args_results(out_file_path, args, config)
+    save_winners_out(out_file_path, args, config)
             
     return
 

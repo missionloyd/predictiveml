@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+solos,Education Annex,present_elec_kwh,linear_regression,lassocv,2,2,24,hour,6.394749747899532,5.011583678112611,0.2819973486352545,./models/solos/Education_Annex_Data_Extended_present_elec_kwh_linear_regression_lassocv_2_2_24_hour,./models/tmp/Education_Annex_Data_Extended_present_elec_kwh_linear_regression,Education_Annex_Data_Extended.csv

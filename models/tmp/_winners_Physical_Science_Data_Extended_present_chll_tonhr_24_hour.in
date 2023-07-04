@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+solos,Physical Science,present_chll_tonhr,linear_interpolation,lassocv,1,1,24,hour,2.970958384847775,1.7241232534615394,0.25456348405588175,./models/solos/Physical_Science_Data_Extended_present_chll_tonhr_linear_interpolation_lassocv_1_1_24_hour,./models/tmp/Physical_Science_Data_Extended_present_chll_tonhr_linear_interpolation,Physical_Science_Data_Extended.csv

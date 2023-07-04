@@ -55,8 +55,8 @@ def load_config(job_id):
     "n_fold": 5,                  # feature_method n_fold     
     "minutes_per_model": 2,
     "split_rate": 0.8,
-    "time_step": [24],
-    "datelevel": ["hour", "day", "month"],
+    "time_step": [30],
+    "datelevel": ["day"],
   }
 
   return config
