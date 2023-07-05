@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+xgboost,General Storage,present_elec_kwh,lstm,lassocv,4,4,30,day,87.3685111945385,71.9697334516433,0.24300433835847618,./models/xgboost/General_Storage_Data_Extended_present_elec_kwh_lstm_lassocv_4_4_30_day,./models/tmp/General_Storage_Data_Extended_present_elec_kwh_lstm,General_Storage_Data_Extended.csv

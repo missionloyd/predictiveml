@@ -181,7 +181,7 @@ def run_predict(building_file, y_column):
 
     return jsonify({'job_id': job_id, 'data': data, 'status': 'ok'})
 
-@app.route('/forecast', methods=['POST'])
+@app.route('/api/forecast', methods=['POST'])
 def run_forecast():
     # Extract parameters from the request body
     # y_column = request.json.get('y_column')

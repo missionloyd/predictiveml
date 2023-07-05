@@ -1,24 +1,25 @@
 import pandas as pd
 
 def format_predictions(start, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel):
-    
+    print(start)
     # Assuming datelevel is a string representing the desired level of grouping: 'hour', 'day', 'month', or 'year'
     if datelevel == 'hour':
         freq = 'H'
-        offset = pd.DateOffset(hours=0)
+        offset = pd.DateOffset(hours=1)
     elif datelevel == 'day':
         freq = 'D'
-        offset = pd.DateOffset(days=0)
+        offset = pd.DateOffset(days=1)
     elif datelevel == 'month':
         freq = 'M'
-        offset = pd.offsets.MonthBegin(0)
+        offset = pd.offsets.MonthBegin(1)
     elif datelevel == 'year':
         freq = 'Y'
-        offset = pd.offsets.YearBegin(0)
+        offset = pd.offsets.YearBegin(1)
     else:
         raise ValueError("Invalid datelevel")
-
-    timestamp = pd.date_range(start=start, periods=len_y_pred_list, freq=freq) + offset
+    
+    start = start + offset  # Add the offset to the start date
+    timestamp = pd.date_range(start=start, periods=len_y_pred_list, freq=freq)
     aggregated_data = pd.DataFrame({'timestamp': timestamp})
 
     for y_column, y_pred_list in y_pred_lists:
