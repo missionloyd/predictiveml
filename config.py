@@ -13,7 +13,7 @@ def load_config(job_id):
   y_column = ['present_elec_kwh', 'present_htwt_mmbtu', 'present_wtr_usgal', 'present_chll_tonhr', 'present_co2_tons']
   add_feature = ['temp_c', 'rel_humidity_%', 'surface_pressure_hpa', 'cloud_cover_%', 'direct_radiation_w/m2', 'precipitation_mm', 'wind_speed_ground_km/h', 'wind_dir_ground_deg']
   header = ['ts'] + y_column + add_feature
-  n_feature = list(range(1, len(add_feature)))
+  n_feature = list(range(1, len(add_feature)))  # start from 1 because sliding window technique will count as a feature
 
   config = {
     # settings
@@ -24,7 +24,7 @@ def load_config(job_id):
     "exclude_file": ["Summary_Report_Extended.csv"],
     "exclude_column": ["present_co2_tons"],
     "update_add_feature": False,
-    "save_preprocessed_file": False,
+    "save_preprocessed_file": True,
     "save_model_file": False,
     "save_model_plot": False,
     "save_at_each_delta": True,
@@ -49,10 +49,10 @@ def load_config(job_id):
     "imputation_method": ["linear_regression","linear_interpolation", "prophet", "lstm"],
     "feature_method": ["rfecv", "lassocv"],
     "datelevel": ["year"],
-    "time_step": [1],
+    "time_step": [1],             # window size of the sliding window technique and unit length of forecasts
     "train_test_split": 0.4,
     "train_ratio_threshold": 0.5, # minimum percent non-nans in training set
-    "test_ratio_threshold": 0.5,  # minimum percent non-nans in testing set
+    "test_ratio_threshold": 0.8,  # minimum percent non-nans in testing set
     
     # hyperparameters
     "n_feature": n_feature,
