@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-xgboost,Engineering,present_elec_kwh,lstm,lassocv,7,4,30,day,646.2506180298526,455.20717897722795,0.08497524777307569,./models/xgboost/Engineering_Data_Extended_present_elec_kwh_lstm_lassocv_7_4_30_day,./models/tmp/Engineering_Data_Extended_present_elec_kwh_lstm,Engineering_Data_Extended.csv

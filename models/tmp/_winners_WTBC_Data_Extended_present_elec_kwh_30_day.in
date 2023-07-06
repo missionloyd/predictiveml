@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-ensembles,WTBC,present_elec_kwh,lstm,rfecv,4,1,30,day,153.50154677785085,115.11328308842148,0.10184586223454428,./models/ensembles/WTBC_Data_Extended_present_elec_kwh_lstm_rfecv_4_1_30_day,./models/tmp/WTBC_Data_Extended_present_elec_kwh_lstm,WTBC_Data_Extended.csv

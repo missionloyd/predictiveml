@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-solos,Geology,present_elec_kwh,lstm,lassocv,2,2,24,hour,5.380216942977329,4.366186798243892,0.3914569073981868,./models/solos/Geology_Data_Extended_present_elec_kwh_lstm_lassocv_2_2_24_hour,./models/tmp/Geology_Data_Extended_present_elec_kwh_lstm,Geology_Data_Extended.csv

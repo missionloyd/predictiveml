@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-xgboost,Physical Science,present_elec_kwh,prophet,rfecv,6,1,24,hour,27.19214185520575,21.16302384806908,0.07441521832249005,./models/xgboost/Physical_Science_Data_Extended_present_elec_kwh_prophet_rfecv_6_1_24_hour,./models/tmp/Physical_Science_Data_Extended_present_elec_kwh_prophet,Physical_Science_Data_Extended.csv

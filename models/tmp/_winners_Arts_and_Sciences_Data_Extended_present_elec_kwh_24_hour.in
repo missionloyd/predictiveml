@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-ensembles,Arts and Sciences,present_elec_kwh,lstm,rfecv,1,1,24,hour,5.4332724054038195,4.237717492449587,0.20618379707711712,./models/ensembles/Arts_and_Sciences_Data_Extended_present_elec_kwh_lstm_rfecv_1_1_24_hour,./models/tmp/Arts_and_Sciences_Data_Extended_present_elec_kwh_lstm,Arts_and_Sciences_Data_Extended.csv

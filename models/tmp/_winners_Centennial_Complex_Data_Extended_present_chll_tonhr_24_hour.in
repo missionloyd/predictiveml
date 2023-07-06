@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-solos,Centennial Complex,present_chll_tonhr,prophet,rfecv,2,2,24,hour,6.878648307718948,4.9183433985104035,0.15147308440990295,./models/solos/Centennial_Complex_Data_Extended_present_chll_tonhr_prophet_rfecv_2_2_24_hour,./models/tmp/Centennial_Complex_Data_Extended_present_chll_tonhr_prophet,Centennial_Complex_Data_Extended.csv

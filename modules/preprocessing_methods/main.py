@@ -12,10 +12,11 @@ def preprocessing(args):
     header = args['header']
     data_path = args['data_path']
     tmp_path = args['tmp_path']
-    min_number_of_days = args['min_number_of_days']
     exclude_column = args['exclude_column']
     save_preprocessed_file = args['save_preprocessed_file']
-    split_rate = args['split_rate']
+    train_test_split = args['train_test_split']
+    train_ratio_threshold = args['train_ratio_threshold']
+    test_ratio_threshold = args['test_ratio_threshold']
     exclude_file = args['exclude_file']
 
     # logger(args)
@@ -42,14 +43,12 @@ def preprocessing(args):
 
         # Get the total number of rows in the dataframe
         total_rows = col_data.shape[0]
-
-        # Calculate the index at which the last 20% split starts
-        split_index = int(split_rate * total_rows)
+        split_index = int(train_test_split * total_rows)
 
         # Condition: The column `y_column` has enough valid values both before and after the split point,
         # and it is not excluded based on other conditions.
-        if col_data[y_column].iloc[:split_index].count() >= split_rate * split_index and \
-            col_data[y_column].iloc[split_index:].count() >= split_rate * (total_rows - split_index) and \
+        if col_data[y_column].iloc[:split_index].count() >= train_ratio_threshold * split_index and \
+            col_data[y_column].iloc[split_index:].count() >= test_ratio_threshold * (total_rows - split_index) and \
             building_file not in exclude_file and \
             y_column not in exclude_column:
 

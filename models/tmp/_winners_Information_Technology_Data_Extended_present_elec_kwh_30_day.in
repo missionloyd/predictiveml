@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-solos,Information Technology,present_elec_kwh,prophet,rfecv,2,2,30,day,880.3828402406199,612.9725706356525,0.07103950493659102,./models/solos/Information_Technology_Data_Extended_present_elec_kwh_prophet_rfecv_2_2_30_day,./models/tmp/Information_Technology_Data_Extended_present_elec_kwh_prophet,Information_Technology_Data_Extended.csv

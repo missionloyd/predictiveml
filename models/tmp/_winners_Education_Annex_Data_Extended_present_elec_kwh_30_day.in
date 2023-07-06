@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-xgboost,Education Annex,present_elec_kwh,lstm,rfecv,5,2,30,day,132.9758245170637,109.91296063956378,0.24790698548580362,./models/xgboost/Education_Annex_Data_Extended_present_elec_kwh_lstm_rfecv_5_2_30_day,./models/tmp/Education_Annex_Data_Extended_present_elec_kwh_lstm,Education_Annex_Data_Extended.csv

@@ -31,10 +31,9 @@ def predict_y_column(args, model_data, model, datelevel):
     header = args['header']
     data_path = args['data_path']
     add_feature = args['add_feature']
-    min_number_of_days = args['min_number_of_days']
     exclude_column = args['exclude_column']
     n_fold = args['n_fold']
-    split_rate = args['split_rate']
+    train_test_split = args['train_test_split']
     minutes_per_model = args['minutes_per_model']
     memory_limit = args['memory_limit']
     save_model_file = args['save_model_file']
@@ -89,7 +88,7 @@ def predict_y_column(args, model_data, model, datelevel):
     window_size = time_step
 
     # split the data into training and testing sets
-    train_size = int(len(data_scaled) * split_rate)
+    train_size = int(len(data_scaled) * train_test_split)
     # train_data = data_scaled[:train_size, :]
     test_data = data_scaled[train_size:, :]
 

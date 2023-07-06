@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-xgboost,Centennial Complex,present_chll_tonhr,lstm,rfecv,7,7,30,day,233.96897217455344,187.89269114397,0.23999347389150788,./models/xgboost/Centennial_Complex_Data_Extended_present_chll_tonhr_lstm_rfecv_7_7_30_day,./models/tmp/Centennial_Complex_Data_Extended_present_chll_tonhr_lstm,Centennial_Complex_Data_Extended.csv

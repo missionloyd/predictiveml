@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-xgboost,College of Education,present_elec_kwh,linear_regression,lassocv,7,7,24,hour,13.27753456884761,9.240316644754005,0.33276601386381555,./models/xgboost/College_of_Education_Data_Extended_present_elec_kwh_linear_regression_lassocv_7_7_24_hour,./models/tmp/College_of_Education_Data_Extended_present_elec_kwh_linear_regression,College_of_Education_Data_Extended.csv

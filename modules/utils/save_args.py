@@ -35,10 +35,9 @@ def generate_arg(row, config):
         "header": list(config["header"]),
         "data_path": str(config["data_path"]),
         "add_feature": list(config["add_feature"]),
-        "min_number_of_days": int(config["min_number_of_days"]),
         "exclude_column": list(config["exclude_column"]),
         "n_fold": int(config["n_fold"]),
-        "split_rate": float(config["split_rate"]),
+        "train_test_split": float(config["train_test_split"]),
         "minutes_per_model": int(config["minutes_per_model"]),
         "memory_limit": int(config["memory_limit"]),
         "save_model_file": True,  # Update with the desired value

@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-solos,WRI and Bureau of Mines,present_elec_kwh,prophet,rfecv,1,1,24,hour,6.494826020281948,5.184269394372725,0.09898135836650074,./models/solos/WRI_and_Bureau_of_Mines_Data_Extended_present_elec_kwh_prophet_rfecv_1_1_24_hour,./models/tmp/WRI_and_Bureau_of_Mines_Data_Extended_present_elec_kwh_prophet,WRI_and_Bureau_of_Mines_Data_Extended.csv

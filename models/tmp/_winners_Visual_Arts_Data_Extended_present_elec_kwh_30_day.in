@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-solos,Visual Arts,present_elec_kwh,lstm,lassocv,1,1,30,day,275.74322702149277,228.03861927332306,0.141439759295593,./models/solos/Visual_Arts_Data_Extended_present_elec_kwh_lstm_lassocv_1_1_30_day,./models/tmp/Visual_Arts_Data_Extended_present_elec_kwh_lstm,Visual_Arts_Data_Extended.csv
