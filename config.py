@@ -28,11 +28,11 @@ def load_config(job_id):
     "save_model_file": False,
     "save_model_plot": False,
     "save_at_each_delta": True,
-    "min_number_of_days": 365,    # unused at the moment
+    "min_number_of_days": 365,      # unused at the moment
     "n_jobs": -1,
     "batch_size": 8,
     "memory_limit": 102400,
-    "updated_n_feature": n_feature,      # placeholder
+    "updated_n_feature": n_feature, # placeholder
     "y_column": y_column,
     "add_feature": add_feature,
     "header": header,
@@ -54,9 +54,9 @@ def load_config(job_id):
     "n_feature": n_feature,
     "n_fold": 5,                  # feature_method n_fold     
     "minutes_per_model": 2,
-    "split_rate": 0.8,
-    "time_step": [12],
-    "datelevel": ["month"],
+    "split_rate": 0.7,            # minimum percent non-nans and split index
+    "time_step": [1],
+    "datelevel": ["year"],
   }
 
   return config
