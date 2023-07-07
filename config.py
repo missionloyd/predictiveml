@@ -24,7 +24,7 @@ def load_config(job_id):
     "exclude_file": ["Summary_Report_Extended.csv"],
     "exclude_column": ["present_co2_tons"],
     "update_add_feature": False,
-    "save_preprocessed_file": True,
+    "save_preprocessed_file": False,
     "save_model_file": False,
     "save_model_plot": False,
     "save_at_each_delta": True,
@@ -50,9 +50,9 @@ def load_config(job_id):
     "feature_method": ["rfecv", "lassocv"],
     "datelevel": ["year"],
     "time_step": [1],             # window size of the sliding window technique and unit length of forecasts
-    "train_test_split": 0.4,
-    "train_ratio_threshold": 0.5, # minimum percent non-nans in training set
-    "test_ratio_threshold": 0.8,  # minimum percent non-nans in testing set
+    "train_test_split": 0.3,
+    "train_ratio_threshold": 0.4, # minimum percent non-nans in training set
+    "test_ratio_threshold": 0.5,  # minimum percent non-nans in testing set
     
     # hyperparameters
     "n_feature": n_feature,
