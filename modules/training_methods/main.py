@@ -79,9 +79,10 @@ def train_model(args):
             add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
             add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
 
-        # handle case where n_features is greater than or equal to selected features
-        if updated_n_feature >= add_data_scaled.shape[1]:
-            updated_n_feature = add_data_scaled.shape[1]
+        # ensures that updated_n_feature does not exceed the number of selected features or the number of samples in add_data_scaled
+        min_nfeatures_nsamples = min(add_data_scaled.shape[0], add_data_scaled.shape[1])
+        if updated_n_feature >= min_nfeatures_nsamples:
+            updated_n_feature = min_nfeatures_nsamples
 
         # train PCA (Linear Dimensionality Reduction) with multi-feature output
         pca = PCA(n_components=updated_n_feature)
@@ -90,9 +91,6 @@ def train_model(args):
     else:
         # Handle the case where no features are selected
         updated_n_feature = 0
-
-    # define the window size
-    window_size = time_step
     
     # split the data into training and testing sets
     train_size = int(len(data_scaled) * train_test_split)
@@ -104,11 +102,11 @@ def train_model(args):
     saved_y_test = model_data['y_saved'].iloc[train_size:].reset_index(drop=True)
 
     # create the training and testing data sets with sliding door 
-    def create_dataset(dataset, window_size):
+    def create_dataset(dataset, time_step):
         X, y = [], []
 
-        for i in range(window_size, len(dataset)):
-            X.append(dataset[i-window_size:i, :])
+        for i in range(time_step, len(dataset)):
+            X.append(dataset[i-time_step:i, :])
             y.append(dataset[i, 0])
 
         X, y = np.array(X), np.array(y)
@@ -131,14 +129,19 @@ def train_model(args):
 
         return X, y
 
+    if len(train_data) > time_step and len(test_data) > time_step:
+        # create the training and testing data sets with sliding door
+        X_train, y_train = create_dataset(train_data, time_step)
+        X_test, _ = create_dataset(test_data, time_step)
 
+        # reshape the input data
+        X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1]))
+        X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1]))
 
-    X_train, y_train = create_dataset(train_data, window_size)
-    X_test, _ = create_dataset(test_data, window_size)
-
-    # reshape the input data
-    X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1]))
-    X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1]))
+    else:
+        # handle the case where train_data length is smaller than time_step
+        print("Error: the 'train_test_split' value is too high for the current number of samples. Please lower it or adjust the 'time_step' value.")
+        sys.exit(0)
     
     # minutes per each model
     time_dist = 60 * minutes_per_model

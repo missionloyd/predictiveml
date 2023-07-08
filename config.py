@@ -37,11 +37,11 @@ def load_config(job_id):
     "header": header,
     "results_header": results_header,
     "y_column_mapping": {
-        'present_elec_kwh': 'electricity',
-        'present_htwt_mmbtu': 'hot_water',
-        'present_wtr_usgal': 'water',
-        'present_chll_tonhr': 'chilled_water',
-        'present_co2_tons': 'co2_emissions'
+      'present_elec_kwh': 'electricity',
+      'present_htwt_mmbtu': 'hot_water',
+      'present_wtr_usgal': 'water',
+      'present_chll_tonhr': 'chilled_water',
+      'present_co2_tons': 'co2_emissions'
     },
     
     # preprocessing/training scope
@@ -50,9 +50,9 @@ def load_config(job_id):
     "feature_method": ["rfecv", "lassocv"],
     "datelevel": ["year"],
     "time_step": [1],             # window size of the sliding window technique and unit length of forecasts
-    "train_test_split": 0.3,
-    "train_ratio_threshold": 0.4, # minimum percent non-nans in training set
-    "test_ratio_threshold": 0.5,  # minimum percent non-nans in testing set
+    "train_test_split": 0.7,
+    "train_ratio_threshold": 0.7, # minimum percent non-nans in training set
+    "test_ratio_threshold": 0.7,  # minimum percent non-nans in testing set
     
     # hyperparameters
     "n_feature": n_feature,

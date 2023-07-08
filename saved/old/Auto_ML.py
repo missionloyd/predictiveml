@@ -80,22 +80,22 @@ for model_type in model_types:
 
                     for time_step in time_steps:
                         # define the window size
-                        window_size = time_step
+                        time_step = time_step
 
                         # create the training data set
-                        def create_dataset(dataset, window_size):
+                        def create_dataset(dataset, time_step):
                             X, y = [], []
-                            for i in range(window_size, len(dataset)):
-                                X.append(dataset[i-window_size:i, 0])
+                            for i in range(time_step, len(dataset)):
+                                X.append(dataset[i-time_step:i, 0])
                                 y.append(dataset[i, 0])
                             X, y = np.array(X), np.array(y)
                             return X, y
 
-                        X_train, y_train = create_dataset(train_data, window_size)
+                        X_train, y_train = create_dataset(train_data, time_step)
 
                         # create the testing data set
-                        X_test, y_test = create_dataset(test_data, window_size)
-                        saved_X_test, saved_y_test = create_dataset(saved_test_data, window_size)
+                        X_test, y_test = create_dataset(test_data, time_step)
+                        saved_X_test, saved_y_test = create_dataset(saved_test_data, time_step)
 
                         # reshape the input data
                         X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1]))

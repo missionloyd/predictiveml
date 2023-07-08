@@ -72,9 +72,10 @@ def predict_y_column(args, model_data, model, datelevel):
             add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
             add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
 
-        # handle case where n_features is greater than or equal to selected features
-        if updated_n_feature >= add_data_scaled.shape[1]:
-            updated_n_feature = add_data_scaled.shape[1]
+        # ensures that updated_n_feature does not exceed the number of selected features or the number of samples in add_data_scaled
+        min_nfeatures_nsamples = min(add_data_scaled.shape[0], add_data_scaled.shape[1])
+        if updated_n_feature >= min_nfeatures_nsamples:
+            updated_n_feature = min_nfeatures_nsamples
 
         # train PCA (Linear Dimensionality Reduction) with multi-feature output
         pca = PCA(n_components=updated_n_feature)
@@ -84,8 +85,6 @@ def predict_y_column(args, model_data, model, datelevel):
         # Handle the case where no features are selected
         updated_n_feature = 0
 
-    # define the window size
-    window_size = time_step
 
     # split the data into training and testing sets
     train_size = int(len(data_scaled) * train_test_split)
@@ -93,11 +92,11 @@ def predict_y_column(args, model_data, model, datelevel):
     test_data = data_scaled[train_size:, :]
 
     # create the training and testing data sets with sliding door 
-    def create_dataset(dataset, window_size):
+    def create_dataset(dataset, time_step):
         X, y = [], []
 
-        for i in range(window_size, len(dataset)):
-            X.append(dataset[i-window_size:i, :])
+        for i in range(time_step, len(dataset)):
+            X.append(dataset[i-time_step:i, :])
             y.append(dataset[i, 0])
 
         X, y = np.array(X), np.array(y)
@@ -119,23 +118,29 @@ def predict_y_column(args, model_data, model, datelevel):
             y = np.concatenate((y, np.zeros(num_missing)))
 
         return X, y
+    
+    if len(test_data) > time_step:
+        X_test, _ = create_dataset(test_data, time_step)
 
-    X_test, _ = create_dataset(test_data, window_size)
-
-    # reshape the input data
-    X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1]))
-
-    # Get the most recent window_size days from the data
-    recent_data = data_scaled[-window_size:, :]
+        # reshape the input data
+        X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1]))
+    
+    else:
+        # handle the case where train_data length is smaller than time_step
+        print("Error: the 'train_test_split' value is too high for the current number of samples. Please lower it or adjust the 'time_step' value.")
+        sys.exit(0)
+    
+    # Get the most recent time_step days from the data
+    recent_data = data_scaled[-time_step:, :]
     
     # Initialize an array to store the predicted consumption
     y_pred_list = []
 
-    pred_len = window_size
+    pred_len = time_step
 
     for _ in range(pred_len):
-        # Take the last window_size days from the test_data to make the prediction
-        X_pred = recent_data[-window_size:, :]
+        # Take the last time_step days from the test_data to make the prediction
+        X_pred = recent_data[-time_step:, :]
 
         # Reshape the input data
         X_pred = np.reshape(X_pred, (1, X_pred.shape[0] * X_pred.shape[1]))

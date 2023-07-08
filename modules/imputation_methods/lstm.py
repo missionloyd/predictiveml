@@ -16,17 +16,17 @@ def compile_and_train_model(model, X_train, y_train, epochs):
     model.fit(X_train, y_train, epochs=epochs, batch_size=32, callbacks=[early_stopping])
 
 # Train the model on the entire model_data
-def create_model_data(model_data, window_size):
+def create_model_data(model_data, time_step):
     X, y = [], []
-    for i in range(window_size, len(model_data)):
-        X.append(model_data[i-window_size:i, 0])
+    for i in range(time_step, len(model_data)):
+        X.append(model_data[i-time_step:i, 0])
         y.append(model_data[i, 0])
     X, y = np.array(X, dtype=np.float32), np.array(y, dtype=np.float32)
     return X, y
 
 def lstm(model_data):
     # hyperparameters
-    window_size = 24
+    time_step = 24
     epochs = 5
 
     # Fill in missing values temporarily
@@ -53,7 +53,7 @@ def lstm(model_data):
     scaler = MinMaxScaler(feature_range=(0, 1))
     data_scaled = scaler.fit_transform(y_clean.values.reshape(-1, 1))
 
-    X_train, y_train = create_model_data(data_scaled, window_size)
+    X_train, y_train = create_model_data(data_scaled, time_step)
     X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
 
     model = Sequential()
@@ -69,19 +69,19 @@ def lstm(model_data):
 
     # Generate predictions for each gap and replace in model_data['y']
     for gaps in missing_gaps:
-        for i in range(0, len(gaps), window_size):
-            sub_gaps = gaps[i:i+window_size]
+        for i in range(0, len(gaps), time_step):
+            sub_gaps = gaps[i:i+time_step]
             start_index = sub_gaps[0]
             end_index = sub_gaps[-1]
             gap_length = end_index - start_index + 1
 
             # Create input sequence for the sub-gap
-            X_pred_gap, _ = create_model_data(data_scaled, window_size)
-            X_pred_gap = X_pred_gap[start_index-window_size:end_index]
+            X_pred_gap, _ = create_model_data(data_scaled, time_step)
+            X_pred_gap = X_pred_gap[start_index-time_step:end_index]
             X_pred_gap = np.reshape(X_pred_gap, (X_pred_gap.shape[0], X_pred_gap.shape[1], 1))
 
             # Check if the sub-gap is long enough for making predictions or if there are gaps at the start or end of the data
-            if X_pred_gap.shape[0] < window_size - 1 or gaps[0] == 0 or gaps[-1] == len(model_data) - 1:
+            if X_pred_gap.shape[0] < time_step - 1 or gaps[0] == 0 or gaps[-1] == len(model_data) - 1:
                 # Fill in the remaining gaps using interpolation
                 model_data.loc[model_data.index[start_index:end_index+1], 'y'] = y_int.iloc[start_index:end_index+1].values
 
