@@ -38,13 +38,12 @@ def predict_y_column(args, model_data, model, datelevel):
     memory_limit = args['memory_limit']
     save_model_file = args['save_model_file']
     save_model_plot = args['save_model_plot']
-    resample_z_score = args['resample_z_score']
     path = args['path']
 
     original_datelevel = detect_data_frequency(model_data)
 
     # This code aggregates and resamples a DataFrame based on given datelevel
-    model_data = resample_data(model_data, datelevel, original_datelevel, resample_z_score)
+    model_data = resample_data(model_data, datelevel, original_datelevel)
 
     # Save original n_feature value
     updated_n_feature = n_feature
@@ -166,4 +165,7 @@ def predict_y_column(args, model_data, model, datelevel):
     # for i, consumption in enumerate(y_pred_list):
     #     print(f"Hour {i+1}: {consumption} kWh")
 
-    return y_pred_list
+    start = model_data['ds'].iloc[0]
+    end = model_data['ds'].iloc[-1]
+
+    return y_pred_list, start, end

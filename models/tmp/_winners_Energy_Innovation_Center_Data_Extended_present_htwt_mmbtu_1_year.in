@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+xgboost,Energy Innovation Center,present_htwt_mmbtu,linear_interpolation,rfecv,6,1,1,year,1021247.4025709628,1021247.3839376399,192.76210761214503,./models/xgboost/Energy_Innovation_Center_Data_Extended_present_htwt_mmbtu_linear_interpolation_rfecv_6_1_1_year,./models/tmp/Energy_Innovation_Center_Data_Extended_present_htwt_mmbtu_linear_interpolation,Energy_Innovation_Center_Data_Extended.csv

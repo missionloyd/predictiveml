@@ -4,10 +4,14 @@ import sys
 from scipy import stats
 
 # This code aggregates and resamples a DataFrame based on the given datelevel
-def resample_data(model_data, datelevel, original_datelevel, resample_z_score):
+def resample_data(model_data, datelevel, original_datelevel):
     if datelevel != original_datelevel:
         # Convert 'ds' column to pandas datetime format
         model_data['ds'] = pd.to_datetime(model_data['ds'])
+
+        # Save the first and last rows of the original data for comparison
+        first_row_original = model_data['ds'].iloc[0]
+        last_row_original = model_data['ds'].iloc[-1]
 
         # Define frequency mapping based on datelevel
         frequency_mapping = {
@@ -33,29 +37,18 @@ def resample_data(model_data, datelevel, original_datelevel, resample_z_score):
         # Group by the modified 'ds' column and perform aggregation
         aggregated_data = model_data.groupby(pd.Grouper(key='ds', freq=frequency)).sum(numeric_only=True).reset_index()
 
-        # Replace outliers with the mean of non-outlier columns for monthly and yearly datelevels
-        if resample_z_score != -1 and datelevel in ['month', 'year']:
-            for column in aggregated_data.columns:
-                if column != 'ds':
-            
-                    # column = 'y'
-                    # Calculate the mean and standard deviation of the column
-                    mean = aggregated_data[column].mean()
-                    std = aggregated_data[column].std()
+        # Save the first and last rows of the aggregated data for comparison
+        first_row_aggregated = aggregated_data['ds'].iloc[0]
+        last_row_aggregated = aggregated_data['ds'].iloc[-1]
 
-                    # Define the upper and lower bounds for outliers
-                    upper_bound = mean + (resample_z_score * std)
-                    lower_bound = mean - (resample_z_score * std)
+        if last_row_original != last_row_aggregated and len(aggregated_data) > 4:
+            aggregated_data = aggregated_data.iloc[:-1]
 
-                    # Calculate the mean of non-outlier values
-                    non_outlier_mean = aggregated_data.loc[(aggregated_data[column] > lower_bound) & (aggregated_data[column] < upper_bound), column].mean()
-
-                    # Replace outliers with the mean of non-outlier values
-                    aggregated_data.loc[(aggregated_data[column] > upper_bound) | (aggregated_data[column] < lower_bound), column] = non_outlier_mean
-
+        if first_row_original != first_row_aggregated and len(aggregated_data) > 4:
+            aggregated_data = aggregated_data.iloc[1:]
 
         model_data = aggregated_data
 
-    print(model_data)
+        print(model_data)
 
     return model_data

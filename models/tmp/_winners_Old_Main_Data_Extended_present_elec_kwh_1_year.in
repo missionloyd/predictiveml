@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+xgboost,Old Main,present_elec_kwh,linear_interpolation,rfecv,4,1,1,year,26180.875310011023,26178.57855308219,0.17296484594875053,./models/xgboost/Old_Main_Data_Extended_present_elec_kwh_linear_interpolation_rfecv_4_1_1_year,./models/tmp/Old_Main_Data_Extended_present_elec_kwh_linear_interpolation,Old_Main_Data_Extended.csv

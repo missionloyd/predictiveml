@@ -39,7 +39,6 @@ def train_model(args):
     memory_limit = args['memory_limit']
     save_model_file = args['save_model_file']
     save_model_plot = args['save_model_plot']
-    resample_z_score = args['resample_z_score']
     path = args['path']
 
     # Save original n_feature value
@@ -54,7 +53,7 @@ def train_model(args):
     original_datelevel = detect_data_frequency(model_data)
 
     # This code aggregates and resamples a DataFrame based on given datelevel
-    model_data = resample_data(model_data, datelevel, original_datelevel, resample_z_score)
+    model_data = resample_data(model_data, datelevel, original_datelevel)
 
     # normalize the data, save orginal data column for graphing later
     scaler = StandardScaler()

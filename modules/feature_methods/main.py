@@ -4,6 +4,10 @@ from .lassocv import lassocv
 from modules.logging_methods.main import logger
 
 def feature_engineering(feature_method, n_fold, add_data_scaled, data_scaled, add_feature):
+
+  if n_fold > len(data_scaled):
+    n_fold = len(data_scaled)
+
   if feature_method == 'rfecv':
     selected_features = rfecv(n_fold, add_data_scaled, data_scaled, add_feature)
 

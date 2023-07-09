@@ -44,7 +44,6 @@ def generate_arg(row, config):
         "save_model_plot": bool(config["save_model_plot"]),
         "path": str(config["path"]),
         "save_preprocessed_file": bool(config["save_preprocessed_file"]),
-        "resample_z_score": float(config["resample_z_score"])
     }
 
     return argument

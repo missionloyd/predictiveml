@@ -1,7 +1,6 @@
 import pandas as pd
 
-def format_predictions(start, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel):
-    print(start)
+def format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel):
     # Assuming datelevel is a string representing the desired level of grouping: 'hour', 'day', 'month', or 'year'
     if datelevel == 'hour':
         freq = 'H'
@@ -18,8 +17,8 @@ def format_predictions(start, y_pred_lists, y_column_mapping, len_y_pred_list, d
     else:
         raise ValueError("Invalid datelevel")
     
-    start = start + offset  # Add the offset to the start date
-    timestamp = pd.date_range(start=start, periods=len_y_pred_list, freq=freq)
+    end = end + offset  # Add the offset to the end date
+    timestamp = pd.date_range(end=end, periods=len_y_pred_list, freq=freq)
     aggregated_data = pd.DataFrame({'timestamp': timestamp})
 
     for y_column, y_pred_list in y_pred_lists:

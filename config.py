@@ -48,13 +48,12 @@ def load_config(job_id):
     "model_type": ["xgboost", "solos", "ensembles"],
     "imputation_method": ["linear_regression","linear_interpolation", "prophet", "lstm"],
     "feature_method": ["rfecv", "lassocv"],
-    "datelevel": ["year"],
-    "time_step": [1],             # window size of the sliding window technique and unit length of forecasts
+    "datelevel": ["month"],
+    "time_step": [12],            # window size of the sliding window technique and unit length of forecasts
     "train_test_split": 0.7,
     "train_ratio_threshold": 0.7, # minimum percent non-nans in training set
     "test_ratio_threshold": 0.7,  # minimum percent non-nans in testing set
-    "resample_z_score": 0.85,     # recommended if data is incomplete or skewed
-    
+        
     # hyperparameters
     "n_feature": n_feature,
     "n_fold": 5,                

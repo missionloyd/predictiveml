@@ -22,11 +22,11 @@ def predict(cli_args, winners_in_file_path, config):
             
             if not os.path.exists(winners_in_file): continue
             
-            start, y_pred_list = create_predictions(cli_args, winners_in_file, config)
+            start, end, y_pred_list = create_predictions(cli_args, winners_in_file, config)
             y_pred_lists.append((y_column, y_pred_list))
 
             len_y_pred_list = len(y_pred_list)
-            results = format_predictions(start, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel)
+            results = format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel)
     else:
         winners_in_file = f'{winners_in_file_path}/_winners.in'
 
@@ -34,11 +34,11 @@ def predict(cli_args, winners_in_file_path, config):
             logger(f"This configuration must be trained on prior to making a prediction.")
             return results
         
-        start, y_pred_list = create_predictions(cli_args, winners_in_file, config)
+        start, end, y_pred_list = create_predictions(cli_args, winners_in_file, config)
         y_column = cli_args['y_column']
         y_pred_lists.append((y_column, y_pred_list))
 
         len_y_pred_list = len(y_pred_list)
-        results = format_predictions(start, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel)
+        results = format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel)
 
     return results
