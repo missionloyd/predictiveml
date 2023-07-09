@@ -38,12 +38,13 @@ def predict_y_column(args, model_data, model, datelevel):
     memory_limit = args['memory_limit']
     save_model_file = args['save_model_file']
     save_model_plot = args['save_model_plot']
+    resample_z_score = args['resample_z_score']
     path = args['path']
 
     original_datelevel = detect_data_frequency(model_data)
 
     # This code aggregates and resamples a DataFrame based on given datelevel
-    model_data = resample_data(model_data, datelevel, original_datelevel)
+    model_data = resample_data(model_data, datelevel, original_datelevel, resample_z_score)
 
     # Save original n_feature value
     updated_n_feature = n_feature

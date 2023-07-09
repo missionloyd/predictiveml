@@ -10,10 +10,10 @@ def format_predictions(start, y_pred_lists, y_column_mapping, len_y_pred_list, d
         freq = 'D'
         offset = pd.DateOffset(days=1)
     elif datelevel == 'month':
-        freq = 'M'
+        freq = 'MS'
         offset = pd.offsets.MonthBegin(1)
     elif datelevel == 'year':
-        freq = 'Y'
+        freq = 'YS'
         offset = pd.offsets.YearBegin(1)
     else:
         raise ValueError("Invalid datelevel")
