@@ -35,7 +35,7 @@ def run_main(flags):
 
             # Wait for the file to become available
             while not os.path.isfile(info_log_file):
-                time.sleep(0.1)  # Sleep for 1 second
+                time.sleep(0.2)  # Sleep for 1 second
 
             process = subprocess.Popen(
                 ['tail', '-f', info_log_file],
@@ -105,7 +105,7 @@ def generate_command_links():
 def generate_log_links(job_id):
 
     while not os.path.isfile(f'logs/info_log/{job_id}.log'):
-        time.sleep(0.1)  # Sleep for 1 second
+        time.sleep(0.2)  # Sleep for 1 second
 
     links = '<br>'.join([
         f'',
@@ -172,7 +172,7 @@ def run_predict(building_file, y_column):
 
     # Wait for the API file to become available
     while not os.path.isfile(api_file):
-        time.sleep(0.1)  # Sleep for 1 second
+        time.sleep(0.2)  # Sleep for 1 second
 
     data = run_api_log(api_file)
 
@@ -215,7 +215,7 @@ def run_forecast():
 
     # Wait for the API file to become available
     while not os.path.isfile(api_file):
-        time.sleep(0.1)  # Sleep for 0.1 second
+        time.sleep(0.2)  # Sleep for 0.2 second
 
     data = run_api_log(api_file)
 

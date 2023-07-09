@@ -129,7 +129,7 @@ def train_model(args):
 
         return X, y
 
-    if len(train_data) > time_step and len(test_data) > time_step:
+    if len(train_data) >= time_step and len(test_data) >= time_step:
         # create the training and testing data sets with sliding door
         X_train, y_train = create_dataset(train_data, time_step)
         X_test, _ = create_dataset(test_data, time_step)

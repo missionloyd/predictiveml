@@ -44,11 +44,10 @@ def resample_data(model_data, datelevel, original_datelevel):
         if last_row_original != last_row_aggregated and len(aggregated_data) > 4:
             aggregated_data = aggregated_data.iloc[:-1]
 
-        if first_row_original != first_row_aggregated and len(aggregated_data) > 4:
-            aggregated_data = aggregated_data.iloc[1:]
+        # if first_row_original != first_row_aggregated and len(aggregated_data) > 4:
+        #     aggregated_data = aggregated_data.iloc[1:]
 
         model_data = aggregated_data
-
-        print(model_data)
+        # print(model_data)
 
     return model_data

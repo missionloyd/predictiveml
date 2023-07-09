@@ -119,7 +119,7 @@ def predict_y_column(args, model_data, model, datelevel):
 
         return X, y
     
-    if len(test_data) > time_step:
+    if len(test_data) >= time_step:
         X_test, _ = create_dataset(test_data, time_step)
 
         # reshape the input data
