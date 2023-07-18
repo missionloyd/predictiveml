@@ -90,42 +90,8 @@ def predict_y_column(args, model_data, model, datelevel):
     train_size = int(len(data_scaled) * train_test_split)
     # train_data = data_scaled[:train_size, :]
     test_data = data_scaled[train_size:, :]
-
-    # create the training and testing data sets with sliding door 
-    def create_dataset(dataset, time_step):
-        X, y = [], []
-
-        for i in range(time_step, len(dataset)):
-            X.append(dataset[i-time_step:i, :])
-            y.append(dataset[i, 0])
-
-        X, y = np.array(X), np.array(y)
-        X = np.reshape(X, (X.shape[0], X.shape[1]*X.shape[2]))
-
-        # # Pad with existing values if the lengths are still not equal
-        # if len(X) < len(dataset):
-        #     num_missing = len(dataset) - len(X)
-        #     missing_data = dataset[-num_missing:, :]
-        #     missing_data = np.tile(missing_data, (1, X.shape[1] // missing_data.shape[1]))
-        #     X = np.concatenate((X, missing_data), axis=0)
-        #     y = np.concatenate((y, missing_data[:, 0]))
-
-        # Pad with zeros if the lengths are still not equal
-        if len(X) < len(dataset):
-            num_missing = len(dataset) - len(X)
-            missing_data = np.zeros((num_missing, X.shape[1]))
-            X = np.concatenate((X, missing_data), axis=0)
-            y = np.concatenate((y, np.zeros(num_missing)))
-
-        return X, y
     
-    if len(test_data) >= time_step:
-        X_test, _ = create_dataset(test_data, time_step)
-
-        # reshape the input data
-        X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1]))
-    
-    else:
+    if len(test_data) < time_step:
         # handle the case where train_data length is smaller than time_step
         print("Error: the 'train_test_split' value is too high for the current number of samples. Please lower it or adjust the 'time_step' value.")
         sys.exit(0)

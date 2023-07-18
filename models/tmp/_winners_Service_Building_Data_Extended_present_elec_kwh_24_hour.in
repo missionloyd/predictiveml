@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+solos,Service Building,present_elec_kwh,linear_regression,lassocv,2,2,24,hour,10.625819413438624,7.096874521226736,0.33187323909655736,./models/solos/Service_Building_Data_Extended_present_elec_kwh_linear_regression_lassocv_2_2_24_hour,./models/tmp/Service_Building_Data_Extended_present_elec_kwh_linear_regression,Service_Building_Data_Extended.csv

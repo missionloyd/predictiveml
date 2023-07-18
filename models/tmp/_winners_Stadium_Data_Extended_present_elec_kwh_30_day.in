@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+xgboost,Stadium,present_elec_kwh,prophet,lassocv,3,3,30,day,867.5102900496364,668.7147890523602,0.20603539042706154,./models/xgboost/Stadium_Data_Extended_present_elec_kwh_prophet_lassocv_3_3_30_day,./models/tmp/Stadium_Data_Extended_present_elec_kwh_prophet,Stadium_Data_Extended.csv

@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+solos,Enzi-STEM,present_elec_kwh,linear_regression,lassocv,2,2,30,day,314.3368343218791,225.31410904476564,0.06190969726905549,./models/solos/Enzi-STEM_Data_Extended_present_elec_kwh_linear_regression_lassocv_2_2_30_day,./models/tmp/Enzi-STEM_Data_Extended_present_elec_kwh_linear_regression,Enzi-STEM_Data_Extended.csv

@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+xgboost,Service Building,present_elec_kwh,linear_regression,rfecv,7,1,30,day,187.31406107998947,149.1850558337289,0.2705386673495067,./models/xgboost/Service_Building_Data_Extended_present_elec_kwh_linear_regression_rfecv_7_1_30_day,./models/tmp/Service_Building_Data_Extended_present_elec_kwh_linear_regression,Service_Building_Data_Extended.csv

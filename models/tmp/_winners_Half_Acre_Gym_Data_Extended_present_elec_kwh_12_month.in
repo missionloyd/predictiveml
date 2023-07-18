@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+ensembles,Half Acre Gym,present_elec_kwh,linear_regression,lassocv,3,3,12,month,6277.304373806048,4297.536817927054,0.06481950536319227,./models/ensembles/Half_Acre_Gym_Data_Extended_present_elec_kwh_linear_regression_lassocv_3_3_12_month,./models/tmp/Half_Acre_Gym_Data_Extended_present_elec_kwh_linear_regression,Half_Acre_Gym_Data_Extended.csv

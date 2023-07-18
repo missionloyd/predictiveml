@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+ensembles,Engineering,present_elec_kwh,linear_regression,lassocv,7,0,24,hour,28.602672402260477,21.737613123962447,0.08784864623167252,./models/ensembles/Engineering_Data_Extended_present_elec_kwh_linear_regression_lassocv_7_0_24_hour,./models/tmp/Engineering_Data_Extended_present_elec_kwh_linear_regression,Engineering_Data_Extended.csv

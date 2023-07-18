@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+xgboost,Aven Nelson,present_elec_kwh,linear_regression,lassocv,4,3,30,day,72.38571244839812,55.889326045157745,0.14929427748278123,./models/xgboost/Aven_Nelson_Data_Extended_present_elec_kwh_linear_regression_lassocv_4_3_30_day,./models/tmp/Aven_Nelson_Data_Extended_present_elec_kwh_linear_regression,Aven_Nelson_Data_Extended.csv

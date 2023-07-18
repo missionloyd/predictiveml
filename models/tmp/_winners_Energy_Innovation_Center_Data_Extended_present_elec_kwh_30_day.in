@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+solos,Energy Innovation Center,present_elec_kwh,lstm,rfecv,7,1,30,day,173.01961664478512,120.96630747659891,0.05232379440107139,./models/solos/Energy_Innovation_Center_Data_Extended_present_elec_kwh_lstm_rfecv_7_1_30_day,./models/tmp/Energy_Innovation_Center_Data_Extended_present_elec_kwh_lstm,Energy_Innovation_Center_Data_Extended.csv

@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+solos,High Bay,present_elec_kwh,lstm,lassocv,5,5,12,month,7221.4115094382205,6377.663116799847,0.03889669588582144,./models/solos/High_Bay_Data_Extended_present_elec_kwh_lstm_lassocv_5_5_12_month,./models/tmp/High_Bay_Data_Extended_present_elec_kwh_lstm,High_Bay_Data_Extended.csv

@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+solos,Energy Innovation Center,present_htwt_mmbtu,lstm,lassocv,1,0,24,hour,3.710867889812126,0.4576229402126252,1.6258877923936412,./models/solos/Energy_Innovation_Center_Data_Extended_present_htwt_mmbtu_lstm_lassocv_1_0_24_hour,./models/tmp/Energy_Innovation_Center_Data_Extended_present_htwt_mmbtu_lstm,Energy_Innovation_Center_Data_Extended.csv

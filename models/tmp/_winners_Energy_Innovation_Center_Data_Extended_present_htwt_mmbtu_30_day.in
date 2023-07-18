@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+ensembles,Energy Innovation Center,present_htwt_mmbtu,linear_regression,lassocv,5,1,30,day,806.427549392625,453.9961311075428,10.522120924908926,./models/ensembles/Energy_Innovation_Center_Data_Extended_present_htwt_mmbtu_linear_regression_lassocv_5_1_30_day,./models/tmp/Energy_Innovation_Center_Data_Extended_present_htwt_mmbtu_linear_regression,Energy_Innovation_Center_Data_Extended.csv

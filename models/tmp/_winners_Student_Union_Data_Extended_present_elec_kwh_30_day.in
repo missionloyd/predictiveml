@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+xgboost,Student Union,present_elec_kwh,linear_regression,lassocv,1,1,30,day,714.1578470961878,590.6726515519075,0.2260938793876963,./models/xgboost/Student_Union_Data_Extended_present_elec_kwh_linear_regression_lassocv_1_1_30_day,./models/tmp/Student_Union_Data_Extended_present_elec_kwh_linear_regression,Student_Union_Data_Extended.csv

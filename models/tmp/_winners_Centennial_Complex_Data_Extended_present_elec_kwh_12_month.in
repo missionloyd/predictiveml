@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+ensembles,Centennial Complex,present_elec_kwh,linear_regression,rfecv,5,1,12,month,2.926844101177477,2.009670822603669,0.023998611892167374,./models/ensembles/Centennial_Complex_Data_Extended_present_elec_kwh_linear_regression_rfecv_5_1_12_month,./models/tmp/Centennial_Complex_Data_Extended_present_elec_kwh_linear_regression,Centennial_Complex_Data_Extended.csv

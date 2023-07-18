@@ -41,4 +41,9 @@ def predict(cli_args, winners_in_file_path, config):
         len_y_pred_list = len(y_pred_list)
         results = format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step)
 
+    # if len(results) == 0:
+    #     results = {'data': [], 'status': 'empty'}
+    # elif len(results) > 0:
+    #     results = {'data': results['data'] or [], 'status': 'ok'}
+
     return results

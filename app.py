@@ -157,14 +157,14 @@ def run_predict_demo(building_file, y_column):
 
 @app.route('/predict/<string:building_file>/<string:y_column>')
 def run_predict(building_file, y_column):
-    # Create a key tuple from the input arguments
-    key = (building_file, y_column)
+    # # Create a key tuple from the input arguments
+    # key = (building_file, y_column)
 
-    # Check if the key exists in the previous results
-    if key in previous_results:
-        api_file = previous_results[key]
-        data = run_api_log(api_file)
-        return jsonify({'job_id': 0, 'data': data, 'status': 'ok'})
+    # # Check if the key exists in the previous results
+    # if key in previous_results:
+    #     api_file = previous_results[key]
+    #     data = run_api_log(api_file)
+    #     return jsonify({'job_id': 0, 'data': data, 'status': 'ok'})
 
     # No previous result found, proceed with running the prediction
     job_id = run_main(['--predict', '--building_file', building_file, '--y_column', y_column, '--time_step', '24', '--datelevel', 'hour'])
@@ -177,7 +177,7 @@ def run_predict(building_file, y_column):
     data = run_api_log(api_file)
 
     # Save the result for future use
-    previous_results[key] = api_file
+    # previous_results[key] = api_file
 
     return jsonify({'job_id': job_id, 'data': data, 'status': 'ok'})
 
@@ -194,13 +194,13 @@ def run_forecast():
 
     # Create a key tuple from the input arguments
     # key = (y_column, building_file, startDate, endDate, time_step, datelevel, table)
-    key = (building_file, time_step, datelevel)
+    # key = (building_file, time_step, datelevel)
 
-    # Check if the key exists in the previous results
-    if key in previous_results:
-        api_file = previous_results[key]
-        data = run_api_log(api_file)
-        return jsonify({'job_id': 0, 'data': data, 'status': 'ok'})
+    # # Check if the key exists in the previous results
+    # if key in previous_results:
+    #     api_file = previous_results[key]
+    #     data = run_api_log(api_file)
+    #     return jsonify({'job_id': 0, 'data': data, 'status': 'ok'})
     
     frequency_mapping = {
         'hour': '24',
@@ -220,7 +220,7 @@ def run_forecast():
     data = run_api_log(api_file)
 
     # Save the result for future use
-    previous_results[key] = api_file
+    # previous_results[key] = api_file
 
     return jsonify({'job_id': job_id, 'data': data, 'status': 'ok'})
 

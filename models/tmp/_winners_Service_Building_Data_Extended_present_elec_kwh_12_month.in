@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+solos,Service Building,present_elec_kwh,prophet,rfecv,4,4,12,month,2328.696041471639,1941.3608223635613,0.10094214341171623,./models/solos/Service_Building_Data_Extended_present_elec_kwh_prophet_rfecv_4_4_12_month,./models/tmp/Service_Building_Data_Extended_present_elec_kwh_prophet,Service_Building_Data_Extended.csv

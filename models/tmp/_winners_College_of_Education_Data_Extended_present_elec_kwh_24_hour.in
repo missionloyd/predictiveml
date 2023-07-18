@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+ensembles,College of Education,present_elec_kwh,linear_regression,lassocv,1,1,24,hour,13.260303221423124,9.241419342646196,0.30128840919979766,./models/ensembles/College_of_Education_Data_Extended_present_elec_kwh_linear_regression_lassocv_1_1_24_hour,./models/tmp/College_of_Education_Data_Extended_present_elec_kwh_linear_regression,College_of_Education_Data_Extended.csv

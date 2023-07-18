@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+solos,WTBC,present_elec_kwh,linear_regression,lassocv,1,1,30,day,118.73122821418593,82.48380341132527,0.07239641726781036,./models/solos/WTBC_Data_Extended_present_elec_kwh_linear_regression_lassocv_1_1_30_day,./models/tmp/WTBC_Data_Extended_present_elec_kwh_linear_regression,WTBC_Data_Extended.csv

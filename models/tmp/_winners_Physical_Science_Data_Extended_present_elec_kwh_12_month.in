@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+ensembles,Physical Science,present_elec_kwh,lstm,lassocv,3,3,12,month,8442.902699455395,5615.361648696656,0.027680402512704046,./models/ensembles/Physical_Science_Data_Extended_present_elec_kwh_lstm_lassocv_3_3_12_month,./models/tmp/Physical_Science_Data_Extended_present_elec_kwh_lstm,Physical_Science_Data_Extended.csv

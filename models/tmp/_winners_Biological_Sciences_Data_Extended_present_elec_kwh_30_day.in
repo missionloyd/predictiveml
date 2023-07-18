@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+ensembles,Biological Sciences,present_elec_kwh,linear_regression,rfecv,5,2,30,day,401.42932553062235,281.55539970471443,0.06449602516743821,./models/ensembles/Biological_Sciences_Data_Extended_present_elec_kwh_linear_regression_rfecv_5_2_30_day,./models/tmp/Biological_Sciences_Data_Extended_present_elec_kwh_linear_regression,Biological_Sciences_Data_Extended.csv

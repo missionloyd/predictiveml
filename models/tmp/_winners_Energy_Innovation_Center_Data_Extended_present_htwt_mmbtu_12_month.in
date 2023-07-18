@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+ensembles,Energy Innovation Center,present_htwt_mmbtu,prophet,lassocv,1,1,12,month,80368.44345280949,77255.23045971338,139.65915317456526,./models/ensembles/Energy_Innovation_Center_Data_Extended_present_htwt_mmbtu_prophet_lassocv_1_1_12_month,./models/tmp/Energy_Innovation_Center_Data_Extended_present_htwt_mmbtu_prophet,Energy_Innovation_Center_Data_Extended.csv

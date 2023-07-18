@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
+solos,Indoor Practice Facility,present_elec_kwh,linear_regression,lassocv,1,1,12,month,3910.453987411505,3488.3083418052843,0.18831001551239682,./models/solos/Indoor_Practice_Facility_Data_Extended_present_elec_kwh_linear_regression_lassocv_1_1_12_month,./models/tmp/Indoor_Practice_Facility_Data_Extended_present_elec_kwh_linear_regression,Indoor_Practice_Facility_Data_Extended.csv
