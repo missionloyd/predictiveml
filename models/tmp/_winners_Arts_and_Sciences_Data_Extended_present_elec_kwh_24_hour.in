@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-ensembles,Arts and Sciences,present_elec_kwh,linear_regression,lassocv,2,2,24,hour,5.381985910204781,4.121505139620247,0.2081667862354758,./models/ensembles/Arts_and_Sciences_Data_Extended_present_elec_kwh_linear_regression_lassocv_2_2_24_hour,./models/tmp/Arts_and_Sciences_Data_Extended_present_elec_kwh_linear_regression,Arts_and_Sciences_Data_Extended.csv

@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-solos,Old Main,present_elec_kwh,prophet,rfecv,2,2,24,hour,5.9142215773330244,4.635923215220174,0.320417163158692,./models/solos/Old_Main_Data_Extended_present_elec_kwh_prophet_rfecv_2_2_24_hour,./models/tmp/Old_Main_Data_Extended_present_elec_kwh_prophet,Old_Main_Data_Extended.csv

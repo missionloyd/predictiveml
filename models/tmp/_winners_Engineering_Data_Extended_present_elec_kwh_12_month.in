@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-solos,Engineering,present_elec_kwh,linear_regression,lassocv,2,2,12,month,20882.171383229135,20140.33903863815,0.11062875365277319,./models/solos/Engineering_Data_Extended_present_elec_kwh_linear_regression_lassocv_2_2_12_month,./models/tmp/Engineering_Data_Extended_present_elec_kwh_linear_regression,Engineering_Data_Extended.csv

@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-solos,Information Technology,present_elec_kwh,prophet,lassocv,5,4,30,day,811.2359747043722,586.6162349639209,0.06492622156090125,./models/solos/Information_Technology_Data_Extended_present_elec_kwh_prophet_lassocv_5_4_30_day,./models/tmp/Information_Technology_Data_Extended_present_elec_kwh_prophet,Information_Technology_Data_Extended.csv

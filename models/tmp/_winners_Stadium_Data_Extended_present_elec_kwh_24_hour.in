@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-ensembles,Stadium,present_elec_kwh,lstm,rfecv,3,3,24,hour,27.24450349941502,18.45663055655533,0.15039017743287544,./models/ensembles/Stadium_Data_Extended_present_elec_kwh_lstm_rfecv_3_3_24_hour,./models/tmp/Stadium_Data_Extended_present_elec_kwh_lstm,Stadium_Data_Extended.csv
