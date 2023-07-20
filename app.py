@@ -1,4 +1,4 @@
-import subprocess
+import subprocess, os
 import threading
 import os, time, json
 from flask import Flask, url_for, jsonify, request, render_template
@@ -25,6 +25,14 @@ def run_main(flags):
         print(f'Starting job execution for job ID: {job_id}')
         debug_log_file = f'logs/debug_log/{job_id}.log'
         error_log_file = f'logs/error_log/{job_id}.log'
+
+        # Delete the log files if they exist
+        if os.path.exists(debug_log_file):
+            os.remove(debug_log_file)
+        if os.path.exists(error_log_file):
+            os.remove(error_log_file)
+
+        # Open the log files for writing (they will be created anew)
 
         with open(debug_log_file, 'w') as debug_log, open(error_log_file, 'w') as error_log:
             debug_log.write("")
