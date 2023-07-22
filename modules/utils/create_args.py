@@ -34,6 +34,7 @@ def create_args(config, cli_args):
     [config["path"]],
     [config["save_preprocessed_file"]],
     [config["updated_n_feature"]],
+    [config["selected_features_delimited"]],
   ):
     argument_dict = {
       "building_file": combo[0],
@@ -57,6 +58,7 @@ def create_args(config, cli_args):
       "path": combo[18],
       "save_preprocessed_file": combo[19],
       "updated_n_feature": combo[20],
+      "selected_features_delimited": combo[21],
     }
     arguments.append(argument_dict)
 

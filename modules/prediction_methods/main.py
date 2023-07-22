@@ -5,13 +5,18 @@ from modules.prediction_methods.format_predictions import format_predictions
 from modules.logging_methods.main import logger
 
 def predict(cli_args, winners_in_file_path, config):
+    # Replace 'None' values in cli_args with corresponding values from config
+    for key, value in cli_args.items():
+        if value is None and key in config:
+            cli_args[key] = config[key][0]
+
+    building_file = cli_args['building_file'].replace('.csv', '')
     y_column_mapping = config['y_column_mapping']
     datelevel = cli_args['datelevel']
-    building_file = cli_args['building_file'].replace('.csv', '')
-    startDate = cli_args['startDate']
-    endDate = cli_args['endDate']
     datelevel = cli_args['datelevel']
     time_step = str(cli_args['time_step'])
+    # startDate = cli_args['startDate'] or config['startDate']
+    # endDate = cli_args['endDate'] or config['endDate']
     y_pred_lists = []
     results = []
 

@@ -34,6 +34,7 @@ def main(cli_args, job_id_flag, preprocess_flag, train_flag, save_flag, predict_
     args_file_path = f'{path}/models/tmp/_args'
     winners_in_file_path = f'{path}/models/tmp'
     winners_out_file_path = f'{path}/models/tmp'
+    winners_out_file = f'{winners_out_file_path}/_winners.out'
     results_file_path = f'{path}/results.csv'
 
     if preprocess_flag or train_flag or save_flag or predict_flag:
@@ -62,12 +63,11 @@ def main(cli_args, job_id_flag, preprocess_flag, train_flag, save_flag, predict_
             results = process_batch_args('Training', updated_args, train_model, batch_size, n_jobs)
 
             # Save the results to the CSV file
-            save_training_results(results_file_path, results, winners_in_file_path, config)
+            save_training_results(results_file_path, results, config)
 
         if save_flag: 
             save_args(results_file_path, winners_in_file_path, winners_out_file_path, config)
-            winners_file = f'{winners_out_file_path}/_winners.out'
-            updated_args = load_args(winners_file)
+            updated_args = load_args(winners_out_file)
 
             # Process the winner training arguments
             results = process_batch_args('Training', updated_args, train_model, batch_size, n_jobs)

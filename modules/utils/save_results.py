@@ -83,7 +83,7 @@ def save_preprocessed_args_results(file_path, results):
 
     return
 
-def save_training_results(file_path, results, winners_in_file_path, config):
+def save_training_results(file_path, results, config):
     results_header = config['results_header']
 
     # Convert the results to a set to remove any duplicates

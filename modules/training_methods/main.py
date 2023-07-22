@@ -27,11 +27,13 @@ def train_model(args):
     model_type = args['model_type']
     feature_method = args['feature_method']
     n_feature = args['n_feature']
+    updated_n_feature = args['updated_n_feature']
     time_step = args['time_step']
     datelevel = args['datelevel']
     header = args['header']
     data_path = args['data_path']
     add_feature = args['add_feature']
+    selected_features_delimited = args['selected_features_delimited']
     exclude_column = args['exclude_column']
     n_fold = args['n_fold']
     train_test_split = args['train_test_split']
@@ -41,9 +43,6 @@ def train_model(args):
     save_model_plot = args['save_model_plot']
     path = args['path']
 
-    # Save original n_feature value
-    updated_n_feature = n_feature
-    
     # Load model_data separately within each task
     with open(model_data_path, 'rb') as file:
         model_data = pickle.load(file)
@@ -67,8 +66,14 @@ def train_model(args):
         add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
         add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
 
-    # identify most important features and eliminate less important features
-    selected_features = feature_engineering(feature_method, n_fold, add_data_scaled, data_scaled, add_feature)
+    # check if selected_features are already saved
+    if selected_features_delimited:
+        selected_features = selected_features_delimited.split('|')
+    else:
+        # identify most important features and eliminate less important features
+        selected_features = feature_engineering(feature_method, n_fold, add_data_scaled, data_scaled, add_feature)
+        selected_features_delimited = '|'.join(selected_features)
+        updated_n_feature = n_feature
 
     # normalize selected features
     add_data_scaled = np.empty((model_data.shape[0], 0))
@@ -80,9 +85,9 @@ def train_model(args):
             add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
 
         # ensures that updated_n_feature does not exceed the number of selected features or the number of samples in add_data_scaled
-        min_nfeatures_nsamples = min(add_data_scaled.shape[0], add_data_scaled.shape[1])
-        if updated_n_feature >= min_nfeatures_nsamples:
-            updated_n_feature = min_nfeatures_nsamples
+        max_nfeatures_nsamples = min(add_data_scaled.shape[0], add_data_scaled.shape[1])
+        if updated_n_feature > max_nfeatures_nsamples:
+            updated_n_feature = max_nfeatures_nsamples
 
         # train PCA (Linear Dimensionality Reduction) with multi-feature output
         pca = PCA(n_components=updated_n_feature)
@@ -245,4 +250,4 @@ def train_model(args):
         plt.close(fig) 
 
     # return results
-    return (model_type, bldgname, y_column, imputation_method, feature_method, n_feature, updated_n_feature, time_step, datelevel, rmse, mae, mape, model_file, model_data_path, building_file)
+    return (model_type, bldgname, y_column, imputation_method, feature_method, n_feature, updated_n_feature, time_step, datelevel, rmse, mae, mape, model_file, model_data_path, building_file, selected_features_delimited)

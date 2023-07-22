@@ -27,10 +27,12 @@ def predict_y_column(args, model_data, model, datelevel):
     model_type = args['model_type']
     feature_method = args['feature_method']
     n_feature = args['n_feature']
+    updated_n_feature = args['updated_n_feature']
     time_step = args['time_step']
     header = args['header']
     data_path = args['data_path']
     add_feature = args['add_feature']
+    selected_features_delimited = args['selected_features_delimited']
     exclude_column = args['exclude_column']
     n_fold = args['n_fold']
     train_test_split = args['train_test_split']
@@ -60,8 +62,8 @@ def predict_y_column(args, model_data, model, datelevel):
         add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
         add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
 
-    # identify most important features and eliminate less important features
-    selected_features = feature_engineering(feature_method, n_fold, add_data_scaled, data_scaled, add_feature)
+    # check if selected_features are already saved
+    selected_features = selected_features_delimited.split('|')
 
     # normalize selected features
     add_data_scaled = np.empty((model_data.shape[0], 0))
@@ -73,18 +75,14 @@ def predict_y_column(args, model_data, model, datelevel):
             add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
 
         # ensures that updated_n_feature does not exceed the number of selected features or the number of samples in add_data_scaled
-        min_nfeatures_nsamples = min(add_data_scaled.shape[0], add_data_scaled.shape[1])
-        if updated_n_feature >= min_nfeatures_nsamples:
-            updated_n_feature = min_nfeatures_nsamples
+        max_nfeatures_nsamples = min(add_data_scaled.shape[0], add_data_scaled.shape[1])
+        if updated_n_feature > max_nfeatures_nsamples:
+            updated_n_feature = max_nfeatures_nsamples
 
         # train PCA (Linear Dimensionality Reduction) with multi-feature output
         pca = PCA(n_components=updated_n_feature)
         pca_data = pca.fit_transform(add_data_scaled)
         data_scaled = np.concatenate((data_scaled, pca_data), axis=1)
-    else:
-        # Handle the case where no features are selected
-        updated_n_feature = 0
-
 
     # split the data into training and testing sets
     train_size = int(len(data_scaled) * train_test_split)
