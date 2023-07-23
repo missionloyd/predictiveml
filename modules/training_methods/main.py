@@ -18,7 +18,7 @@ from modules.feature_methods.main import feature_engineering
 from modules.logging_methods.main import logger
 
 # Define the function to process each combination of parameters
-def train_model(args):
+def train_model(args, config):
     model_data_path = args['model_data_path']
     bldgname = args['bldgname']
     building_file = args['building_file']
@@ -30,18 +30,18 @@ def train_model(args):
     updated_n_feature = args['updated_n_feature']
     time_step = args['time_step']
     datelevel = args['datelevel']
-    header = args['header']
-    data_path = args['data_path']
-    add_feature = args['add_feature']
+    header = config['header']
+    data_path = config['data_path']
+    add_feature = config['add_feature']
     selected_features_delimited = args['selected_features_delimited']
-    exclude_column = args['exclude_column']
-    n_fold = args['n_fold']
-    train_test_split = args['train_test_split']
-    minutes_per_model = args['minutes_per_model']
-    memory_limit = args['memory_limit']
+    exclude_column = config['exclude_column']
+    n_fold = config['n_fold']
+    train_test_split = config['train_test_split']
+    minutes_per_model = config['minutes_per_model']
+    memory_limit = config['memory_limit']
     save_model_file = args['save_model_file']
-    save_model_plot = args['save_model_plot']
-    path = args['path']
+    save_model_plot = config['save_model_plot']
+    path = config['path']
 
     # Load model_data separately within each task
     with open(model_data_path, 'rb') as file:

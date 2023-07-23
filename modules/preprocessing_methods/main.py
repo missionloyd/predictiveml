@@ -3,7 +3,7 @@ from modules.imputation_methods.main import imputation
 # from modules.logging_methods.main import logger
 import pickle
 
-def preprocessing(args):
+def preprocessing(args, config):
     updated_arguments = []
 
     building_file = args['building_file']

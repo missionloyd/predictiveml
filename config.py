@@ -30,7 +30,7 @@ def load_config(job_id):
     'update_add_feature': False,
     'save_preprocessed_file': True,
     'save_model_file': False,
-    'save_model_plot': False,
+    'save_model_plot': True,
     'save_at_each_delta': True,
     'n_jobs': -1,
     'batch_size': 8,

@@ -8,7 +8,7 @@ def create_predictions(cli_args, winners_in_file_path, config):
     
     model, model_data, target_row = setup_prediction(cli_args, winners_in_file_path)
     results_dict = {key: value for key, value in zip(results_header, target_row)}
-    args = generate_arg(results_dict, config)
-    y_pred_list, start, end = predict_y_column(args, model_data, model, datelevel)
+    args = generate_arg(results_dict)
+    y_pred_list, start, end = predict_y_column(args, config, model_data, model, datelevel)
 
     return start, end, y_pred_list

@@ -18,7 +18,7 @@ from modules.utils.detect_data_frequency import detect_data_frequency
 from modules.feature_methods.main import feature_engineering
 
 # Define the function to process each combination of parameters
-def predict_y_column(args, model_data, model, datelevel):
+def predict_y_column(args, config, model_data, model, datelevel):
     model_data_path = args['model_data_path']
     bldgname = args['bldgname']
     building_file = args['building_file']
@@ -29,18 +29,19 @@ def predict_y_column(args, model_data, model, datelevel):
     n_feature = args['n_feature']
     updated_n_feature = args['updated_n_feature']
     time_step = args['time_step']
-    header = args['header']
-    data_path = args['data_path']
-    add_feature = args['add_feature']
+    datelevel = args['datelevel']
+    header = config['header']
+    data_path = config['data_path']
+    add_feature = config['add_feature']
     selected_features_delimited = args['selected_features_delimited']
-    exclude_column = args['exclude_column']
-    n_fold = args['n_fold']
-    train_test_split = args['train_test_split']
-    minutes_per_model = args['minutes_per_model']
-    memory_limit = args['memory_limit']
+    exclude_column = config['exclude_column']
+    n_fold = config['n_fold']
+    train_test_split = config['train_test_split']
+    minutes_per_model = config['minutes_per_model']
+    memory_limit = config['memory_limit']
     save_model_file = args['save_model_file']
-    save_model_plot = args['save_model_plot']
-    path = args['path']
+    save_model_plot = config['save_model_plot']
+    path = config['path']
 
     original_datelevel = detect_data_frequency(model_data)
 
