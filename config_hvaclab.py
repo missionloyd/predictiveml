@@ -12,7 +12,7 @@ def load_config(job_id):
   results_file_path = f'{path}/results.csv'
   results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_feature', 'updated_n_feature', 'time_step', 'datelevel', 'rmse', 'mae', 'mape', 'model_file', 'model_data_path', 'building_file', 'selected_features_delimited']
   y_column = ['total_ele (kw)']
-  exclude_column = ['']
+  exclude_column = ['ts', 'bldgname']
   exclude_file = ['']
   file_path = f'{data_path}/data.csv'
   file_list = get_file_names(data_path, exclude_file)

@@ -11,15 +11,15 @@ def load_config(job_id):
   tmp_path = f'{path}/models/tmp'
   results_file_path = f'{path}/results.csv'
   results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_feature', 'updated_n_feature', 'time_step', 'datelevel', 'rmse', 'mae', 'mape', 'model_file', 'model_data_path', 'building_file', 'selected_features_delimited']
-  y_column = ['present_elec_kwh', 'present_htwt_mmbtu', 'present_wtr_usgal', 'present_chll_tonhr', 'present_co2_tons']
-  exclude_column = ['present_co2_tons']
+  y_column = ['present_elec_kwh', 'present_htwt_mmbtu', 'present_wtr_usgal', 'present_chll_tonhr']
+  exclude_column = ['ts', 'bldgname', 'present_co2_tons', 'campus', 'historical_elec_kwh', 'historical_htwt_mmbtu', 'historical_wtr_usgal', 'historical_chll_tonhr', 'historical_co2_tons', 'latitude', 'longitude', 'year', 'month', 'day', 'hour']
   exclude_file = ['Summary_Report_Extended.csv']
   file_path = f'{data_path}/Summary_Report_Extended.csv'
   file_list = get_file_names(data_path, exclude_file)
-  add_feature = get_add_features(file_path, y_column)
+  add_feature = get_add_features(file_path, y_column + exclude_column)
   header = ['ts'] + y_column + add_feature
   n_feature = list(range(1, len(add_feature)))  # start from 1 because sliding window technique will count as a feature
-
+  print(header)
   config = {
     # settings
     'path': path,
@@ -30,7 +30,7 @@ def load_config(job_id):
     'exclude_file': exclude_file,
     'exclude_column': exclude_column,
     'update_add_feature': False,
-    'save_preprocessed_file': True,
+    'save_preprocessed_file': False,
     'save_model_file': False,
     'save_model_plot': False,
     'save_at_each_delta': True,
@@ -43,8 +43,12 @@ def load_config(job_id):
     'header': header,
     'results_header': results_header,
     'selected_features_delimited': '',
-    'y_column_mapping': {
-      'total_ele (kw)': 'electricity',
+    "y_column_mapping": {
+      'present_elec_kwh': 'electricity',
+      'present_htwt_mmbtu': 'hot_water',
+      'present_wtr_usgal': 'water',
+      'present_chll_tonhr': 'chilled_water',
+      'present_co2_tons': 'co2_emissions'
     },
     'directories_to_prune': [
       'logs/api_log',
@@ -59,7 +63,7 @@ def load_config(job_id):
     ],
 
     # preprocessing/training scope
-    'temperature': 0.5,
+    'temperature': -1,
     'model_type': ["xgboost", "solos", "ensembles"],
     'imputation_method': ['linear_regression','linear_interpolation', 'prophet', 'lstm'],
     'feature_method': ['rfecv', 'lassocv'],
