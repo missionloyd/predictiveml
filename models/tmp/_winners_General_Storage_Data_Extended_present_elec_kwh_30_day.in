@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-solos,General Storage,present_elec_kwh,linear_regression,rfecv,4,2,30,day,83.3512691801186,67.80979658535888,0.21657276412540086,./models/solos/General_Storage_Data_Extended_present_elec_kwh_linear_regression_rfecv_4_2_30_day,./models/tmp/General_Storage_Data_Extended_present_elec_kwh_linear_regression,General_Storage_Data_Extended.csv

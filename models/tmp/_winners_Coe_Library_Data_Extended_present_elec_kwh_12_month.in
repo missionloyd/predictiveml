@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-solos,Coe Library,present_elec_kwh,linear_regression,lassocv,1,1,12,month,10088.264077718306,7761.770398136343,0.03312127326381299,./models/solos/Coe_Library_Data_Extended_present_elec_kwh_linear_regression_lassocv_1_1_12_month,./models/tmp/Coe_Library_Data_Extended_present_elec_kwh_linear_regression,Coe_Library_Data_Extended.csv

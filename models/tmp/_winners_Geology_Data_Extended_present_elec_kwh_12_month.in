@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-ensembles,Geology,present_elec_kwh,linear_regression,lassocv,1,1,12,month,926.3190936278847,832.7629698087648,0.06706529033767705,./models/ensembles/Geology_Data_Extended_present_elec_kwh_linear_regression_lassocv_1_1_12_month,./models/tmp/Geology_Data_Extended_present_elec_kwh_linear_regression,Geology_Data_Extended.csv

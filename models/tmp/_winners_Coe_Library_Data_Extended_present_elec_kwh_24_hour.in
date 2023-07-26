@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-xgboost,Coe Library,present_elec_kwh,prophet,rfecv,4,4,24,hour,27.841437204541233,21.488513359819184,0.0693989443985861,./models/xgboost/Coe_Library_Data_Extended_present_elec_kwh_prophet_rfecv_4_4_24_hour,./models/tmp/Coe_Library_Data_Extended_present_elec_kwh_prophet,Coe_Library_Data_Extended.csv

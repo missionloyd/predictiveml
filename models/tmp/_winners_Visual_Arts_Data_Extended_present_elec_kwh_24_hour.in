@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-ensembles,Visual Arts,present_elec_kwh,linear_interpolation,rfecv,4,4,24,hour,10.449686033382758,8.108679133506158,0.10619460919155119,./models/ensembles/Visual_Arts_Data_Extended_present_elec_kwh_linear_interpolation_rfecv_4_4_24_hour,./models/tmp/Visual_Arts_Data_Extended_present_elec_kwh_linear_interpolation,Visual_Arts_Data_Extended.csv

@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-xgboost,Physical Science,present_elec_kwh,linear_interpolation,lassocv,6,4,1,year,333786.15941769915,327166.73076923005,0.12655110076815465,./models/xgboost/Physical_Science_Data_Extended_present_elec_kwh_linear_interpolation_lassocv_6_4_1_year,./models/tmp/Physical_Science_Data_Extended_present_elec_kwh_linear_interpolation,Physical_Science_Data_Extended.csv

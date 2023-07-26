@@ -12,13 +12,14 @@ from sklearn.decomposition import PCA
 from autosklearn.regression import AutoSklearnRegressor
 from modules.logging_methods.main import logger
 import xgboost as xgb
+from datetime import datetime
 
 from modules.utils.resample_data import resample_data
 from modules.utils.detect_data_frequency import detect_data_frequency
 from modules.feature_methods.main import feature_engineering
 
 # Define the function to process each combination of parameters
-def predict_y_column(args, model_data, model, datelevel):
+def predict_y_column(args, startDateTime, endDateTime, config, model_data, model, datelevel):
     model_data_path = args['model_data_path']
     bldgname = args['bldgname']
     building_file = args['building_file']
@@ -27,18 +28,21 @@ def predict_y_column(args, model_data, model, datelevel):
     model_type = args['model_type']
     feature_method = args['feature_method']
     n_feature = args['n_feature']
+    updated_n_feature = args['updated_n_feature']
     time_step = args['time_step']
-    header = args['header']
-    data_path = args['data_path']
-    add_feature = args['add_feature']
-    exclude_column = args['exclude_column']
-    n_fold = args['n_fold']
-    train_test_split = args['train_test_split']
-    minutes_per_model = args['minutes_per_model']
-    memory_limit = args['memory_limit']
+    datelevel = args['datelevel']
+    header = config['header']
+    data_path = config['data_path']
+    add_feature = config['add_feature']
+    selected_features_delimited = args['selected_features_delimited']
+    exclude_column = config['exclude_column']
+    n_fold = config['n_fold']
+    train_test_split = config['train_test_split']
+    minutes_per_model = config['minutes_per_model']
+    memory_limit = config['memory_limit']
     save_model_file = args['save_model_file']
-    save_model_plot = args['save_model_plot']
-    path = args['path']
+    save_model_plot = config['save_model_plot']
+    path = config['path']
 
     original_datelevel = detect_data_frequency(model_data)
 
@@ -60,8 +64,8 @@ def predict_y_column(args, model_data, model, datelevel):
         add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
         add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
 
-    # identify most important features and eliminate less important features
-    selected_features = feature_engineering(feature_method, n_fold, add_data_scaled, data_scaled, add_feature)
+    # check if selected_features are already saved
+    selected_features = selected_features_delimited.split('|')
 
     # normalize selected features
     add_data_scaled = np.empty((model_data.shape[0], 0))
@@ -73,18 +77,14 @@ def predict_y_column(args, model_data, model, datelevel):
             add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
 
         # ensures that updated_n_feature does not exceed the number of selected features or the number of samples in add_data_scaled
-        min_nfeatures_nsamples = min(add_data_scaled.shape[0], add_data_scaled.shape[1])
-        if updated_n_feature >= min_nfeatures_nsamples:
-            updated_n_feature = min_nfeatures_nsamples
+        max_nfeatures_nsamples = min(add_data_scaled.shape[0], add_data_scaled.shape[1])
+        if updated_n_feature > max_nfeatures_nsamples:
+            updated_n_feature = max_nfeatures_nsamples
 
         # train PCA (Linear Dimensionality Reduction) with multi-feature output
         pca = PCA(n_components=updated_n_feature)
         pca_data = pca.fit_transform(add_data_scaled)
         data_scaled = np.concatenate((data_scaled, pca_data), axis=1)
-    else:
-        # Handle the case where no features are selected
-        updated_n_feature = 0
-
 
     # split the data into training and testing sets
     train_size = int(len(data_scaled) * train_test_split)
@@ -131,7 +131,9 @@ def predict_y_column(args, model_data, model, datelevel):
     # for i, consumption in enumerate(y_pred_list):
     #     print(f"Hour {i+1}: {consumption} kWh")
 
-    start = model_data['ds'].iloc[0]
-    end = model_data['ds'].iloc[-1]
+    start = datetime.strptime(startDateTime, config['datetime_format']) or model_data['ds'].iloc[0]
+    end = datetime.strptime(endDateTime, config['datetime_format']) or model_data['ds'].iloc[-1]
+
+    print(start,end)
 
     return y_pred_list, start, end

@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-solos,Biological Sciences,present_chll_tonhr,linear_regression,rfecv,1,1,12,month,1306.6240859395698,1185.0239517770385,0.29258274275463403,./models/solos/Biological_Sciences_Data_Extended_present_chll_tonhr_linear_regression_rfecv_1_1_12_month,./models/tmp/Biological_Sciences_Data_Extended_present_chll_tonhr_linear_regression,Biological_Sciences_Data_Extended.csv

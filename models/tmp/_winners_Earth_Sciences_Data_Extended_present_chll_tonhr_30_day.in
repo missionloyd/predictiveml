@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-solos,Earth Sciences,present_chll_tonhr,linear_regression,lassocv,2,2,30,day,27.49294082825148,20.326984545178025,0.43751509582754466,./models/solos/Earth_Sciences_Data_Extended_present_chll_tonhr_linear_regression_lassocv_2_2_30_day,./models/tmp/Earth_Sciences_Data_Extended_present_chll_tonhr_linear_regression,Earth_Sciences_Data_Extended.csv

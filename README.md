@@ -47,9 +47,12 @@ python3 -c "import tensorflow as tf; print(tf.reduce_sum(tf.random.normal([1000,
 ```
 
 ## Usage
-1. Place preprocessed CSV files in a local data folder (e.g., `./clean_data_extended/`).
-2. Verify `config.py` to ensure it has the correct configurations for your project.
-3. Run the script with the following command:
+1. Place preprocessed CSV files in a local data folder and call it data.csv (e.g., `./data/data.csv`).
+2. Create/assign an explicit 'bldgname' column.
+3. Create/assign an explicit 'ts' column.
+4. Verify `config.py` to ensure it has the correct configurations for your project.
+    a. Make sure 'save_preprocessed_file' is set to True for first time preprocessing.
+5. Run the script with the following command:
 
 - To run Flask App
 ```shell

@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-xgboost,Biological Sciences,present_chll_tonhr,linear_regression,rfecv,2,1,30,day,32.42559932306586,24.746000084916503,0.1969490646161833,./models/xgboost/Biological_Sciences_Data_Extended_present_chll_tonhr_linear_regression_rfecv_2_1_30_day,./models/tmp/Biological_Sciences_Data_Extended_present_chll_tonhr_linear_regression,Biological_Sciences_Data_Extended.csv

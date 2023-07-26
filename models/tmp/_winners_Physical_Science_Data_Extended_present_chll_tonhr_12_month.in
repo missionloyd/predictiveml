@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-ensembles,Physical Science,present_chll_tonhr,linear_regression,lassocv,1,1,12,month,2974.072918694977,2539.0718321437407,0.993634381865882,./models/ensembles/Physical_Science_Data_Extended_present_chll_tonhr_linear_regression_lassocv_1_1_12_month,./models/tmp/Physical_Science_Data_Extended_present_chll_tonhr_linear_regression,Physical_Science_Data_Extended.csv

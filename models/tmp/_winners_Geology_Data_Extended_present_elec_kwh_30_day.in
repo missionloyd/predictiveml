@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-xgboost,Geology,present_elec_kwh,linear_regression,lassocv,6,4,30,day,81.10220826110368,63.563998438335226,0.17864285670207689,./models/xgboost/Geology_Data_Extended_present_elec_kwh_linear_regression_lassocv_6_4_30_day,./models/tmp/Geology_Data_Extended_present_elec_kwh_linear_regression,Geology_Data_Extended.csv

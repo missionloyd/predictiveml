@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-ensembles,Energy Innovation Center,present_chll_tonhr,lstm,lassocv,7,1,30,day,1.9760324125191542,1.493590972835028,0.11911787802755275,./models/ensembles/Energy_Innovation_Center_Data_Extended_present_chll_tonhr_lstm_lassocv_7_1_30_day,./models/tmp/Energy_Innovation_Center_Data_Extended_present_chll_tonhr_lstm,Energy_Innovation_Center_Data_Extended.csv

@@ -3,28 +3,27 @@ from modules.imputation_methods.main import imputation
 # from modules.logging_methods.main import logger
 import pickle
 
-def preprocessing(args):
+def preprocessing(args, config):
     updated_arguments = []
 
     building_file = args['building_file']
     y_column = args['y_column']
     imputation_method = args['imputation_method']
-    header = args['header']
-    data_path = args['data_path']
-    tmp_path = args['tmp_path']
-    exclude_column = args['exclude_column']
-    save_preprocessed_file = args['save_preprocessed_file']
-    train_test_split = args['train_test_split']
-    train_ratio_threshold = args['train_ratio_threshold']
-    test_ratio_threshold = args['test_ratio_threshold']
-    exclude_file = args['exclude_file']
 
-    # logger(args)
+    header = config['header']
+    data_path = config['data_path']
+    tmp_path = config['tmp_path']
+    exclude_column = config['exclude_column']
+    save_preprocessed_file = config['save_preprocessed_file']
+    train_test_split = config['train_test_split']
+    train_ratio_threshold = config['train_ratio_threshold']
+    test_ratio_threshold = config['test_ratio_threshold']
+    exclude_file = config['exclude_file']
+    startDateTime = config['startDateTime']
+    endDateTime = config['endDateTime']
 
     model_data_path = ''
-
     df = pd.read_csv(f'{data_path}/{building_file}')
-
     # Convert the data into a Pandas dataframe
     df['ts'] = pd.to_datetime(df['ts'])
     df = df.drop_duplicates(subset=['bldgname', 'ts'])
@@ -33,6 +32,10 @@ def preprocessing(args):
     # Group the dataframe by building name and timestamp
     groups = df.groupby('bldgname')
     df = df.set_index('ts')
+
+    # Filter the dataframe to include data within the startDateTime and endDateTime
+    if startDateTime and endDateTime:
+        df = df.loc[(df.index >= startDateTime) & (df.index <= endDateTime)]
 
     # Cycle through building names if more than one building per file
     for name, group in groups:
@@ -67,7 +70,7 @@ def preprocessing(args):
 
                 with open(model_data_path, 'wb') as file:
                     pickle.dump(model_data, file)
-
+                    
             updated_arg = {
                 'building_file': building_file,
                 'y_column': y_column,

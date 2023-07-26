@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-xgboost,Stadium,present_elec_kwh,linear_interpolation,lassocv,5,4,1,year,179929.90253151365,178511.0,0.15182553553718184,./models/xgboost/Stadium_Data_Extended_present_elec_kwh_linear_interpolation_lassocv_5_4_1_year,./models/tmp/Stadium_Data_Extended_present_elec_kwh_linear_interpolation,Stadium_Data_Extended.csv

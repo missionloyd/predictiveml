@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-xgboost,Half Acre Gym,present_elec_kwh,prophet,rfecv,2,2,24,hour,27.741055685398802,19.09194434906073,0.2733227366256313,./models/xgboost/Half_Acre_Gym_Data_Extended_present_elec_kwh_prophet_rfecv_2_2_24_hour,./models/tmp/Half_Acre_Gym_Data_Extended_present_elec_kwh_prophet,Half_Acre_Gym_Data_Extended.csv

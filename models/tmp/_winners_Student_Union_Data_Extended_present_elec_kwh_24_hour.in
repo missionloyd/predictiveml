@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-xgboost,Student Union,present_elec_kwh,prophet,lassocv,6,6,24,hour,28.433382802004786,18.293867748240782,0.1775011456801778,./models/xgboost/Student_Union_Data_Extended_present_elec_kwh_prophet_lassocv_6_6_24_hour,./models/tmp/Student_Union_Data_Extended_present_elec_kwh_prophet,Student_Union_Data_Extended.csv

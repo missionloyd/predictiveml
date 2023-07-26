@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file
-xgboost,Indoor Practice Facility,present_elec_kwh,linear_regression,lassocv,7,1,1,year,41031.2271815605,40761.629074223514,0.1914884255622896,./models/xgboost/Indoor_Practice_Facility_Data_Extended_present_elec_kwh_linear_regression_lassocv_7_1_1_year,./models/tmp/Indoor_Practice_Facility_Data_Extended_present_elec_kwh_linear_regression,Indoor_Practice_Facility_Data_Extended.csv
