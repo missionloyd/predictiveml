@@ -4,6 +4,7 @@ import os, time, json
 from flask import Flask, url_for, jsonify, request, render_template
 from flask_socketio import SocketIO
 from flask_cors import CORS
+from modules.utils.prune_app import prune
 
 app = Flask(__name__, template_folder="templates")
 CORS(app, origins='http://localhost:3000')
@@ -194,14 +195,14 @@ def run_forecast():
     # Extract parameters from the request body
     # y_column = request.json.get('y_column')
     building_file = request.json.get('building_file')
-    # startDate = request.json.get('startDate') 
-    # endDate = request.json.get('endDate') 
+    # startDateTime = request.json.get('startDateTime') 
+    # endDateTime = request.json.get('endDateTime') 
     time_step = request.json.get('time_step')
     datelevel = request.json.get('datelevel') 
     # table = request.json.get('table')
 
     # Create a key tuple from the input arguments
-    # key = (y_column, building_file, startDate, endDate, time_step, datelevel, table)
+    # key = (y_column, building_file, startDateTime, endDateTime, time_step, datelevel, table)
     # key = (building_file, time_step, datelevel)
 
     # # Check if the key exists in the previous results
@@ -289,4 +290,5 @@ def get_log_content(log_type, subpath):
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=8080, threaded=True)
+    prune()
+    socketio.run(app, host='0.0.0.0', port=8080)

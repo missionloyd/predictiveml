@@ -15,8 +15,6 @@ def predict(cli_args, winners_in_file_path, config):
     datelevel = cli_args['datelevel']
     datelevel = cli_args['datelevel']
     time_step = str(cli_args['time_step'])
-    # startDate = cli_args['startDate'] or config['startDate']
-    # endDate = cli_args['endDate'] or config['endDate']
     y_pred_lists = []
     results = []
 
@@ -27,7 +25,7 @@ def predict(cli_args, winners_in_file_path, config):
             
             if not os.path.exists(winners_in_file): continue
             
-            start, end, y_pred_list = create_predictions(cli_args, winners_in_file, config)
+            start, end, y_pred_list = create_predictions(cli_args, config['startDateTime'], config['endDateTime'], winners_in_file, config)
             y_pred_lists.append((y_column, y_pred_list))
 
             len_y_pred_list = len(y_pred_list)
@@ -39,7 +37,7 @@ def predict(cli_args, winners_in_file_path, config):
             logger(f"This configuration must be trained on prior to making a prediction.")
             return results
         
-        start, end, y_pred_list = create_predictions(cli_args, winners_in_file, config)
+        start, end, y_pred_list = create_predictions(cli_args, config['startDateTime'], config['endDateTime'], winners_in_file, config)
         y_column = cli_args['y_column']
         y_pred_lists.append((y_column, y_pred_list))
 

@@ -2,7 +2,7 @@ import logging_config
 import csv
 import pickle
 import sys
-import logging
+import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -42,6 +42,11 @@ def train_model(args, config):
     save_model_file = args['save_model_file']
     save_model_plot = config['save_model_plot']
     path = config['path']
+
+    # Check if the file exists
+    if not os.path.exists(model_data_path):
+        logger("File not found. Please set save_preprocessed_file: True and run with --preprocess")
+        sys.exit()
 
     # Load model_data separately within each task
     with open(model_data_path, 'rb') as file:

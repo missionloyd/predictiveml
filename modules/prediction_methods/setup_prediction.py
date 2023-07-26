@@ -14,8 +14,8 @@ def setup_prediction(cli_args, winners_in_file_path):
     # Create a dictionary or DataFrame with the preprocessed query
     building_file = cli_args['building_file'].replace('.csv', '')
     y_column = cli_args['y_column']
-    startDate = cli_args['startDate']
-    endDate = cli_args['endDate']
+    startDateTime = cli_args['startDateTime']
+    endDateTime = cli_args['endDateTime']
     datelevel = cli_args['datelevel']
     time_step = str(cli_args['time_step'])
     table = cli_args['table']

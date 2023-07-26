@@ -12,13 +12,14 @@ from sklearn.decomposition import PCA
 from autosklearn.regression import AutoSklearnRegressor
 from modules.logging_methods.main import logger
 import xgboost as xgb
+from datetime import datetime
 
 from modules.utils.resample_data import resample_data
 from modules.utils.detect_data_frequency import detect_data_frequency
 from modules.feature_methods.main import feature_engineering
 
 # Define the function to process each combination of parameters
-def predict_y_column(args, config, model_data, model, datelevel):
+def predict_y_column(args, startDateTime, endDateTime, config, model_data, model, datelevel):
     model_data_path = args['model_data_path']
     bldgname = args['bldgname']
     building_file = args['building_file']
@@ -130,7 +131,9 @@ def predict_y_column(args, config, model_data, model, datelevel):
     # for i, consumption in enumerate(y_pred_list):
     #     print(f"Hour {i+1}: {consumption} kWh")
 
-    start = model_data['ds'].iloc[0]
-    end = model_data['ds'].iloc[-1]
+    start = datetime.strptime(startDateTime, config['datetime_format']) or model_data['ds'].iloc[0]
+    end = datetime.strptime(endDateTime, config['datetime_format']) or model_data['ds'].iloc[-1]
+
+    print(start,end)
 
     return y_pred_list, start, end
