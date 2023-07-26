@@ -7,14 +7,14 @@ def load_config(job_id):
   setup_logger(job_id or 0)
 
   path = '.'
-  data_path = f'{path}/data'
+  data_path = f'{path}/building_data'
   tmp_path = f'{path}/models/tmp'
   results_file_path = f'{path}/results.csv'
   results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_feature', 'updated_n_feature', 'time_step', 'datelevel', 'rmse', 'mae', 'mape', 'model_file', 'model_data_path', 'building_file', 'selected_features_delimited']
-  y_column = ['total_ele (kw)']
-  exclude_column = ['']
-  exclude_file = ['']
-  file_path = f'{data_path}/data.csv'
+  y_column = ['present_elec_kwh', 'present_htwt_mmbtu', 'present_wtr_usgal', 'present_chll_tonhr', 'present_co2_tons']
+  exclude_column = ['present_co2_tons']
+  exclude_file = ['Summary_Report_Extended.csv']
+  file_path = f'{data_path}/Summary_Report_Extended.csv'
   file_list = get_file_names(data_path, exclude_file)
   add_feature = get_add_features(file_path, y_column)
   header = ['ts'] + y_column + add_feature
@@ -59,18 +59,18 @@ def load_config(job_id):
     ],
 
     # preprocessing/training scope
-    'temperature': -1,
+    'temperature': 0.5,
     'model_type': ["xgboost", "solos", "ensembles"],
     'imputation_method': ['linear_regression','linear_interpolation', 'prophet', 'lstm'],
     'feature_method': ['rfecv', 'lassocv'],
     'datelevel': ['hour'],
     'time_step': [1],             # window size of the sliding window technique and unit length of forecasts
-    'train_test_split': 0.8,
-    'train_ratio_threshold': 0.8, # minimum percent non-nans in training set
-    'test_ratio_threshold': 0.8,  # minimum percent non-nans in testing set
-    'datetime_format': '%m/%d/%Y %H:%M',
-    'startDateTime': '',
-    'endDateTime': '',
+    'train_test_split': 0.7,
+    'train_ratio_threshold': 0.7, # minimum percent non-nans in training set
+    'test_ratio_threshold': 0.7,  # minimum percent non-nans in testing set
+    'datetime_format': '%Y-%m-%dT%H:%M:%S',
+    'startDateTime': '2019-09-19T00:00:00',
+    'endDateTime': '2023-02-04T16:00:00',
         
     # hyperparameters
     'n_feature': n_feature,
