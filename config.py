@@ -19,7 +19,7 @@ def load_config(job_id):
   add_feature = get_add_features(file_path, y_column + exclude_column)
   header = ['ts'] + y_column + add_feature
   n_feature = list(range(1, len(add_feature)))  # start from 1 because sliding window technique will count as a feature
-  print(header)
+
   config = {
     # settings
     'path': path,
