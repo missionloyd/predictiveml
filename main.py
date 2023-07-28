@@ -12,6 +12,7 @@ from modules.utils.create_args import create_args
 from modules.utils.process_batch_args import process_batch_args
 from modules.utils.prune import prune
 from modules.preprocessing_methods.main import preprocessing
+from modules.utils.adaptive_sampling import adaptive_sampling
 from weather_utils.main import build_extended_clean_data
 from modules.utils.match_args import match_args
 from modules.training_methods.main import train_model
@@ -45,7 +46,8 @@ def main(cli_args, job_id_flag, prune_flag, preprocess_flag, train_flag, save_fl
 
         if preprocess_flag:
             # Generate a list of arguments for model training
-            args, preprocess_args, config = create_args(config, cli_args)
+            args, preprocess_args, config = create_args(cli_args, config)
+            args = adaptive_sampling(args, config)
 
             # Update files with add_features (weather)
             if update_add_feature:
@@ -135,7 +137,6 @@ if __name__ == '__main__':
         'datelevel': args.datelevel,
         'time_step': args.time_step,
         'table': args.table,
-        'temperature': args.temperature
     }
 
     if predict_flag:

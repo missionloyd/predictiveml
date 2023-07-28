@@ -63,23 +63,24 @@ def load_config(job_id):
     ],
 
     # preprocessing/training scope
-    'temperature': -1,
     'model_type': ["xgboost", "solos", "ensembles"],
-    'imputation_method': ['linear_regression','linear_interpolation', 'prophet', 'lstm'],
+    'imputation_method': ['linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
     'feature_method': ['rfecv', 'lassocv'],
     'datelevel': ['hour'],
-    'time_step': [1],             # window size of the sliding window technique and unit length of forecasts
+    'time_step': [24],            # window size of the sliding window technique and unit length of forecasts
     'train_test_split': 0.7,
     'train_ratio_threshold': 0.7, # minimum percent non-nans in training set
     'test_ratio_threshold': 0.7,  # minimum percent non-nans in testing set
     'datetime_format': '%Y-%m-%dT%H:%M:%S',
-    'startDateTime': '2019-09-19T00:00:00',
-    'endDateTime': '2023-02-04T16:00:00',
+    'startDateTime': '',
+    'endDateTime': '2023-02-04T00:00:00',
         
     # hyperparameters
     'n_feature': n_feature,
     'n_fold': 5,                
     'minutes_per_model': 2,
+    'temperature': -1,
+    'target_error': 'mape'
   }
 
   return config

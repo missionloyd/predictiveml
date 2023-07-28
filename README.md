@@ -129,11 +129,7 @@ The CSV files should contain the following columns:
 
 - ts: Timestamps in YYYY-MM-DD HH:MM:SS format.
 - bldgname: Building names.
-- present_elec_kwh: Present electric usage in kWh.
-- present_htwt_mmbtu: Present heating/cooling usage in MMBTU.
-- present_wtr_usgal: Present water usage in US gallons.
-- present_chll_tonhr: Present chiller usage in ton-hour.
-- present_co2_tons: Present CO2 emissions in tons.
+- (Dependent variables aka y_column(s))
 - (Optional additional features)
 
 The data is first converted into a Pandas dataframe, sorted by building name and timestamp, and grouped by building name.
@@ -158,3 +154,8 @@ The trained models are evaluated using various metrics, including:
 
 ## Results
 The trained models are saved as .pkl files in the ./models/ folder. The evaluation metrics are saved in the root project directory in results.csv
+
+## Adaptive Sampling (Temperature Config)
+The temperature parameter in the adaptive_sampling function influences the number of data points selected for both exploration and exploitation during the optimization process. It determines the number of data points considered for exploration (random sampling) and exploitation (selecting the best solutions) within each group. A higher temperature value increases the number of data points considered for both exploration and exploitation, while a lower temperature value reduces this number. Be aware that the actual number of data points available for exploration can be limited if the exploitation step uses most of the data points in a group.
+
+Please note that once the temperature is lowered, it has a 'sticky' effect. The number of results will continue to correlate with the lowest temperature value used unless it is reset. If you wish to increase the temperature after lowering it, you will need to reset it to -1 before setting it to your desired higher value to achieve the expected number of results.

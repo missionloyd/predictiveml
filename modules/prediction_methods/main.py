@@ -8,7 +8,11 @@ def predict(cli_args, winners_in_file_path, config):
     # Replace 'None' values in cli_args with corresponding values from config
     for key, value in cli_args.items():
         if value is None and key in config:
-            cli_args[key] = config[key][0]
+            config_value = config[key]
+            if isinstance(config_value, list) and len(config_value) > 0:
+                cli_args[key] = config_value[0]
+            else:
+                cli_args[key] = config_value
 
     building_file = cli_args['building_file'].replace('.csv', '')
     y_column_mapping = config['y_column_mapping']
@@ -34,7 +38,7 @@ def predict(cli_args, winners_in_file_path, config):
         winners_in_file = f'{winners_in_file_path}/_winners.in'
 
         if not os.path.exists(winners_in_file): 
-            logger(f"This configuration must be trained on prior to making a prediction.")
+            logger(f"This configuration must be trained on and saved prior to making a prediction.")
             return results
         
         start, end, y_pred_list = create_predictions(cli_args, config['startDateTime'], config['endDateTime'], winners_in_file, config)

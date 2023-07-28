@@ -131,9 +131,16 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
     # for i, consumption in enumerate(y_pred_list):
     #     print(f"Hour {i+1}: {consumption} kWh")
 
-    start = datetime.strptime(startDateTime, config['datetime_format']) or model_data['ds'].iloc[0]
-    end = datetime.strptime(endDateTime, config['datetime_format']) or model_data['ds'].iloc[-1]
+    # Checking if startDateTime is a non-empty string
+    if len(startDateTime) > 0:
+        start = datetime.strptime(startDateTime, config['datetime_format'])
+    else:
+        start = model_data['ds'].iloc[0]
 
-    print(start,end)
+    # Checking if endDateTime is a non-empty string
+    if len(endDateTime) > 0:
+        end = datetime.strptime(endDateTime, config['datetime_format'])
+    else:
+        end = model_data['ds'].iloc[-1]
 
     return y_pred_list, start, end

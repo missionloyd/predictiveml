@@ -16,7 +16,7 @@ def load_config(job_id):
   exclude_file = ['']
   file_path = f'{data_path}/data.csv'
   file_list = get_file_names(data_path, exclude_file)
-  add_feature = get_add_features(file_path, y_column)
+  add_feature = get_add_features(file_path, y_column + exclude_column)
   header = ['ts'] + y_column + add_feature
   n_feature = list(range(1, len(add_feature)))  # start from 1 because sliding window technique will count as a feature
 
@@ -59,9 +59,8 @@ def load_config(job_id):
     ],
 
     # preprocessing/training scope
-    'temperature': -1,
     'model_type': ["xgboost", "solos", "ensembles"],
-    'imputation_method': ['linear_regression','linear_interpolation', 'prophet', 'lstm'],
+    'imputation_method': ['linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
     'feature_method': ['rfecv', 'lassocv'],
     'datelevel': ['hour'],
     'time_step': [1],             # window size of the sliding window technique and unit length of forecasts
@@ -76,6 +75,8 @@ def load_config(job_id):
     'n_feature': n_feature,
     'n_fold': 5,                
     'minutes_per_model': 2,
+    'temperature': -1,
+    'target_error': 'mape'
   }
 
   return config

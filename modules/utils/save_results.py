@@ -1,8 +1,10 @@
 import csv
+import pandas as pd
 from modules.logging_methods.main import logger
 
 def save_winners_in(results_file_path, winners_in_file_path, config):
     results_header = config['results_header']
+    target_error = config['target_error']
 
     # Load results from the file
     results = []
@@ -21,7 +23,7 @@ def save_winners_in(results_file_path, winners_in_file_path, config):
         y_column_index = results_header.index('y_column')
         time_step_index = results_header.index('time_step')
         datelevel_index = results_header.index('datelevel')
-        mape_index = results_header.index('mape')
+        target_error_index = results_header.index(target_error)
         
         # Group the rows by bldgname and y_column
         rows_by_bldgname_y_column_timestep_datelevel = {}
@@ -30,7 +32,7 @@ def save_winners_in(results_file_path, winners_in_file_path, config):
             y_column = row[y_column_index]
             time_step = row[time_step_index]
             datelevel = row[datelevel_index]
-            error = row[mape_index]
+            error = row[target_error_index]
 
             key = (building_file, y_column, time_step, datelevel)
             if key not in rows_by_bldgname_y_column_timestep_datelevel:
@@ -83,16 +85,32 @@ def save_preprocessed_args_results(file_path, results):
 
     return
 
+
+def remove_duplicate_rows_by_target_error(rows, results_header, key):
+    # Convert the list of rows to a DataFrame
+    df = pd.DataFrame(rows, columns=results_header)
+
+    # Drop duplicate rows based on the specified 'key' while keeping the first occurrence
+    df = df.drop_duplicates(subset=key, keep='first')
+
+    # Reorder the DataFrame to match the original order
+    df = df[results_header]
+
+    # Convert the DataFrame back to a list of rows and return
+    return df.values.tolist()
+
 def save_training_results(file_path, results, config):
     results_header = config['results_header']
+    target_error = config['target_error']  # Assuming target_error is a list of column names
+    key = ['datelevel', 'time_step'] + [target_error]
 
-    # Convert the results to a set to remove any duplicates
-    results = set(results)
+    # Remove duplicates based on the specified key
+    results = remove_duplicate_rows_by_target_error(results, results_header, key)
 
-    with open(f'{file_path}', mode='w') as results_file:
+    with open(f'{file_path}', mode='w', newline='') as results_file:
         writer = csv.writer(results_file)
-    
         writer.writerow(results_header)
         writer.writerows(results)
 
     return
+

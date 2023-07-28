@@ -1,5 +1,4 @@
-import pickle, csv, os
-import pandas as pd
+import pickle, csv, sys
 from modules.logging_methods.main import logger
 
 # Load the pickled model or preprocessed query
@@ -53,5 +52,5 @@ def setup_prediction(cli_args, winners_in_file_path):
 
         return model, model_data, target_row
     else:
-        logger(f"No row found with building_file '{building_file}.csv', y_column '{y_column}', time_step '{time_step}', datelevel '{datelevel}'.")
-        return []
+        logger(f"\nNo row found with building_file '{building_file}.csv', y_column '{y_column}', time_step '{time_step}', datelevel '{datelevel}'.\nTry setting 'temperature' to -1 or adjusting preprocessing/training scope settings in the config.\n")
+        sys.exit()
