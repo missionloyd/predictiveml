@@ -1,14 +1,11 @@
-import json, sys, warnings, os
 from modules.utils.get_file_names import get_file_names
-from modules.logging_methods.main import setup_logger
 from modules.utils.get_add_features import get_add_features
 
-def load_config(job_id):
-  setup_logger(job_id or 0)
-
+def load_config():
   path = '.'
   data_path = f'{path}/hvaclab_data'
   tmp_path = f'{path}/models/tmp'
+  log_path = f'{path}/logs'
   results_file_path = f'{path}/results.csv'
   results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_feature', 'updated_n_feature', 'time_step', 'datelevel', 'rmse', 'mae', 'mape', 'model_file', 'model_data_path', 'building_file', 'selected_features_delimited']
   y_column = ['total_ele (kw)']
@@ -18,13 +15,16 @@ def load_config(job_id):
   file_list = get_file_names(data_path, exclude_file)
   add_feature = get_add_features(file_path, y_column + exclude_column)
   header = ['ts'] + y_column + add_feature
-  n_feature = list(range(1, len(add_feature)))  # start from 1 because sliding window technique will count as a feature
+  n_feature = list(range(0, len(add_feature)))
 
   config = {
     # settings
+    'job_id': 0,
+    'table': '',
     'path': path,
     'data_path': data_path,
     'tmp_path': tmp_path,
+    'log_path': log_path,
     'results_file_path': results_file_path,
     'building_file': file_list,
     'exclude_file': exclude_file,
@@ -59,8 +59,8 @@ def load_config(job_id):
     ],
 
     # preprocessing/training scope
-    'model_type': ["xgboost", "solos", "ensembles"],
-    'imputation_method': ['linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
+    'model_type': ["xgboost"],
+    'imputation_method': ['linear_interpolation'],
     'feature_method': ['rfecv', 'lassocv'],
     'datelevel': ['hour'],
     'time_step': [1],             # window size of the sliding window technique and unit length of forecasts

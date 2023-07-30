@@ -104,11 +104,11 @@ save_model_file: Boolean indicating whether to save the trained models as .pkl f
 - save_model_plot: Boolean indicating whether to save the model plots. The default value is False.
 - min_number_of_days: Minimum number of days required for a column to be considered for training. The default value is 365.
 - memory_limit: Memory limit (in KB) for the AutoSklearnRegressor. The default value is 102400.
-- exclude_column: The column to exclude from training. The default value is 'present_co2_tons'.
+- exclude_column: The column to exclude from training. The default value is 'present_co2_tonh'.
 - warnings.filterwarnings("ignore"): Ignore warnings during execution.
 
 ### Data Preprocessing
-- y_columns: List of energy usage column names. The default value is ['present_elec_kwh', 'present_htwt_mmbtu', 'present_wtr_usgal', 'present_chll_tonhr', 'present_co2_tons'].
+- y_columns: List of energy usage column names. The default value is ['present_elec_kwh', 'present_htwt_mmbtuh', 'present_wtr_usgal', 'present_chll_tonh', 'present_co2_tonh'].
 - add_features: List of additional features to include in the model. The default value is ['temp_c', 'rel_humidity_%', 'surface_pressure_hpa', 'cloud_cover_%', 'direct_radiation_w/m2', 'precipitation_mm', 'wind_speed_ground_km/h', 'wind_dir_ground_deg'].
 - header: List of column names in the preprocessed CSV files. The default value is ['ts'] + y_columns + add_features.
 
@@ -139,7 +139,7 @@ The data is then split into training and testing sets, and normalized using MinM
 ## Model Training
 For each building and each energy usage column, the script trains an AutoML model using AutoSklearnRegressor.
 
-If the number of data points for an energy usage column is at least 1 year (365 days) long and the energy usage column is not present_co2_tons, missing values are filled using Prophet.
+If the number of data points for an energy usage column is at least 1 year (365 days) long and the energy usage column is not present_co2_tonh, missing values are filled using Prophet.
 
 The AutoML models are trained on a sliding window of the training data using various time steps specified in time_steps.
 

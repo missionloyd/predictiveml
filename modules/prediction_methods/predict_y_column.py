@@ -49,9 +49,6 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
     # This code aggregates and resamples a DataFrame based on given datelevel
     model_data = resample_data(model_data, datelevel, original_datelevel)
 
-    # Save original n_feature value
-    updated_n_feature = n_feature
-
     # normalize the data, save orginal data column for graphing later
     scaler = StandardScaler()
     data_scaled = scaler.fit_transform(model_data['y'].values.reshape(-1, 1))
@@ -70,7 +67,7 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
     # normalize selected features
     add_data_scaled = np.empty((model_data.shape[0], 0))
 
-    if len(selected_features) > 0:
+    if len(selected_features) > 0 and updated_n_feature > 0:
         for feature in selected_features:
             feature_scaler = StandardScaler()
             add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))

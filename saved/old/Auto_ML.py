@@ -36,7 +36,7 @@ for model_type in model_types:
         df = df.set_index('ts')
 
         orig_cols = df.columns
-        y_columns = ['present_elec_kwh', 'present_htwt_mmbtu', 'present_wtr_usgal', 'present_chll_tonhr', 'present_co2_tons']
+        y_columns = ['present_elec_kwh', 'present_htwt_mmbtuh', 'present_wtr_usgal', 'present_chll_tonh', 'present_co2_tonh']
         header = ['ts'] + y_columns
 
         print(building)
@@ -48,7 +48,7 @@ for model_type in model_types:
 
             for y in y_columns:
                 model_data = group[header]
-                if model_data[y].count() >= 365*24 and y != 'present_co2_tons':
+                if model_data[y].count() >= 365*24 and y != 'present_co2_tonh':
 
                     model_data = model_data.rename(columns={ y: 'y', 'ts': 'ds' })
                     model_data = model_data.sort_values(['ds'])

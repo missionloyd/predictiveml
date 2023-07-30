@@ -1,6 +1,6 @@
 import pandas as pd
 
-def format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step):
+def format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step, target_row, results_header):
     # Assuming datelevel is a string representing the desired level of grouping: 'hour', 'day', 'month', or 'year'
     if datelevel == 'hour':
         freq = 'H'
@@ -20,6 +20,16 @@ def format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_li
     end = end + offset  # Add the offset to the end date
     timestamp = pd.date_range(end=end, periods=len_y_pred_list, freq=freq)
     aggregated_data = pd.DataFrame({'timestamp': timestamp})
+
+    # Extract the bldgname from target_row using results_header
+    bldgname_index = results_header.index('bldgname')
+    building_file_index = results_header.index('building_file')
+
+    bldgname = target_row[bldgname_index]
+    building_file = target_row[building_file_index]
+
+    aggregated_data['bldgname'] = bldgname
+    aggregated_data['building_file'] = building_file
 
     for y_column, y_pred_list in y_pred_lists:
         for column in y_column_mapping:

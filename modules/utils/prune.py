@@ -1,7 +1,7 @@
 import shutil, os, csv
 
-def prune(prune_flag, directories_to_prune, config):
-    for directory in directories_to_prune:
+def prune(prune_flag, config):
+    for directory in config['directories_to_prune']:
         if os.path.exists(directory):
             if prune_flag:
                 shutil.rmtree(directory)

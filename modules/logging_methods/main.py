@@ -74,10 +74,10 @@ def api_logger(message):
     with open(log_path, "w") as file:
         json.dump(messages_serializable, file, default=str, allow_nan=False)
 
-def setup_logger(new_job_id):
+def setup_logger(config):
     global user_commands
     global job_id  # Declare job_id as global
-    job_id = new_job_id
+    job_id = config['job_id']
 
     log_directory = "logs/info_log/"
     log_file = f"{job_id}.log"

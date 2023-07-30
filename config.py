@@ -1,36 +1,36 @@
-import json, sys, warnings, os
 from modules.utils.get_file_names import get_file_names
-from modules.logging_methods.main import setup_logger
 from modules.utils.get_add_features import get_add_features
 
-def load_config(job_id):
-  setup_logger(job_id or 0)
-
+def load_config():
   path = '.'
   data_path = f'{path}/building_data'
   tmp_path = f'{path}/models/tmp'
+  log_path = f'{path}/logs'
   results_file_path = f'{path}/results.csv'
   results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_feature', 'updated_n_feature', 'time_step', 'datelevel', 'rmse', 'mae', 'mape', 'model_file', 'model_data_path', 'building_file', 'selected_features_delimited']
-  y_column = ['present_elec_kwh', 'present_htwt_mmbtu', 'present_wtr_usgal', 'present_chll_tonhr']
-  exclude_column = ['ts', 'bldgname', 'present_co2_tons', 'campus', 'historical_elec_kwh', 'historical_htwt_mmbtu', 'historical_wtr_usgal', 'historical_chll_tonhr', 'historical_co2_tons', 'latitude', 'longitude', 'year', 'month', 'day', 'hour']
+  y_column = ['present_elec_kwh', 'present_htwt_mmbtuh', 'present_wtr_usgal', 'present_chll_tonh']
+  exclude_column = ['ts', 'bldgname', 'present_co2_tonh', 'campus', 'historical_elec_kwh', 'historical_htwt_mmbtuh', 'historical_wtr_usgal', 'historical_chll_tonh', 'historical_co2_tonh', 'latitude', 'longitude', 'year', 'month', 'day', 'hour']
   exclude_file = ['Summary_Report_Extended.csv']
   file_path = f'{data_path}/Summary_Report_Extended.csv'
   file_list = get_file_names(data_path, exclude_file)
   add_feature = get_add_features(file_path, y_column + exclude_column)
   header = ['ts'] + y_column + add_feature
-  n_feature = list(range(1, len(add_feature)))  # start from 1 because sliding window technique will count as a feature
+  n_feature = list(range(0, len(add_feature)))
 
   config = {
     # settings
+    'job_id': 0,
+    'table': 'spaces',
     'path': path,
     'data_path': data_path,
     'tmp_path': tmp_path,
+    'log_path': log_path,
     'results_file_path': results_file_path,
     'building_file': file_list,
     'exclude_file': exclude_file,
     'exclude_column': exclude_column,
     'update_add_feature': False,
-    'save_preprocessed_file': False,
+    'save_preprocessed_file': True,
     'save_model_file': False,
     'save_model_plot': False,
     'save_at_each_delta': True,
@@ -45,10 +45,10 @@ def load_config(job_id):
     'selected_features_delimited': '',
     "y_column_mapping": {
       'present_elec_kwh': 'electricity',
-      'present_htwt_mmbtu': 'hot_water',
+      'present_htwt_mmbtuh': 'hot_water',
       'present_wtr_usgal': 'water',
-      'present_chll_tonhr': 'chilled_water',
-      'present_co2_tons': 'co2_emissions'
+      'present_chll_tonh': 'chilled_water',
+      'present_co2_tonh': 'co2_emissions'
     },
     'directories_to_prune': [
       'logs/api_log',
@@ -63,8 +63,8 @@ def load_config(job_id):
     ],
 
     # preprocessing/training scope
-    'model_type': ["xgboost", "solos", "ensembles"],
-    'imputation_method': ['linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
+    'model_type': ["xgboost"],
+    'imputation_method': ['linear_interpolation'],
     'feature_method': ['rfecv', 'lassocv'],
     'datelevel': ['hour'],
     'time_step': [24],            # window size of the sliding window technique and unit length of forecasts
@@ -73,7 +73,7 @@ def load_config(job_id):
     'test_ratio_threshold': 0.7,  # minimum percent non-nans in testing set
     'datetime_format': '%Y-%m-%dT%H:%M:%S',
     'startDateTime': '',
-    'endDateTime': '2023-02-04T00:00:00',
+    'endDateTime': '2023-02-04T23:00:00',
         
     # hyperparameters
     'n_feature': n_feature,

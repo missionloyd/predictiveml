@@ -11,4 +11,4 @@ def create_predictions(cli_args, startDateTime, endDateTime, winners_in_file_pat
     args = generate_arg(results_dict)
     y_pred_list, start, end = predict_y_column(args, startDateTime, endDateTime, config, model_data, model, datelevel)
 
-    return start, end, y_pred_list
+    return start, end, y_pred_list, target_row

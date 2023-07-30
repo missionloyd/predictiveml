@@ -4,12 +4,8 @@ from itertools import product
 from modules.utils.adaptive_sampling import adaptive_sampling
 
 # Generate a list of arguments for model training
-def create_args(cli_args, config):
+def create_args(config):
     arguments = []
-
-    for key, value in cli_args.items():
-        if value is not None:
-            config[key] = [value]
 
     for combo in product(
         config["building_file"],
@@ -53,29 +49,5 @@ def create_args(cli_args, config):
         }
         preprocessing_arguments.append(argument_dict)
 
-    # Assuming arguments is a DataFrame or can be converted to a DataFrame
-    # (It is better to ensure that arguments is a DataFrame before calling this function)
-    # if temperature > 0 and temperature < 1:
-    #     arguments = pd.DataFrame(data=arguments)
 
-    #     filtered_data = adaptive_sampling(arguments, results_file_path, temperature, target_error)
-
-    #     if not filtered_data.empty:
-    #         # Add the additional columns to the DataFrame directly
-    #         filtered_data["save_model_file"] = config["save_model_file"]
-    #         filtered_data["updated_n_feature"] = config["updated_n_feature"]
-    #         filtered_data["selected_features_delimited"] = config["selected_features_delimited"]
-
-    #         # Extract the relevant arguments from filtered_data as a list of dictionaries
-    #         arguments = [dict(row) for _, row in filtered_data.iterrows()]
-
-    # else:
-    #     # Convert the data to a DataFrame (if it's not already)
-    #     arguments_df = pd.DataFrame(data=arguments)
-
-    #     if not arguments_df.empty:
-    #         # Extract the relevant arguments from arguments_df as a list of dictionaries
-    #         arguments = [dict(row) for _, row in arguments_df.iterrows()]
-
-
-    return arguments, preprocessing_arguments, config
+    return arguments, preprocessing_arguments

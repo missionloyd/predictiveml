@@ -31,7 +31,7 @@ for building in buildings_list:
     groups = df.groupby("bldgname")
 
     orig_cols = df.columns
-    y_columns = ["present_elec_kwh", "present_htwt_mmbtu", "present_wtr_usgal", "present_chll_tonhr", "present_co2_tons"]
+    y_columns = ["present_elec_kwh", "present_htwt_mmbtuh", "present_wtr_usgal", "present_chll_tonh", "present_co2_tonh"]
     header = ["ts"] + y_columns
     new_header = ["campus", "bldgname", "ts"] + y_columns + [col.replace('present', 'predicted') for col in y_columns]
 
@@ -46,7 +46,7 @@ for building in buildings_list:
         model_data = group[header]
 
         for y in y_columns:
-            if model_data[y].count() >= 365*24 and y != 'present_co2_tons':
+            if model_data[y].count() >= 365*24 and y != 'present_co2_tonh':
                 model_data = model_data.rename(columns={ "ts": "ds", y: "y" })
                 model_data = model_data.sort_values(["ds"])
 

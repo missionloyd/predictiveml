@@ -1,11 +1,8 @@
-import logging_config
-import csv
 import pickle
 import sys
 import os
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
 from sklearn.decomposition import PCA
@@ -15,6 +12,7 @@ import xgboost as xgb
 from modules.utils.resample_data import resample_data
 from modules.utils.detect_data_frequency import detect_data_frequency
 from modules.feature_methods.main import feature_engineering
+from modules.training_methods.plot_results import plot_results
 from modules.logging_methods.main import logger
 
 # Define the function to process each combination of parameters
@@ -231,28 +229,7 @@ def train_model(args, config):
 
     # save plot 
     if save_model_plot == True:
-        # plot results
-        fig, ax = plt.subplots()
-
-        # Plot the actual values
-        ax.plot(y_test, label='Actual Values', alpha=0.7)
-
-        # Plot the predictions
-        ax.plot(y_pred, label='Forecasted Values', alpha=0.8)
-
-        # Plot the replaced missing values
-        y_test[~nan_mask] = np.nan
-        
-        ax.plot(y_test, label='Predicted Values', alpha=0.75)
-
-        ax.set_title(f'{bldgname} Consumption')
-        ax.set_xlabel(f'Time ({datelevel})')
-        ax.set_ylabel(y_column.split('_')[-2] + ' (' + y_column.split('_')[-1] + ')')
-
-        ax.legend()
-        plt.grid(True)
-        plt.savefig(model_file + '.png')
-        plt.close(fig) 
+        plot_results(y_test, y_pred, nan_mask, bldgname, y_column, datelevel, model_file)
 
     # return results
     return (model_type, bldgname, y_column, imputation_method, feature_method, n_feature, updated_n_feature, time_step, datelevel, rmse, mae, mape, model_file, model_data_path, building_file, selected_features_delimited)
