@@ -13,5 +13,5 @@ tqdm==4.65.0
 xgboost==1.7.5
 Flask-SocketIO==5.3.4
 Flask-Cors==3.0.10
-psycopg2==2.9.5
+psycopg2-binary==2.9.5
 python-dotenv==1.0.0

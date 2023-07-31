@@ -92,6 +92,15 @@ python3 main.py --preprocess --train --save --time_step 12 --datelevel month
 python3 main.py --preprocess --train --save --time_step 1 --datelevel year
 python3 main.py --predict --building_file Stadium_Data_Extended --y_column all --time_step 24 --datelevel hour
 ```
+
+Cron-Heartbeat Examples:
+```shell
+python3 main.py --prune --run_all --time_step 24 --datelevel hour
+python3 main.py --run_all --time_step 30 --datelevel day
+python3 main.py --run_all --time_step 12 --datelevel month
+python3 main.py --run_all --time_step 1 --datelevel year
+```
+
 Note: If no flags are specified, the script will display a message and exit without performing any action.
 
 ## Configuration

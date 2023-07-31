@@ -59,8 +59,8 @@ def load_config():
     ],
 
     # preprocessing/training scope
-    'model_type': ["xgboost"],
-    'imputation_method': ['linear_interpolation'],
+    'model_type': ["xgboost", "solos", "ensembles"],
+    'imputation_method': ['linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
     'feature_method': ['rfecv', 'lassocv'],
     'datelevel': ['hour'],
     'time_step': [1],             # window size of the sliding window technique and unit length of forecasts
