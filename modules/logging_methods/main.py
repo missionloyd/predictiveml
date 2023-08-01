@@ -25,7 +25,7 @@ def api_logger(message):
     global job_id  # Declare job_id as global
 
     log_directory = "logs/api_log/"
-    log_file = f"{job_id}.log"
+    log_file = f"{job_id[0]}.log"
     log_path = os.path.join(log_directory, log_file)
 
     # Create the log directory if it doesn't exist

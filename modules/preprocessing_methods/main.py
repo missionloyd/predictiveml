@@ -14,7 +14,7 @@ def preprocessing(args, config):
     data_path = config['data_path']
     tmp_path = config['tmp_path']
     exclude_column = config['exclude_column']
-    save_preprocessed_file = config['save_preprocessed_file']
+    save_preprocessed_files = config['save_preprocessed_files']
     train_test_split = config['train_test_split']
     train_ratio_threshold = config['train_ratio_threshold']
     test_ratio_threshold = config['test_ratio_threshold']
@@ -61,7 +61,7 @@ def preprocessing(args, config):
 
             model_data_path = f'{tmp_path}/{building_file.replace(".csv", "")}_{y_column}_{imputation_method}'
 
-            if save_preprocessed_file == True:
+            if save_preprocessed_files == True:
                 # Save the original values into a new column
                 model_data['y_saved'] = model_data['y']
 

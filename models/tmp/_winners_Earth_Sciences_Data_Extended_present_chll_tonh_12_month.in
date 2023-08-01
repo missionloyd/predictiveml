@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
+xgboost,Earth Sciences,present_chll_tonh,linear_interpolation,rfecv,0,0,12,month,1786.8942631012983,1533.9703237198835,1.0050134142607998,./models/xgboost/Earth_Sciences_Data_Extended_present_chll_tonh_linear_interpolation_rfecv_0_0_12_month,./models/tmp/Earth_Sciences_Data_Extended_present_chll_tonh_linear_interpolation,Earth_Sciences_Data_Extended.csv,temp_c

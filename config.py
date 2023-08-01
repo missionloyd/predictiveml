@@ -19,7 +19,7 @@ def load_config():
 
   config = {
     # settings
-    'job_id': 0,
+    'job_id': [0],
     'table': 'spaces',
     'path': path,
     'data_path': data_path,
@@ -30,7 +30,7 @@ def load_config():
     'exclude_file': exclude_file,
     'exclude_column': exclude_column,
     'update_add_feature': False,
-    'save_preprocessed_file': True,
+    'save_preprocessed_files': False,
     'save_model_file': False,
     'save_model_plot': False,
     'save_at_each_delta': True,
@@ -63,8 +63,8 @@ def load_config():
     ],
 
     # preprocessing/training scope
-    'model_type': ["xgboost", "solos", "ensembles"],
-    'imputation_method': ['linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
+    'model_type': ["xgboost"],
+    'imputation_method': ['linear_interpolation'],
     'feature_method': ['rfecv', 'lassocv'],
     'datelevel': ['hour'],
     'time_step': [24],            # window size of the sliding window technique and unit length of forecasts
@@ -73,7 +73,7 @@ def load_config():
     'test_ratio_threshold': 0.7,  # minimum percent non-nans in testing set
     'datetime_format': '%Y-%m-%dT%H:%M:%S',
     'startDateTime': '',
-    'endDateTime': '2023-02-04T23:00:00',
+    'endDateTime': '',
         
     # hyperparameters
     'n_feature': n_feature,

@@ -8,10 +8,10 @@ def prune():
       'logs/error_log',
       'logs/flask_log',
       'logs/info_log',
-      'models/tmp',
-      'models/ensembles',
-      'models/solos',
-      'models/xgboost',
+    #   'models/tmp',
+    #   'models/ensembles',
+    #   'models/solos',
+    #   'models/xgboost',
     ]
 
     for i in range(0, len(directories_to_prune)):

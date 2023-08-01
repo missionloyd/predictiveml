@@ -30,7 +30,7 @@ def load_config():
     'exclude_file': exclude_file,
     'exclude_column': exclude_column,
     'update_add_feature': False,
-    'save_preprocessed_file': True,
+    'save_preprocessed_files': True,
     'save_model_file': False,
     'save_model_plot': False,
     'save_at_each_delta': True,

@@ -134,6 +134,7 @@ if __name__ == '__main__':
     parser.add_argument('--time_step', type=int, help='Time step for prediction.')
     parser.add_argument('--datelevel', type=str, help='Date level for prediction.')
     parser.add_argument('--table', type=str, help='Table for prediction.')
+    parser.add_argument('--save_preprocessed_files', action='store_true', help='Flag for saving/reusing preprocessed files.')
     parser.add_argument('--temperature', type=float, help='Temperature for training.') 
     parser.add_argument('--job_id', type=int, help='Job ID for logging.')
 
@@ -160,6 +161,7 @@ if __name__ == '__main__':
         'datelevel': args.datelevel,
         'time_step': args.time_step,
         'table': args.table,
+        'save_preprocessed_files': args.save_preprocessed_files,
     }
 
     main(cli_args, flags)

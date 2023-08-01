@@ -4,8 +4,8 @@ This script performs energy modeling for buildings using combinations of relevan
 ## Docker Usage
 Build the Docker image using the provided Dockerfile in the project directory:
 ```shell
-docker build -t energy-modeling .
-docker run -v /dev/shm:/dev/shm --shm-size=2gb -d -p 80:8080 energy-modeling
+docker build -t predictiveml .
+docker run -v /dev/shm:/dev/shm --shm-size=2gb -d -p 80:8080 predictiveml
 ```
 
 ## Setup & Dependencies
@@ -51,7 +51,7 @@ python3 -c "import tensorflow as tf; print(tf.reduce_sum(tf.random.normal([1000,
 2. Create/assign an explicit 'bldgname' column.
 3. Create/assign an explicit 'ts' column.
 4. Verify `config.py` to ensure it has the correct configurations for your project.
-    a. Make sure 'save_preprocessed_file' is set to True for first time preprocessing.
+    a. Make sure 'save_preprocessed_files' is set to True for first time preprocessing.
 5. Run the script with the following command:
 
 - To run Flask App
@@ -86,7 +86,7 @@ python3 main.py --preprocess --train
 
 Heartbeat Examples:
 ```shell
-python3 main.py --preprocess --train --save --time_step 24 --datelevel hour
+python3 main.py --preprocess --train --save --time_step 48 --datelevel hour
 python3 main.py --preprocess --train --save --time_step 30 --datelevel day
 python3 main.py --preprocess --train --save --time_step 12 --datelevel month
 python3 main.py --preprocess --train --save --time_step 1 --datelevel year
@@ -95,7 +95,17 @@ python3 main.py --predict --building_file Stadium_Data_Extended --y_column all -
 
 Cron-Heartbeat Examples:
 ```shell
-python3 main.py --prune --run_all --time_step 24 --datelevel hour
+python3 main.py --prune --save_preprocessed_files --preprocess
+python3 main.py --run_all --time_step 48 --datelevel hour
+python3 main.py --run_all --time_step 30 --datelevel day
+python3 main.py --run_all --time_step 12 --datelevel month
+python3 main.py --run_all --time_step 1 --datelevel year
+```
+
+Current Heartbeat Examples:
+```shell
+python3 main.py --prune --save_preprocessed_files --preprocess
+python3 main.py --run_all --time_step 48 --datelevel hour
 python3 main.py --run_all --time_step 30 --datelevel day
 python3 main.py --run_all --time_step 12 --datelevel month
 python3 main.py --run_all --time_step 1 --datelevel year

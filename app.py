@@ -7,7 +7,7 @@ from flask_cors import CORS
 from modules.utils.prune_app import prune
 
 app = Flask(__name__, template_folder="templates")
-CORS(app, origins='http://localhost:3000')
+CORS(app, origins=['http://localhost:3000', 'https://prev-uwyo-campus-heartbeat.vercel.app/', 'https://uwyo-campus-heartbeat.vercel.app/'])
 socketio = SocketIO(app)
 
 n_jobs_counter = 0
@@ -193,26 +193,26 @@ def run_predict(building_file, y_column):
 @app.route('/api/forecast', methods=['POST'])
 def run_forecast():
     # Extract parameters from the request body
-    # y_column = request.json.get('y_column')
+    y_column = request.json.get('y_column')
     building_file = request.json.get('building_file')
-    # startDateTime = request.json.get('startDateTime') 
-    # endDateTime = request.json.get('endDateTime') 
+    startDateTime = request.json.get('startDateTime') 
+    endDateTime = request.json.get('endDateTime') 
     time_step = request.json.get('time_step')
     datelevel = request.json.get('datelevel') 
-    # table = request.json.get('table')
+    table = request.json.get('table')
 
     # Create a key tuple from the input arguments
-    # key = (y_column, building_file, startDateTime, endDateTime, time_step, datelevel, table)
-    # key = (building_file, time_step, datelevel)
+    key = (y_column, building_file, startDateTime, endDateTime, time_step, datelevel, table)
+    key = (building_file, time_step, datelevel)
 
-    # # Check if the key exists in the previous results
-    # if key in previous_results:
-    #     api_file = previous_results[key]
-    #     data = run_api_log(api_file)
-    #     return jsonify({'job_id': 0, 'data': data, 'status': 'ok'})
+    # Check if the key exists in the previous results
+    if key in previous_results:
+        api_file = previous_results[key]
+        data = run_api_log(api_file)
+        return jsonify({'job_id': 0, 'data': data, 'status': 'ok'})
     
     frequency_mapping = {
-        'hour': '24',
+        'hour': '48',
         'day': '30',
         'month': '12',
         'year': '1'
@@ -229,7 +229,7 @@ def run_forecast():
     data = run_api_log(api_file)
 
     # Save the result for future use
-    # previous_results[key] = api_file
+    previous_results[key] = api_file
 
     return jsonify({'job_id': job_id, 'data': data, 'status': 'ok'})
 
