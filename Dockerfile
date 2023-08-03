@@ -1,6 +1,6 @@
 # Use the official Python base image
 # FROM python:3.11-slim-buster
-FROM nvidia/cuda:11.7.0-cudnn8-devel-ubuntu22.04
+FROM nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
 # FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -91,7 +91,7 @@ COPY . .
 EXPOSE 8080
 
 # run the main.py script, and start the Flask server
-# CMD python3 main.py --preprocess >> /app/info_log/0.log 2>> /app/error_log/0.log & flask run --host=0.0.0.0 --port=8080 >> /app/flask_log.log 2>&1
-CMD python3 app.py > logs/flask_log/0.log 2>&1
-# CMD python3 -m flask run --host=0.0.0.0 --port=8080 > logs/flask_log/0.log 2>&1
+# CMD python3 main.py --preprocess >> /app/logs/info_log/0.log 2>> /app/logs/error_log/0.log & flask run --host=0.0.0.0 --port=8080 >> /app/logs/flask_log.log 2>&1
+CMD python3 app.py > /app/logs/flask_log/0.log 2>&1
+# CMD python3 -m flask run --host=0.0.0.0 --port=8080 > /app/logs/flask_log/0.log 2>&1
 # CMD ["cron", "-f"]
