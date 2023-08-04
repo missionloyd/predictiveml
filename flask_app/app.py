@@ -6,9 +6,9 @@ from flask_socketio import SocketIO
 from flask_cors import CORS
 from modules.utils.prune_app import prune
 
-app = Flask(__name__, template_folder="templates")
-CORS(app, origins=['http://localhost:3000', 'https://prev-uwyo-campus-heartbeat.vercel.app/', 'https://uwyo-campus-heartbeat.vercel.app/'])
-socketio = SocketIO(app)
+server = Flask(__name__, template_folder="templates")
+CORS(server, origins=['http://localhost:8080', 'http://localhost:3000', 'https://prev-uwyo-campus-heartbeat.vercel.app/', 'https://uwyo-campus-heartbeat.vercel.app/'])
+socketio = SocketIO(server)
 
 n_jobs_counter = 0
 lock = threading.Lock()
@@ -125,7 +125,7 @@ def generate_log_links(job_id):
     ])
     return links
 
-@app.route('/')
+@server.route('/')
 def display_app_log():
     job_id = 0
     log_directory = "logs/"
@@ -155,7 +155,7 @@ def display_app_log():
 
     return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
-@app.route('/demo/predict/<string:building_file>/<string:y_column>')
+@server.route('/demo/predict/<string:building_file>/<string:y_column>')
 def run_predict_demo(building_file, y_column):
     job_id = run_main(['--predict', '--building_file', building_file, '--y_column', y_column, '--time_step', '24', '--datelevel', 'hour'])
     command_links = generate_command_links()
@@ -164,7 +164,7 @@ def run_predict_demo(building_file, y_column):
     return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
 
-@app.route('/predict/<string:building_file>/<string:y_column>')
+@server.route('/predict/<string:building_file>/<string:y_column>')
 def run_predict(building_file, y_column):
     # # Create a key tuple from the input arguments
     # key = (building_file, y_column)
@@ -190,7 +190,7 @@ def run_predict(building_file, y_column):
 
     return jsonify({'job_id': job_id, 'data': data, 'status': 'ok'})
 
-@app.route('/api/forecast', methods=['POST'])
+@server.route('/api/forecast', methods=['POST'])
 def run_forecast():
     # Extract parameters from the request body
     y_column = request.json.get('y_column')
@@ -234,7 +234,7 @@ def run_forecast():
     return jsonify({'job_id': job_id, 'data': data, 'status': 'ok'})
 
 
-@app.route('/info_log/<int:job_id>')
+@server.route('/info_log/<int:job_id>')
 def display_info_log(job_id):
     log_file = f'logs/info_log/{job_id}.log'
     log_content = run_info_log(log_file)
@@ -242,7 +242,7 @@ def display_info_log(job_id):
     log_links = generate_log_links(job_id)
     return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
-@app.route('/debug_log/<int:job_id>')
+@server.route('/debug_log/<int:job_id>')
 def display_debug_log(job_id):
     log_file = f'logs/debug_log/{job_id}.log'
     log_content = run_info_log(log_file)
@@ -250,7 +250,7 @@ def display_debug_log(job_id):
     log_links = generate_log_links(job_id)
     return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
-@app.route('/error_log/<int:job_id>')
+@server.route('/error_log/<int:job_id>')
 def display_error_log(job_id):
     log_file = f'logs/error_log/{job_id}.log'
     log_content = run_info_log(log_file)
@@ -258,7 +258,7 @@ def display_error_log(job_id):
     log_links = generate_log_links(job_id)
     return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
-@app.route('/preprocess')
+@server.route('/preprocess')
 def run_preprocess():
     job_id = run_main(['--preprocess'])
     command_links = generate_command_links()
@@ -266,7 +266,7 @@ def run_preprocess():
     log_content = f'Job submitted (--preprocess --job_id {job_id})'
     return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
-@app.route('/preprocess_train')
+@server.route('/preprocess_train')
 def run_preprocess_train():
     job_id = run_main(['--preprocess', '--train', '--save', '--time_step', '1', '--datelevel', 'hour'])
     command_links = generate_command_links()
@@ -274,7 +274,7 @@ def run_preprocess_train():
     log_content = f'Job submitted (--preprocess --train --save --time_step 1 --datelevel hour --job_id {job_id})'
     return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
-@app.route('/train')
+@server.route('/train')
 def run_train():
     job_id = run_main(['--train', '--save', '--time_step', '1', '--datelevel', 'hour'])
     command_links = generate_command_links()
@@ -282,7 +282,16 @@ def run_train():
     log_content = f'Job submitted (--train --save --time_step 1 --datelevel hour --job_id {job_id})'
     return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
-@app.route('/<string:log_type>/<path:subpath>/log_content')
+@server.route('/prune')
+def run_prune():
+    job_id = 0
+    prune()
+    command_links = generate_command_links()
+    log_links = generate_log_links(job_id)
+    log_content = f'Pruned log files.'
+    return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
+
+@server.route('/<string:log_type>/<path:subpath>/log_content')
 def get_log_content(log_type, subpath):
     log_file = f'logs/{log_type}/{subpath}.log'
     log_content = run_info_log(log_file)    
@@ -290,5 +299,4 @@ def get_log_content(log_type, subpath):
 
 
 if __name__ == '__main__':
-    prune()
-    socketio.run(app, host='0.0.0.0', port=8080)
+    socketio.run(server, host='0.0.0.0', port=8080)

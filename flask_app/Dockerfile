@@ -6,13 +6,13 @@ FROM nvidia/cuda:11.7.1-cudnn8-devel-ubuntu22.04
 ENV DEBIAN_FRONTEND noninteractive
 
 # Set the working directory in the container
-WORKDIR /app
+WORKDIR /flask_app
 
 # Copy the main.py file to the working directory
-COPY main.py /app/main.py
+COPY main.py /flask_app/main.py
 
 # Copy the requirements.txt file to the working directory
-COPY requirements.txt /app/requirements.txt
+COPY requirements.txt /flask_app/requirements.txt
 
 ## Copy the env file to the working directory
 # COPY ./env_config.yml /tmp/env_config.yml
@@ -61,12 +61,13 @@ ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 SHELL ["conda", "run", "-n", "tf-gpu", "/bin/bash", "-c"]
 
 # Install nvidia-cudnn-cu11
+RUN python3 -m pip install --upgrade pip setuptools
 RUN python3 -m pip install nvidia-cudnn-cu11==8.6.0.163 tensorflow==2.12.*
 
 # Copy the Flask script to the working directory
-COPY app.py /app/app.py
+COPY app.py /flask_app/app.py
 
-COPY ./requirements.txt /app/requirements.txt
+COPY ./requirements.txt /flask_app/requirements.txt
 RUN pip install --upgrade pip
 RUN pip3 install --no-cache-dir -r requirements.txt
 
@@ -77,6 +78,12 @@ COPY env_vars.sh /etc/conda/activate.d/env_vars.sh
 # Activate the environment
 RUN chmod +x /etc/conda/activate.d/env_vars.sh \
     && echo "source /etc/conda/activate.d/env_vars.sh" >> /root/.bashrc
+
+RUN mkdir -p /flask_app/logs/api_log \
+    && mkdir -p /flask_app/logs/debug_log \
+    && mkdir -p /flask_app/logs/error_log \
+    && mkdir -p /flask_app/logs/flask_log \
+    && mkdir -p /flask_app/logs/info_log
 
 # Copy the remaining project files
 COPY . .
@@ -91,7 +98,7 @@ COPY . .
 EXPOSE 8080
 
 # run the main.py script, and start the Flask server
-CMD python3 app.py
-# CMD python3 main.py --preprocess >> /app/logs/info_log/0.log 2>> /app/logs/error_log/0.log & flask run --host=0.0.0.0 --port=8080 >> /app/logs/flask_log.log 2>&1
-# CMD python3 -m flask run --host=0.0.0.0 --port=8080 > /app/logs/flask_log/0.log 2>&1
+# CMD python3 app.py
+# CMD python3 main.py --preprocess >> /flask_app/logs/info_log/0.log 2>> /flask_app/logs/error_log/0.log & flask run --host=0.0.0.0 --port=8080 >> /flask_app/logs/flask_log.log 2>&1
+# CMD python3 -m flask run --host=0.0.0.0 --port=8080 > /flask_app/logs/flask_log/0.log 2>&1
 # CMD ["cron", "-f"]
