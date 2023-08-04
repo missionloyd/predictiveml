@@ -1,6 +1,6 @@
 import pandas as pd
 
-def format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step, target_row, results_header):
+def format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step, target_row, results_header, y_column_flag):
     # Assuming datelevel is a string representing the desired level of grouping: 'hour', 'day', 'month', or 'year'
     if datelevel == 'hour':
         freq = 'H'
@@ -39,9 +39,10 @@ def format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_li
             #     aggregated_data[y_column_mapping[column]] = None
 
     # Add the missing columns after resampling
-    for column in y_column_mapping.values():
-        if column not in aggregated_data.columns:
-            aggregated_data[column] = None
+    if y_column_flag == 'all':
+        for column in y_column_mapping.values():
+            if column not in aggregated_data.columns:
+                aggregated_data[column] = None
 
     aggregated_data = aggregated_data.reset_index(drop=True)
 

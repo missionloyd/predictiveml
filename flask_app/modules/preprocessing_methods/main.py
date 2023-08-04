@@ -58,8 +58,8 @@ def preprocessing(args, config):
             model_data = col_data.copy()
             model_data = model_data.rename(columns={y_column: 'y', 'ts': 'ds'})
             model_data = model_data.sort_values(['ds'])
-
-            model_data_path = f'{tmp_path}/{building_file.replace(".csv", "")}_{y_column}_{imputation_method}'
+            building_file_name = building_file.replace('.csv', '')
+            model_data_path = f'{tmp_path}/{building_file_name}_{y_column}_{imputation_method}'
 
             if save_preprocessed_files == True:
                 # Save the original values into a new column

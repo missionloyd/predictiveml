@@ -4,7 +4,6 @@ import os, time, json
 from flask import Flask, url_for, jsonify, request, render_template
 from flask_socketio import SocketIO
 from flask_cors import CORS
-from modules.utils.prune_app import prune
 
 server = Flask(__name__, template_folder="templates")
 CORS(server, origins=['http://localhost:8080', 'http://localhost:3000', 'https://prev-uwyo-campus-heartbeat.vercel.app/', 'https://uwyo-campus-heartbeat.vercel.app/'])
@@ -15,76 +14,89 @@ lock = threading.Lock()
 
 previous_results = {}  # Dictionary to store previous prediction results
 
+def run_job(job_id, command):
+    print(f'Starting job execution for job ID: {job_id}')
+    debug_log_file = f'logs/debug_log/{job_id}.log'
+    error_log_file = f'logs/error_log/{job_id}.log'
+
+    # Delete the log files if they exist
+    if os.path.exists(debug_log_file):
+        os.remove(debug_log_file)
+    if os.path.exists(error_log_file):
+        os.remove(error_log_file)
+
+    # Open the log files for writing (they will be created anew)
+
+    with open(debug_log_file, 'w') as debug_log, open(error_log_file, 'w') as error_log:
+        debug_log.write("")
+        error_log.write("")
+
+    def emit_info_log_lines():
+        info_log_file = f'logs/info_log/{job_id}.log'
+
+        # Wait for the file to become available
+        while not os.path.isfile(info_log_file):
+            time.sleep(0.2)  # Sleep for 1 second
+
+        process = subprocess.Popen(
+            ['tail', '-f', info_log_file],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            bufsize=1,  # Line-buffered output
+            universal_newlines=True  # Decode output as text
+        )
+
+        for line in iter(process.stdout.readline, ''):
+            line = line.strip()
+            socketio.emit('new_info_log_line', {'job_id': job_id, 'line': line})
+
+        process.wait()  # Wait for the process to complete
+
+    # Start the info log emission in a separate thread
+    info_job_thread = threading.Thread(target=emit_info_log_lines)
+    info_job_thread.start()
+
+    with open(debug_log_file, 'w') as debug_log, open(error_log_file, 'w') as error_log:
+        process = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            bufsize=1,  # Line-buffered output
+            universal_newlines=True  # Decode output as text
+        )
+
+        for line in process.stdout:  # Read stdout line by line in real-time
+            socketio.emit('new_debug_log_line', {'job_id': job_id, 'line': line.strip()})
+            debug_log.write(line)
+
+        for line in process.stderr:  # Read stderr line by line in real-time
+            socketio.emit('new_error_log_line', {'job_id': job_id, 'line': line.strip()})
+            error_log.write(line)
+
+    process.wait()  # Wait for the process to complete
+
 def run_main(flags):
     global n_jobs_counter
     with lock:
         n_jobs_counter += 1
         job_id = n_jobs_counter
-        command_main = ['python3', '-u', 'main.py'] + flags + ['--job_id', str(job_id)]
-
-    def run_job():
-        print(f'Starting job execution for job ID: {job_id}')
-        debug_log_file = f'logs/debug_log/{job_id}.log'
-        error_log_file = f'logs/error_log/{job_id}.log'
-
-        # Delete the log files if they exist
-        if os.path.exists(debug_log_file):
-            os.remove(debug_log_file)
-        if os.path.exists(error_log_file):
-            os.remove(error_log_file)
-
-        # Open the log files for writing (they will be created anew)
-
-        with open(debug_log_file, 'w') as debug_log, open(error_log_file, 'w') as error_log:
-            debug_log.write("")
-            error_log.write("")
-
-        def emit_info_log_lines():
-            info_log_file = f'logs/info_log/{job_id}.log'
-
-            # Wait for the file to become available
-            while not os.path.isfile(info_log_file):
-                time.sleep(0.2)  # Sleep for 1 second
-
-            process = subprocess.Popen(
-                ['tail', '-f', info_log_file],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                bufsize=1,  # Line-buffered output
-                universal_newlines=True  # Decode output as text
-            )
-
-            for line in iter(process.stdout.readline, ''):
-                line = line.strip()
-                socketio.emit('new_info_log_line', {'job_id': job_id, 'line': line})
-
-            process.wait()  # Wait for the process to complete
-
-        # Start the info log emission in a separate thread
-        info_job_thread = threading.Thread(target=emit_info_log_lines)
-        info_job_thread.start()
-
-        with open(debug_log_file, 'w') as debug_log, open(error_log_file, 'w') as error_log:
-            process = subprocess.Popen(
-                command_main,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                bufsize=1,  # Line-buffered output
-                universal_newlines=True  # Decode output as text
-            )
-
-            for line in process.stdout:  # Read stdout line by line in real-time
-                socketio.emit('new_debug_log_line', {'job_id': job_id, 'line': line.strip()})
-                debug_log.write(line)
-
-            for line in process.stderr:  # Read stderr line by line in real-time
-                socketio.emit('new_error_log_line', {'job_id': job_id, 'line': line.strip()})
-                error_log.write(line)
-
-        process.wait()  # Wait for the process to complete
+        command = ['python3', '-u', 'main.py'] + flags + ['--job_id', str(job_id)]
 
     # Start the job in a separate thread
-    job_thread = threading.Thread(target=run_job)
+    job_thread = threading.Thread(target=run_job, args=[job_id, command])
+    job_thread.start()
+
+    return job_id
+
+def prune():
+    global n_jobs_counter
+    with lock:
+        n_jobs_counter = 0
+        job_id = n_jobs_counter
+        command = ['python3', '-u', 'prune_logs.py', '--job_id', str(job_id)]
+
+    # Start the job in a separate thread
+    job_thread = threading.Thread(target=run_job, args=[job_id, command])
     job_thread.start()
 
     return job_id
@@ -103,11 +115,11 @@ def run_info_log(log_file):
 def generate_command_links():
     links = '<br>'.join([
         f'<a href="/">Home</a>',
-        f'',
+        f'<a href="{url_for("run_prune")}">Prune Log Files</a>',
         f'<a href="{url_for("run_preprocess")}">Run New Preprocessing Job</a>',
         f'<a href="{url_for("run_train")}">Run New Training Job</a>',
         f'<a href="{url_for("run_preprocess_train")}">Run New Preprocessing + Training Job</a>',
-        f'<a href="{url_for("run_predict_demo", building_file="Stadium_Data_Extended.csv", y_column="present_elec_kwh")}">Run New Demo Prediction Job</a>',
+        f'<a href="{url_for("run_predict_demo", building_file="Stadium_Data_Extended", y_column="present_elec_kwh")}">Run New Demo Prediction Job</a>',
     ])
     return links
 
@@ -157,10 +169,10 @@ def display_app_log():
 
 @server.route('/demo/predict/<string:building_file>/<string:y_column>')
 def run_predict_demo(building_file, y_column):
-    job_id = run_main(['--predict', '--building_file', building_file, '--y_column', y_column, '--time_step', '24', '--datelevel', 'hour'])
+    job_id = run_main(['--predict', '--building_file', building_file, '--y_column', y_column, '--time_step', '12', '--datelevel', 'month'])
     command_links = generate_command_links()
     log_links = generate_log_links(job_id)
-    log_content = f'Job submitted (--predict --building_file {building_file} --y_column {y_column} --time_step 1 --datelevel hour --job_id {job_id})'
+    log_content = f'Job submitted (--predict --building_file {building_file} --y_column {y_column} --time_step 12 --datelevel month --job_id {job_id})'
     return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
 
@@ -176,7 +188,7 @@ def run_predict(building_file, y_column):
     #     return jsonify({'job_id': 0, 'data': data, 'status': 'ok'})
 
     # No previous result found, proceed with running the prediction
-    job_id = run_main(['--predict', '--building_file', building_file, '--y_column', y_column, '--time_step', '24', '--datelevel', 'hour'])
+    job_id = run_main(['--predict', '--building_file', building_file, '--y_column', y_column, '--time_step', '12', '--datelevel', 'month'])
     api_file = f'logs/api_log/{job_id}.log'
 
     # Wait for the API file to become available
@@ -219,7 +231,7 @@ def run_forecast():
     }
     
     # No previous result found, proceed with running the prediction
-    job_id = run_main(['--predict', '--building_file', building_file, '--y_column', 'all', '--time_step', frequency_mapping[datelevel], '--datelevel', datelevel])
+    job_id = run_main(['--predict', '--building_file', building_file, '--y_column', 'present_elec_kwh', '--time_step', frequency_mapping[datelevel], '--datelevel', datelevel])
     api_file = f'logs/api_log/{job_id}.log'
 
     # Wait for the API file to become available
@@ -268,27 +280,26 @@ def run_preprocess():
 
 @server.route('/preprocess_train')
 def run_preprocess_train():
-    job_id = run_main(['--preprocess', '--train', '--save', '--time_step', '1', '--datelevel', 'hour'])
+    job_id = run_main(['--preprocess', '--train', '--save', '--time_step', '12', '--datelevel', 'month'])
     command_links = generate_command_links()
     log_links = generate_log_links(job_id)
-    log_content = f'Job submitted (--preprocess --train --save --time_step 1 --datelevel hour --job_id {job_id})'
+    log_content = f'Job submitted (--preprocess --train --save --time_step 12 --datelevel month --job_id {job_id})'
     return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
 @server.route('/train')
 def run_train():
-    job_id = run_main(['--train', '--save', '--time_step', '1', '--datelevel', 'hour'])
+    job_id = run_main(['--train', '--save', '--time_step', '12', '--datelevel', 'month'])
     command_links = generate_command_links()
     log_links = generate_log_links(job_id)
-    log_content = f'Job submitted (--train --save --time_step 1 --datelevel hour --job_id {job_id})'
+    log_content = f'Job submitted (--train --save --time_step 12 --datelevel month --job_id {job_id})'
     return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
 @server.route('/prune')
 def run_prune():
-    job_id = 0
-    prune()
+    job_id = prune()
     command_links = generate_command_links()
     log_links = generate_log_links(job_id)
-    log_content = f'Pruned log files.'
+    log_content = f'Job submitted (prune_logs.py {job_id})'
     return render_template('index.html', command_links=command_links, log_links=log_links, log_content=log_content, job_id=job_id)
 
 @server.route('/<string:log_type>/<path:subpath>/log_content')

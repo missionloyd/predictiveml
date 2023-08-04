@@ -126,7 +126,7 @@ if __name__ == '__main__':
     parser.add_argument('--save', action='store_true', help='Flag for saving model files.')
     parser.add_argument('--predict', action='store_true', help='Flag for prediction.')
     parser.add_argument('--insert', action='store_true', help='Flag for inserting predictings into database.') 
-    parser.add_argument('--building_file', type=str, help='Building file for prediction.')
+    parser.add_argument('--building_file', type=str, help='Building file for prediction (do not include .csv extension).')
     parser.add_argument('--bldgname', type=str, help='Building name for prediction.')
     parser.add_argument('--y_column', type=str, help='Y_Column for prediction.')
     parser.add_argument('--startDateTime', type=str, help='Start date for prediction.')

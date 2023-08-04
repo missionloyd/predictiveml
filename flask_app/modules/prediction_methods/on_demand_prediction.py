@@ -17,6 +17,7 @@ def on_demand_prediction(cli_args, winners_in_file_path, config):
     results_header = config['results_header']
     building = cli_args['building_file'].replace('.csv', '')
     y_column_mapping = config['y_column_mapping']
+    y_column_flag = cli_args['y_column']
     startDateTime = config['startDateTime']
     endDateTime = config['endDateTime']
     datelevel = cli_args['datelevel']
@@ -35,7 +36,7 @@ def on_demand_prediction(cli_args, winners_in_file_path, config):
             y_pred_lists.append((y_column, y_pred_list))
 
             len_y_pred_list = len(y_pred_list)
-            results = format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step, target_row, results_header)
+            results = format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step, target_row, results_header, y_column_flag)
     else:
         winners_in_file = f'{winners_in_file_path}/_winners.in'
 
@@ -48,7 +49,7 @@ def on_demand_prediction(cli_args, winners_in_file_path, config):
         y_pred_lists.append((y_column, y_pred_list))
 
         len_y_pred_list = len(y_pred_list)
-        results = format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step, target_row, results_header)
+        results = format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step, target_row, results_header, y_column_flag)
 
     # if len(results) == 0:
     #     results = {'data': [], 'status': 'empty'}

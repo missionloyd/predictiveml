@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Heartbeat App</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,10 +50,10 @@
 
         // Function to handle new info log lines
         socket.on('new_info_log_line', function(data) {
-                if (data.job_id === {{ job_id }}) {
-                    $('#info-log').append(data.line + '\n');
-                }
-            });
+            if (data.job_id === {{ job_id }}) {
+                $('#info-log').append(data.line + '\n');
+            }
+        });
         
         // Function to handle new debug log lines
         socket.on('new_debug_log_line', function(data) {
@@ -108,10 +109,11 @@
     <h2>Available Actions</h2>
     <ul>
         <li><a href="/">Home</a></li>
+        <li><a href="{{ url_for('run_prune') }}">Prune Log Files</a></li>
         <li><a href="{{ url_for('run_preprocess') }}">Run New Preprocessing Job</a></li>
         <li><a href="{{ url_for('run_train') }}">Run New Training Job</a></li>
         <li><a href="{{ url_for('run_preprocess_train') }}">Run New Preprocessing + Training Job</a></li>
-        <li><a href="{{ url_for('run_predict_demo', building_file='Stadium_Data_Extended.csv', y_column='present_elec_kwh') }}">Run New Demo Prediction Job</a></li>
+        <li><a href="{{ url_for('run_predict_demo', building_file='Stadium_Data_Extended', y_column='present_elec_kwh') }}">Run New Demo Prediction Job</a></li>
     </ul>
 
     <h2>Job Logs</h2>
