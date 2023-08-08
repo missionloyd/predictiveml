@@ -76,12 +76,12 @@ def train_model(args, config):
         # identify most important features and eliminate less important features
         selected_features = feature_engineering(feature_method, n_fold, add_data_scaled, data_scaled, add_feature)
         selected_features_delimited = '|'.join(selected_features)
-        updated_n_feature = n_feature
+        updated_n_feature = len(selected_features)
 
     # normalize selected features
     add_data_scaled = np.empty((model_data.shape[0], 0))
 
-    if len(selected_features) > 0:
+    if len(selected_features) > 0 and n_feature > 0:
         for feature in selected_features:
             feature_scaler = StandardScaler()
             add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
@@ -99,6 +99,7 @@ def train_model(args, config):
     else:
         # Handle the case where no features are selected
         updated_n_feature = 0
+        selected_features_delimited = ''
     
     # split the data into training and testing sets
     train_size = int(len(data_scaled) * train_test_split)

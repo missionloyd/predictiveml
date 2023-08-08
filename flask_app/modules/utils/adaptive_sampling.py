@@ -7,7 +7,7 @@ def adaptive_sampling(args, config):
     target_error = config['target_error']
     temperature = config['temperature']
 
-    if temperature > 0 and temperature < 1:
+    if temperature > 0 and temperature <= 1.0:
         df_results = pd.read_csv(results_file_path)
         df_results_sorted = df_results.sort_values(by=target_error, ascending=True)
         print(len(df_results_sorted))
@@ -37,8 +37,15 @@ def adaptive_sampling(args, config):
                     explore_group_data = explore_group_data.sample(n=n_explore, replace=False)
                     exploration_data_list.append(explore_group_data)
 
-            exploitation_data = pd.concat(exploitation_data_list)
-            exploration_data = pd.concat(exploration_data_list)
+            if len(exploitation_data_list) > 0:
+                exploitation_data = pd.concat(exploitation_data_list)
+            else:
+                exploitation_data = pd.DataFrame()
+
+            if len(exploration_data_list) > 0:
+                exploration_data = pd.concat(exploration_data_list)
+            else:
+                exploration_data = pd.DataFrame()
 
             args = pd.concat([exploitation_data, exploration_data])
 

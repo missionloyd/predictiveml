@@ -1,12 +1,19 @@
 from modules.utils.get_file_names import get_file_names
 from modules.utils.get_add_features import get_add_features
+from modules.utils.create_results_file_path import create_results_file_path
 
 def load_config():
   path = '.'
   data_path = f'{path}/hvaclab_data'
   tmp_path = f'{path}/models/tmp'
+  imp_path = f'{path}/models/imp'
   log_path = f'{path}/logs'
-  results_file_path = f'{path}/results.csv'
+  results_file = 'results.csv'
+  results_file_path = create_results_file_path(path, results_file)
+  args_file_path = f'{path}/models/tmp/_args'
+  winners_in_file_path = f'{path}/models/tmp'
+  winners_out_file_path = f'{path}/models/tmp'
+  winners_out_file = f'{winners_out_file_path}/_winners.out'
   results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_feature', 'updated_n_feature', 'time_step', 'datelevel', 'rmse', 'mae', 'mape', 'model_file', 'model_data_path', 'building_file', 'selected_features_delimited']
   y_column = ['total_ele (kw)']
   exclude_column = ['ts', 'bldgname']
@@ -18,13 +25,37 @@ def load_config():
   n_feature = list(range(0, len(add_feature)))
 
   config = {
+    # preprocessing/training scope
+    'model_type': ["xgboost"],                      # fastest and most lightweight setting
+    'imputation_method': ['linear_interpolation'],  # fastest and most lightweight setting
+    # 'model_type': ["xgboost", "solos", "ensembles"],
+    # 'imputation_method': ['linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
+    'feature_method': ['rfecv', 'lassocv'],
+    'time_step': [48],             # window size of the sliding window technique and unit length of forecasts
+    'datelevel': ['hour'],
+    'train_test_split': 0.8,
+    'train_ratio_threshold': 0.8, # minimum percent non-nans in training set
+    'test_ratio_threshold': 0.8,  # minimum percent non-nans in testing set
+    'datetime_format': '%m/%d/%Y %H:%M',
+    'startDateTime': '',
+    'endDateTime': '',
+        
+    # hyperparameters
+    'n_feature': n_feature,
+    'n_fold': 5,                
+    'minutes_per_model': 2,
+    'temperature': -1,
+    'target_error': 'mape',
+
     # settings
     'job_id': 0,
     'table': '',
     'path': path,
     'data_path': data_path,
     'tmp_path': tmp_path,
+    'imp_path': imp_path,
     'log_path': log_path,
+    'results_file': results_file,
     'results_file_path': results_file_path,
     'building_file': file_list,
     'exclude_file': exclude_file,
@@ -42,6 +73,10 @@ def load_config():
     'add_feature': add_feature,
     'header': header,
     'results_header': results_header,
+    'args_file_path': args_file_path,
+    'winners_in_file_path': winners_in_file_path,
+    'winners_out_file_path': winners_out_file_path,
+    'winners_out_file': winners_out_file,
     'selected_features_delimited': '',
     'y_column_mapping': {
       'total_ele (kw)': 'electricity',
@@ -56,27 +91,8 @@ def load_config():
       'models/ensembles',
       'models/solos',
       'models/xgboost',
+      'models/imp',
     ],
-
-    # preprocessing/training scope
-    'model_type': ["xgboost", "solos", "ensembles"],
-    'imputation_method': ['linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
-    'feature_method': ['rfecv', 'lassocv'],
-    'datelevel': ['hour'],
-    'time_step': [1],             # window size of the sliding window technique and unit length of forecasts
-    'train_test_split': 0.8,
-    'train_ratio_threshold': 0.8, # minimum percent non-nans in training set
-    'test_ratio_threshold': 0.8,  # minimum percent non-nans in testing set
-    'datetime_format': '%m/%d/%Y %H:%M',
-    'startDateTime': '',
-    'endDateTime': '',
-        
-    # hyperparameters
-    'n_feature': n_feature,
-    'n_fold': 5,                
-    'minutes_per_model': 2,
-    'temperature': -1,
-    'target_error': 'mape'
   }
 
   return config

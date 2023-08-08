@@ -31,9 +31,9 @@ def format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_li
     aggregated_data['bldgname'] = bldgname
     aggregated_data['building_file'] = building_file
 
-    for y_column, y_pred_list in y_pred_lists:
+    for y_column, building, y_pred_list in y_pred_lists:
         for column in y_column_mapping:
-            if column == y_column:
+            if column == y_column and building == building_file.replace('.csv', ''):
                 aggregated_data[y_column_mapping[column]] = y_pred_list
             # else:
             #     aggregated_data[y_column_mapping[column]] = None

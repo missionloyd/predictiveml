@@ -49,10 +49,10 @@ def main(cli_args, flags):
         n_jobs = config['n_jobs']
         results_file_path = config['results_file_path']
         update_add_feature = config['update_add_feature']
-        args_file_path = f'{path}/models/tmp/_args'
-        winners_in_file_path = f'{path}/models/tmp'
-        winners_out_file_path = f'{path}/models/tmp'
-        winners_out_file = f'{winners_out_file_path}/_winners.out'
+        args_file_path = config['args_file_path']
+        winners_in_file_path = config['winners_in_file_path']
+        winners_out_file_path = config ['winners_out_file_path']
+        winners_out_file = config['winners_out_file']
 
         prune(prune_flag, config)
 
@@ -134,6 +134,7 @@ if __name__ == '__main__':
     parser.add_argument('--time_step', type=int, help='Time step for prediction.')
     parser.add_argument('--datelevel', type=str, help='Date level for prediction.')
     parser.add_argument('--table', type=str, help='Table for prediction.')
+    parser.add_argument('--results_file', type=str, help='File name for training results.')
     parser.add_argument('--save_preprocessed_files', action='store_true', help='Flag for saving/reusing preprocessed files.')
     parser.add_argument('--temperature', type=float, help='Temperature for training.') 
     parser.add_argument('--job_id', type=int, help='Job ID for logging.')
@@ -161,6 +162,8 @@ if __name__ == '__main__':
         'datelevel': args.datelevel,
         'time_step': args.time_step,
         'table': args.table,
+        'results_file': args.results_file,
+        'temperature': args.temperature,
         'save_preprocessed_files': args.save_preprocessed_files,
     }
 

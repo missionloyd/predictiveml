@@ -1,3 +1,4 @@
+from datetime import datetime
 import pandas as pd
 from modules.imputation_methods.main import imputation
 # from modules.logging_methods.main import logger
@@ -12,7 +13,7 @@ def preprocessing(args, config):
 
     header = config['header']
     data_path = config['data_path']
-    tmp_path = config['tmp_path']
+    imp_path = config['imp_path']
     exclude_column = config['exclude_column']
     save_preprocessed_files = config['save_preprocessed_files']
     train_test_split = config['train_test_split']
@@ -21,6 +22,7 @@ def preprocessing(args, config):
     exclude_file = config['exclude_file']
     startDateTime = config['startDateTime']
     endDateTime = config['endDateTime']
+    datetime_format = config['datetime_format']
 
     model_data_path = ''
     df = pd.read_csv(f'{data_path}/{building_file}')
@@ -35,7 +37,18 @@ def preprocessing(args, config):
 
     # Filter the dataframe to include data within the startDateTime and endDateTime
     if startDateTime and endDateTime:
-        df = df.loc[(df.index >= startDateTime) & (df.index <= endDateTime)]
+        # Convert startDateTime and endDateTime to datetime objects
+        start_datetime_obj = datetime.strptime(startDateTime, datetime_format)
+        end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
+        df = df.loc[(df.index >= start_datetime_obj) & (df.index <= end_datetime_obj)]
+    elif startDateTime:
+        # Convert startDateTime to datetime object
+        start_datetime_obj = datetime.strptime(startDateTime, datetime_format)
+        df = df.loc[df.index >= start_datetime_obj]
+    elif endDateTime:
+        # Convert endDateTime to datetime object
+        end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
+        df = df.loc[df.index <= end_datetime_obj]
 
     # Cycle through building names if more than one building per file
     for name, group in groups:
@@ -59,7 +72,7 @@ def preprocessing(args, config):
             model_data = model_data.rename(columns={y_column: 'y', 'ts': 'ds'})
             model_data = model_data.sort_values(['ds'])
             building_file_name = building_file.replace('.csv', '')
-            model_data_path = f'{tmp_path}/{building_file_name}_{y_column}_{imputation_method}'
+            model_data_path = f'{imp_path}/{building_file_name}_{y_column}_{imputation_method}'
 
             if save_preprocessed_files == True:
                 # Save the original values into a new column

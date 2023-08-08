@@ -10,7 +10,7 @@ def logger(message):
     print(message)
 
     log_directory = "logs/info_log/"
-    log_file = f"{job_id[0]}.log"
+    log_file = f"{job_id}.log"
     log_path = os.path.join(log_directory, log_file)
 
     # Create the log directory if it doesn't exist
@@ -25,7 +25,7 @@ def api_logger(message):
     global job_id  # Declare job_id as global
 
     log_directory = "logs/api_log/"
-    log_file = f"{job_id[0]}.log"
+    log_file = f"{job_id}.log"
     log_path = os.path.join(log_directory, log_file)
 
     # Create the log directory if it doesn't exist
@@ -80,7 +80,7 @@ def setup_logger(config):
     job_id = config['job_id']
 
     log_directory = "logs/info_log/"
-    log_file = f"{job_id[0]}.log"
+    log_file = f"{job_id}.log"
     log_path = os.path.join(log_directory, log_file)
 
     # Create the log directory if it doesn't exist

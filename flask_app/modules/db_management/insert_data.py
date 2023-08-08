@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import numpy as np
 from .db_management import populate_table
 from .schema_columns_list import schema_columns_list
 
@@ -31,12 +32,25 @@ def insert_data(results, config):
         for key, _ in y_column_mapping.items():
             historical_key = key.replace('present', 'historical')
 
-            df[key] = None
-            df[historical_key] = None
+            # Filter csv_data to include only timestamps present in df
+            filtered_csv_data = csv_data[csv_data['ts'].isin(df['ts'])]
+
+            # Merge the data based on the timestamp column
+            merged_data = pd.merge(df[['ts']], filtered_csv_data[['ts', key, historical_key]], on='ts', how='left')
+
+            # Replace NaN with None
+            merged_data = merged_data.applymap(lambda x: None if pd.isna(x) else x)
+
+            # Update the values in df with the values from csv_data
+            df[key] = merged_data[key]
+            df[historical_key] = merged_data[historical_key]
+
+            # df[key] = None
+            # df[historical_key] = None
 
         df = df.reindex(columns=schema_columns_list())
 
-        print(df)
+        # print(df)
 
     # populate_table(table_name=table, df=spaces_df)
   

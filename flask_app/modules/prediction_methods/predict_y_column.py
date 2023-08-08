@@ -67,7 +67,7 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
     # normalize selected features
     add_data_scaled = np.empty((model_data.shape[0], 0))
 
-    if len(selected_features) > 0 and updated_n_feature > 0:
+    if len(selected_features) > 0 and n_feature > 0:
         for feature in selected_features:
             feature_scaler = StandardScaler()
             add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
