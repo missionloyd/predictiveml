@@ -6,7 +6,12 @@ from flask_socketio import SocketIO
 from flask_cors import CORS
 
 server = Flask(__name__, template_folder="templates")
-CORS(server, origins=['http://localhost:8080', 'http://localhost:3000', 'https://prev-uwyo-campus-heartbeat.vercel.app/', 'https://uwyo-campus-heartbeat.vercel.app/'])
+CORS(server, origins=[
+    'http://localhost:8080', 
+    'http://localhost:3000', 
+    'https://prev-uwyo-campus-heartbeat.vercel.app', 
+    'https://uwyo-campus-heartbeat.vercel.app'
+])
 socketio = SocketIO(server)
 
 n_jobs_counter = 0
