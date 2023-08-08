@@ -5,7 +5,7 @@ from flask import Flask, url_for, jsonify, request, render_template
 from flask_socketio import SocketIO
 from flask_cors import CORS
 
-server = Flask(__name__, template_folder="templates")
+server = Flask(__name__, template_folder='templates', static_folder='static')
 CORS(server, origins=[
     'http://localhost:8080', 
     'http://localhost:3000', 
@@ -209,18 +209,27 @@ def run_predict(building_file, y_column):
 
 @server.route('/api/forecast', methods=['POST'])
 def run_forecast():
+
+    # Preset (Hardcoded since we know we have already trained on these time_steps/datelevels)
+    frequency_mapping = {
+        'hour': '48',
+        'day': '30',
+        'month': '12',
+        'year': '1'
+    }
+        
     # Extract parameters from the request body
     y_column = request.json.get('y_column')
     building_file = request.json.get('building_file')
     startDateTime = request.json.get('startDateTime') 
     endDateTime = request.json.get('endDateTime') 
-    time_step = request.json.get('time_step')
     datelevel = request.json.get('datelevel') 
     table = request.json.get('table')
+    time_step = frequency_mapping[datelevel]
+    # time_step = request.json.get('time_step')
 
     # Create a key tuple from the input arguments
     key = (y_column, building_file, startDateTime, endDateTime, time_step, datelevel, table)
-    key = (building_file, time_step, datelevel)
 
     # Check if the key exists in the previous results
     if key in previous_results:
@@ -228,15 +237,8 @@ def run_forecast():
         data = run_api_log(api_file)
         return jsonify({'job_id': 0, 'data': data, 'status': 'ok'})
     
-    frequency_mapping = {
-        'hour': '48',
-        'day': '30',
-        'month': '12',
-        'year': '1'
-    }
-    
     # No previous result found, proceed with running the prediction
-    job_id = run_main(['--predict', '--building_file', building_file, '--y_column', 'present_elec_kwh', '--time_step', frequency_mapping[datelevel], '--datelevel', datelevel])
+    job_id = run_main(['--predict', '--building_file', building_file, '--y_column', 'present_elec_kwh', '--time_step', time_step, '--datelevel', datelevel])
     api_file = f'logs/api_log/{job_id}.log'
 
     # Wait for the API file to become available
@@ -301,6 +303,8 @@ def run_train():
 
 @server.route('/prune')
 def run_prune():
+    global previous_results
+    previous_results = {}
     job_id = prune()
     command_links = generate_command_links()
     log_links = generate_log_links(job_id)
