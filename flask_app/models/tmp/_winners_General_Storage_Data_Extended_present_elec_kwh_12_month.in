@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
+xgboost,General Storage,present_elec_kwh,lstm,rfecv,1,4,12,month,517.292308883084,451.5337008696336,0.04232023851051565,./models/xgboost/General_Storage_Data_Extended_present_elec_kwh_lstm_rfecv_1_4_12_month,./models/imp/General_Storage_Data_Extended_present_elec_kwh_lstm,General_Storage_Data_Extended.csv,temp_c|rel_humidity_%|surface_pressure_hpa|wind_dir_ground_deg

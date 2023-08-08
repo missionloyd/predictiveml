@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
+xgboost,Fine Arts,present_elec_kwh,lstm,rfecv,0,0,1,year,210076.87191397249,209356.07437744178,0.16294966354176876,./models/xgboost/Fine_Arts_Data_Extended_present_elec_kwh_lstm_rfecv_0_0_1_year,./models/imp/Fine_Arts_Data_Extended_present_elec_kwh_lstm,Fine_Arts_Data_Extended.csv,

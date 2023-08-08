@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
+xgboost,Old Main,present_elec_kwh,linear_regression,rfecv,1,1,30,day,99.55705992611402,81.25654877862783,0.21751828999198314,./models/xgboost/Old_Main_Data_Extended_present_elec_kwh_linear_regression_rfecv_1_1_30_day,./models/imp/Old_Main_Data_Extended_present_elec_kwh_linear_regression,Old_Main_Data_Extended.csv,surface_pressure_hpa

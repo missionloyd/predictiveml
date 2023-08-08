@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
+xgboost,Engineering,present_elec_kwh,linear_regression,rfecv,0,0,48,hour,34.25262029896634,26.3468729440454,0.10780880805386593,./models/xgboost/Engineering_Data_Extended_present_elec_kwh_linear_regression_rfecv_0_0_48_hour,./models/imp/Engineering_Data_Extended_present_elec_kwh_linear_regression,Engineering_Data_Extended.csv,
