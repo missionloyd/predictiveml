@@ -38,14 +38,15 @@ def on_demand_prediction(cli_args, winners_in_file_path, config):
             len_y_pred_list = len(y_pred_list)
             results = format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step, target_row, results_header, y_column_flag)
     else:
-        winners_in_file = f'{winners_in_file_path}/_winners.in'
+        y_column = cli_args['y_column']
+        
+        winners_in_file = f'{winners_in_file_path}/_winners_{building}_{y_column}_{time_step}_{datelevel}.in'
 
         if not os.path.exists(winners_in_file): 
             logger(f"This configuration must be trained on and saved prior to making a prediction.")
             return results
         
         start, end, y_pred_list, target_row = create_predictions(cli_args, startDateTime, endDateTime, winners_in_file, config)
-        y_column = cli_args['y_column']
         y_pred_lists.append((y_column, building, y_pred_list))
 
         len_y_pred_list = len(y_pred_list)

@@ -91,7 +91,7 @@ def main(cli_args, flags):
             results = process_batch_args('Saving', updated_args, train_model, batch_size, n_jobs, config)
                 
         if predict_flag:
-            required_columns = ['building_file', 'y_column']
+            required_columns = ['building_file', 'y_column', 'time_step', 'datelevel']
 
             if not all(key in cli_args for key in required_columns):
                 logger(f"Required arguments missing for prediction. Please provide {required_columns}.")
