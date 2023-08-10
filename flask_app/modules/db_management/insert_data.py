@@ -33,11 +33,19 @@ def insert_data(results, config):
             historical_key = key.replace('present', 'historical')
 
             # Filter csv_data to include only timestamps present in df
-            filtered_csv_data = csv_data[csv_data['ts'].isin(df['ts'])]
+            filtered_csv_data = csv_data[csv_data['ts'].isin(df['ts'].dt.strftime(config['datetime_format']))]
 
-            # Merge the data based on the timestamp column
-            merged_data = pd.merge(df[['ts']], filtered_csv_data[['ts', key, historical_key]], on='ts', how='left')
+            # Convert 'ts' column to datetime in filtered_csv_data
+            filtered_csv_data = filtered_csv_data.copy()  
+            filtered_csv_data['ts'] = pd.to_datetime(filtered_csv_data['ts'])
 
+            # Perform the merge using the common 'ts' column
+            merged_data = pd.merge(
+                df[['ts']],
+                filtered_csv_data[['ts', key, historical_key]],
+                on='ts',
+                how='left'
+            )
             # Replace NaN with None
             merged_data = merged_data.applymap(lambda x: None if pd.isna(x) else x)
 
@@ -51,7 +59,6 @@ def insert_data(results, config):
         df = df.reindex(columns=schema_columns_list())
 
         # print(df)
-
-    # populate_table(table_name=table, df=spaces_df)
+        populate_table(table_name=table, df=df)
   
     return

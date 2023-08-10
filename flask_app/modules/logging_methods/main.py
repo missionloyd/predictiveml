@@ -21,7 +21,7 @@ def logger(message):
         file.write(f"{message}\n")
 
 
-def api_logger(message):
+def api_logger(message, config):
     global job_id  # Declare job_id as global
 
     log_directory = "logs/api_log/"
@@ -49,7 +49,7 @@ def api_logger(message):
                     else:
                         value = None  # Assign None for None values
                 else:
-                    value = str(value.strftime("%Y-%m-%dT%H:%M:%S"))  # Extract the string value with desired format
+                    value = str(value.strftime(config['datetime_format']))  # Extract the string value with desired format
                 message_serializable[key] = value
 
             messages_serializable.append(message_serializable)
@@ -59,7 +59,7 @@ def api_logger(message):
             message_serializable = {}
             for key, value in item.items():
                 if isinstance(value, pd.Timestamp):
-                    value = str(value.strftime("%Y-%m-%dT%H:%M:%S"))
+                    value = str(value.strftime(config['datetime_format']))
                 elif isinstance(value, (int, float)):
                     value = float(value)
                 else:

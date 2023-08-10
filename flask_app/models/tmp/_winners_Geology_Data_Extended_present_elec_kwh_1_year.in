@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
-xgboost,Geology,present_elec_kwh,prophet,rfecv,0,0,1,year,25627.353944178198,24557.849232667213,0.16677920310903893,./models/xgboost/Geology_Data_Extended_present_elec_kwh_prophet_rfecv_0_0_1_year,./models/imp/Geology_Data_Extended_present_elec_kwh_prophet,Geology_Data_Extended.csv,

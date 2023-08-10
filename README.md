@@ -107,7 +107,7 @@ Note: If no flags are specified, the script will display a message and exit with
 The script contains the following configurations:
 
 ### Settings
-- data_path: Path to the directory containing the preprocessed CSV files for building energy data. The default value is f'{PATH}/clean_data_extended'.
+- data_path: Path to the directory containing the preprocessed CSV files for building energy data.
 - buildings_list: List of preprocessed CSV files for building energy data. The default value is ['Stadium_Data_Extended.csv'].
 save_model_file: Boolean indicating whether to save the trained models as .pkl files. The default value is False.
 - save_model_plot: Boolean indicating whether to save the model plots. The default value is False.

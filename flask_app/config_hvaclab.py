@@ -5,6 +5,7 @@ from modules.utils.create_results_file_path import create_results_file_path
 def load_config():
   path = '.'
   data_path = f'{path}/hvaclab_data'
+  clean_data_path = ''
   tmp_path = f'{path}/models/tmp'
   imp_path = f'{path}/models/imp'
   log_path = f'{path}/logs'
@@ -52,6 +53,7 @@ def load_config():
     'table': '',
     'path': path,
     'data_path': data_path,
+    'clean_data_path': clean_data_path,
     'tmp_path': tmp_path,
     'imp_path': imp_path,
     'log_path': log_path,

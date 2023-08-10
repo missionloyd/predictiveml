@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
-xgboost,Enzi-STEM,present_elec_kwh,lstm,rfecv,0,0,1,year,238738.71692648085,238634.2837524414,0.162564182335399,./models/xgboost/Enzi-STEM_Data_Extended_present_elec_kwh_lstm_rfecv_0_0_1_year,./models/imp/Enzi-STEM_Data_Extended_present_elec_kwh_lstm,Enzi-STEM_Data_Extended.csv,

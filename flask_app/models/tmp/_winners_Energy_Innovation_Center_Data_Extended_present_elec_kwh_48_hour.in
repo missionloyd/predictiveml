@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
-xgboost,Energy Innovation Center,present_elec_kwh,prophet,rfecv,0,0,48,hour,8.277309148856519,6.3536994765889565,0.058987334287201654,./models/xgboost/Energy_Innovation_Center_Data_Extended_present_elec_kwh_prophet_rfecv_0_0_48_hour,./models/imp/Energy_Innovation_Center_Data_Extended_present_elec_kwh_prophet,Energy_Innovation_Center_Data_Extended.csv,

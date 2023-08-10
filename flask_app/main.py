@@ -33,13 +33,14 @@ def main(cli_args, flags):
 
     run_all_flag = flags['run_all']
     prune_flag = flags['prune_flag']
+    update_add_feature_flag = flags['update_add_feature_flag']
     predict_flag = flags['predict_flag']
     preprocess_flag = False if flags['predict_flag'] else flags['preprocess_flag']
     train_flag = False if flags['predict_flag'] else flags['train_flag'] 
     save_flag = False if flags['predict_flag'] else flags['save_flag']
     insert_flag = False if flags['predict_flag'] else flags['insert_flag']
 
-    if run_all_flag or prune_flag or preprocess_flag or train_flag or save_flag or predict_flag or insert_flag or insert_flag:
+    if run_all_flag or prune_flag or update_add_feature_flag or preprocess_flag or train_flag or save_flag or predict_flag or insert_flag or insert_flag:
 
         config = load_config()
         config = update_config(config, cli_args)
@@ -48,7 +49,6 @@ def main(cli_args, flags):
         batch_size = config['batch_size']
         n_jobs = config['n_jobs']
         results_file_path = config['results_file_path']
-        update_add_feature = config['update_add_feature']
         args_file_path = config['args_file_path']
         winners_in_file_path = config['winners_in_file_path']
         winners_out_file_path = config ['winners_out_file_path']
@@ -56,14 +56,14 @@ def main(cli_args, flags):
 
         prune(prune_flag, config)
 
+        # Update files with add_features (weather)
+        if update_add_feature_flag:
+            build_extended_clean_data(config)
+
         if preprocess_flag or run_all_flag:
             # Generate a list of arguments for model training
             args, preprocess_args = create_args(config)
             args = adaptive_sampling(args, config)
-
-            # Update files with add_features (weather)
-            if update_add_feature:
-                build_extended_clean_data(path)
 
             # Process the preprocessing arguments
             processed_args = process_batch_args('Preprocessing', preprocess_args, preprocessing, batch_size, n_jobs, config)
@@ -102,7 +102,7 @@ def main(cli_args, flags):
 
             # save prediction(s) for info logs and expose to api
             logger(results)
-            api_logger(results)
+            api_logger(results, config)
 
         if insert_flag:
             # Predict on all available models and then insert into database (custom for campus heartbeat)
@@ -126,6 +126,7 @@ if __name__ == '__main__':
     parser.add_argument('--save', action='store_true', help='Flag for saving model files.')
     parser.add_argument('--predict', action='store_true', help='Flag for prediction.')
     parser.add_argument('--insert', action='store_true', help='Flag for inserting predictings into database.') 
+    parser.add_argument('--update_add_feature', action='store_true', help='Flag for updating additional features into database.') 
     parser.add_argument('--building_file', type=str, help='Building file for prediction (do not include .csv extension).')
     parser.add_argument('--bldgname', type=str, help='Building name for prediction.')
     parser.add_argument('--y_column', type=str, help='Y_Column for prediction.')
@@ -150,6 +151,7 @@ if __name__ == '__main__':
         'train_flag': args.train,
         'predict_flag': args.predict,
         'save_flag': args.save,
+        'update_add_feature_flag': args.update_add_feature,
     }
 
     cli_args = {
