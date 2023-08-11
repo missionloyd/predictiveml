@@ -1,4 +1,4 @@
-campus,bldgname,ts,present_elec_kwh,historical_elec_kwh,present_htwt_mmbtu,historical_htwt_mmbtu,present_wtr_usgal,historical_wtr_usgal,present_chll_tonhr,historical_chll_tonhr,present_co2_tons,historical_co2_tons,latitude,longitude,year,month,day,hour
+campus,bldgname,ts,present_elec_kwh,historical_elec_kwh,present_htwt_mmbtuh,historical_htwt_mmbtuh,present_wtr_usgal,historical_wtr_usgal,present_chll_tonh,historical_chll_tonh,present_co2_tonh,historical_co2_tonh,latitude,longitude,year,month,day,hour
 West,Classroom Building,2019-09-19T00:00:00,50.0,,,,,62.5,,14.067411999916658,0.034499999999999996,,41.313339,-105.584502,2019,9,19,0
 West,Classroom Building,2019-09-19T01:00:00,50.0,,,,,62.5,,14.067412000149488,0.034499999999999996,,41.313339,-105.584502,2019,9,19,1
 West,Classroom Building,2019-09-19T02:00:00,50.0,,,,,62.5,,17.58426499995403,0.034499999999999996,,41.313339,-105.584502,2019,9,19,2

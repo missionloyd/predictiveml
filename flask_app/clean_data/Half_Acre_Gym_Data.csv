@@ -1,4 +1,4 @@
-campus,bldgname,ts,present_elec_kwh,historical_elec_kwh,present_htwt_mmbtu,historical_htwt_mmbtu,present_wtr_usgal,historical_wtr_usgal,present_chll_tonhr,historical_chll_tonhr,present_co2_tons,historical_co2_tons,latitude,longitude,year,month,day,hour
+campus,bldgname,ts,present_elec_kwh,historical_elec_kwh,present_htwt_mmbtuh,historical_htwt_mmbtuh,present_wtr_usgal,historical_wtr_usgal,present_chll_tonh,historical_chll_tonh,present_co2_tonh,historical_co2_tonh,latitude,longitude,year,month,day,hour
 West,Half Acre Gym,2019-09-19T00:00:00,62.5,,,,,336.11112,,,0.043125,,41.313159,-105.578982,2019,9,19,0
 West,Half Acre Gym,2019-09-19T01:00:00,63.0,,,,,336.11112,,,0.043469999999999995,,41.313159,-105.578982,2019,9,19,1
 West,Half Acre Gym,2019-09-19T02:00:00,63.5,,,,,336.11112,,,0.043815,,41.313159,-105.578982,2019,9,19,2

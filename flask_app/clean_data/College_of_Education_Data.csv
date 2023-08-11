@@ -1,4 +1,4 @@
-campus,bldgname,ts,present_elec_kwh,historical_elec_kwh,present_htwt_mmbtu,historical_htwt_mmbtu,present_wtr_usgal,historical_wtr_usgal,present_chll_tonhr,historical_chll_tonhr,present_co2_tons,historical_co2_tons,latitude,longitude,year,month,day,hour
+campus,bldgname,ts,present_elec_kwh,historical_elec_kwh,present_htwt_mmbtuh,historical_htwt_mmbtuh,present_wtr_usgal,historical_wtr_usgal,present_chll_tonh,historical_chll_tonh,present_co2_tonh,historical_co2_tonh,latitude,longitude,year,month,day,hour
 West,College of Education,2019-09-19T00:00:00,30.0,,,,,119.44444,14.0,4.0,0.0207,,41.314148,-105.579381,2019,9,19,0
 West,College of Education,2019-09-19T01:00:00,20.0,,,,,119.44444,14.0,4.0,0.0138,,41.314148,-105.579381,2019,9,19,1
 West,College of Education,2019-09-19T02:00:00,30.0,,,,,119.44444,13.0,3.0,0.0207,,41.314148,-105.579381,2019,9,19,2
