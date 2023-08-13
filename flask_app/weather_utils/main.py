@@ -22,10 +22,10 @@ def build_extended_clean_data(config):
     for csv_name in csv_files_to_append:
         print(f':: -- Working on {csv_name}.csv ...')
         append_to_extended_datafile_main(csv_name, config)
-        break
+        print('test')
     
-    # # Create the extended datafiles
-    # for csv_name in csv_files_to_create:
-    #     print(f':: -- Working on {csv_name}.csv ...')
-    #     create_extended_datafile_main(csv_name, config)
+    # Create the extended datafiles
+    for csv_name in csv_files_to_create:
+        print(f':: -- Working on {csv_name}.csv ...')
+        create_extended_datafile_main(csv_name, config)
     

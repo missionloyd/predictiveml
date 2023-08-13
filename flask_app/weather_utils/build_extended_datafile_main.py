@@ -1,4 +1,4 @@
-import sys
+import csv
 import numpy as np
 import pandas as pd
 from timezonefinder import TimezoneFinder
@@ -14,8 +14,8 @@ def create_extended_datafile_main(csv_name, config):
     # Import CSV file
     file = f'{clean_data_path}/{csv_name}.csv'
     df = pd.read_csv(file)
-    df['ts'] = pd.to_datetime(df['ts'])
-    df.set_index('ts', inplace=True)
+    # df['ts'] = pd.to_datetime(df['ts'])
+    # df.set_index('ts', inplace=True)
 
     tf = TimezoneFinder()
 
@@ -57,13 +57,9 @@ def create_extended_datafile_main(csv_name, config):
 
             # Get weather data in 24-hour chunks
             get_24hour_data = True  # Get weather data for the entire UTC 24-hour day
-            # weather_data_dict_24 = get_weather_data_at_location_and_hour(row['latitude'], row['longitude'],
-            #                                                               elevation_meters, utc_time_str,
-            #                                                               timezone_diff_hrs, get_24hour_data)
             weather_data_dict_24 = get_weather_data_at_location_and_hour(row['latitude'], row['longitude'],
-                                                                          '7220', utc_time_str,
+                                                                          elevation_meters, utc_time_str,
                                                                           timezone_diff_hrs, get_24hour_data)
-            # Convert the weather_data_dict to a pandas DataFrame object
             weather_data_df_24 = pd.DataFrame(weather_data_dict_24)
 
         # Run this row by row until the 24-hour chunk is complete
@@ -127,6 +123,11 @@ def append_to_extended_datafile_main(csv_name, config):
     clean_data_path = config['clean_data_path']
     file = f'{clean_data_path}/{csv_name}.csv'
     df = pd.read_csv(file)
+
+    df_extended_last_timestamp = df_extended['ts'].iloc[-1]
+    df_last_timestamp = df['ts'].iloc[-1]
+
+    if df_extended_last_timestamp == df_last_timestamp: return
 
     startDateTime = df['ts'].iloc[-24]
     endDateTime = ''
@@ -197,31 +198,8 @@ def append_to_extended_datafile_main(csv_name, config):
         else:
             local_time_zone_str = tf.timezone_at(lng=row['longitude'], lat=row['latitude'])
             utc_time_str, timezone_diff_hrs = local_time_to_utc_str(local_time_str, local_time_zone_str)
-            # print(timezone_diff_hrs)
-        dt_utc = datetime.strptime(utc_time_str, '%Y-%m-%dT%H:%M')
 
         # Check if dt_utc is a new day, and if so, start a new 24-hour chunk
-        if dt_utc.hour == 0:
-            running_chunk = True
-            row_counter = 0
-
-            row_df_24 = pd.DataFrame()  # Initialize the DataFrame for the 24-hour chunk
-
-            # Get the elevation at the given latitude and longitude
-            if get_elevation:
-                elevation_meters = get_elevation_online(row['latitude'], row['longitude'])
-                get_elevation = False
-
-            # Get weather data in 24-hour chunks
-            get_24hour_data = True  # Get weather data for the entire UTC 24-hour day
-            # weather_data_dict_24 = get_weather_data_at_location_and_hour(row['latitude'], row['longitude'],
-            #                                                               elevation_meters, utc_time_str,
-            #                                                               timezone_diff_hrs, get_24hour_data)
-            weather_data_dict_24 = get_weather_data_at_location_and_hour(row['latitude'], row['longitude'],
-                                                                          '7220', utc_time_str,
-                                                                          timezone_diff_hrs, get_24hour_data)
-            # Convert the weather_data_dict to a pandas DataFrame object
-            weather_data_df_24 = pd.DataFrame(weather_data_dict_24)
 
         # Run this row by row until the 24-hour chunk is complete
         if running_chunk:
@@ -231,15 +209,7 @@ def append_to_extended_datafile_main(csv_name, config):
             row_df_24 = pd.concat([row_df_24, row.to_frame().T], axis=0)  # to_frame().T converts the Series to a DataFrame row
 
         # Once the 24-hour chunk is complete, append it to the new DataFrame
-        if row_counter == 24:
-            running_chunk = False
-            row_counter = 0
 
-            weather_data_df_24.index = row_df_24.index
-            row_df_24 = pd.concat([row_df_24, weather_data_df_24], axis=1)
-
-            # Append the combined_row to the new DataFrame
-            df_extended_new = pd.concat([df_extended_new, row_df_24], axis=0)
         elif not running_chunk:
             # Get the elevation at the given latitude and longitude
             if get_elevation:
@@ -265,12 +235,10 @@ def append_to_extended_datafile_main(csv_name, config):
         print(f':: ** File {csv_name}_Extended.csv cannot be processed due to invalid entries...')
     else:
         df_extended_new.columns = df_extended_new.columns.str.lower()
-        # print(df_extended_new)
-
         df_extended_new = df_extended_new.drop(columns=['forecast', 'time_utc', 'time_local'])
 
+        df_extended_new = df_extended_new[df_extended.columns]
+        
         # Save the DataFrame to a CSV file
-        # print(df_extended_new)
-        df_extended = pd.concat([df_extended, df_extended_new], axis=0)
-        print(df_extended)
-        # df_extended.to_csv(f'{data_path}/{csv_name}_Extended.csv', index=False)
+        csv_file_path = f'{data_path}/{csv_name}_Extended.csv'
+        df_extended_new.to_csv(csv_file_path, index=False, mode='a', header=False)
