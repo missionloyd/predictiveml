@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
-xgboost,Education Annex,present_elec_kwh,linear_interpolation,rfecv,0,0,1,year,24911.648712293187,24910.04687500003,0.13528490900142331,./models/xgboost/Education_Annex_Data_Extended_present_elec_kwh_linear_interpolation_rfecv_0_0_1_year,./models/imp/Education_Annex_Data_Extended_present_elec_kwh_linear_interpolation,Education_Annex_Data_Extended.csv,

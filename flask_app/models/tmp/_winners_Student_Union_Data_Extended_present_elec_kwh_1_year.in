@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
-xgboost,Student Union,present_elec_kwh,linear_interpolation,rfecv,0,0,1,year,148943.25504329032,143689.625,0.13439832996525242,./models/xgboost/Student_Union_Data_Extended_present_elec_kwh_linear_interpolation_rfecv_0_0_1_year,./models/imp/Student_Union_Data_Extended_present_elec_kwh_linear_interpolation,Student_Union_Data_Extended.csv,

@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
-xgboost,WTBC,present_elec_kwh,prophet,rfecv,0,0,48,hour,7.038185218374784,5.488444093250593,0.10668830715944558,./models/xgboost/WTBC_Data_Extended_present_elec_kwh_prophet_rfecv_0_0_48_hour,./models/imp/WTBC_Data_Extended_present_elec_kwh_prophet,WTBC_Data_Extended.csv,

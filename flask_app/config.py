@@ -5,6 +5,7 @@ from modules.utils.create_results_file_path import create_results_file_path
 def load_config():
   path = '.'
   data_path = f'{path}/building_data'
+  clean_data_path = f'{path}/clean_data'
   tmp_path = f'{path}/models/tmp'
   imp_path = f'{path}/models/imp'
   log_path = f'{path}/logs'
@@ -17,7 +18,7 @@ def load_config():
   results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_feature', 'updated_n_feature', 'time_step', 'datelevel', 'rmse', 'mae', 'mape', 'model_file', 'model_data_path', 'building_file', 'selected_features_delimited']
   y_column = ['present_elec_kwh', 'present_htwt_mmbtuh', 'present_wtr_usgal', 'present_chll_tonh']
   exclude_column = ['ts', 'bldgname', 'present_co2_tonh', 'campus', 'historical_elec_kwh', 'historical_htwt_mmbtuh', 'historical_wtr_usgal', 'historical_chll_tonh', 'historical_co2_tonh', 'latitude', 'longitude', 'year', 'month', 'day', 'hour']
-  exclude_file = ['Summary_Report_Extended.csv']
+  exclude_file = ['Summary_Report_Extended.csv', 'East_Campus_Data_Extended.csv', 'West_Campus_Data_Extended.csv']
   file_path = f'{data_path}/Summary_Report_Extended.csv'
   file_list = get_file_names(data_path, exclude_file)
   add_feature = get_add_features(file_path, y_column + exclude_column)
@@ -52,6 +53,7 @@ def load_config():
     'table': 'spaces',
     'path': path,
     'data_path': data_path,
+    'clean_data_path': clean_data_path,
     'tmp_path': tmp_path,
     'imp_path': imp_path,
     'log_path': log_path,

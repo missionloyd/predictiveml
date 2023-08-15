@@ -7,8 +7,8 @@ increment_timestamp() {
 }
 
 # Set the start and end dates
-start_date="2022-02-05T23:00:00"
-end_date="2023-02-05T23:00:00"
+start_date="2022-02-04T23:00:00"
+end_date="2023-02-04T23:00:00"
 
 # Initialize the current timestamp with the start date
 current_timestamp=$start_date
@@ -21,7 +21,8 @@ while [[ "$current_timestamp" < "$end_date" ]]; do
     echo "Running script with --endDateTime $current_timestamp"
 
     # Call your python script here passing the current timestamp
-    # python3 main.py --prune --run_all --insert --time_step 48 --datelevel hour --endDateTime "$current_timestamp"
+    # python3 main.py --prune --run_all --time_step 48 --datelevel hour --endDateTime "$current_timestamp"
+    # python3 main.py --insert --endDateTime "$current_timestamp"
 
     # Save the current end_date in the loop to the file
     echo "$current_timestamp" >> end_date_record.txt

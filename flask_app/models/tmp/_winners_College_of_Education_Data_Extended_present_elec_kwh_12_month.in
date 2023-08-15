@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
-xgboost,College of Education,present_elec_kwh,lstm,rfecv,1,2,12,month,2172.63485543936,1666.0372072366567,0.05818911034268651,./models/xgboost/College_of_Education_Data_Extended_present_elec_kwh_lstm_rfecv_1_2_12_month,./models/imp/College_of_Education_Data_Extended_present_elec_kwh_lstm,College_of_Education_Data_Extended.csv,surface_pressure_hpa|direct_radiation_w/m2

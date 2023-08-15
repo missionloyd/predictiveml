@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
-xgboost,Service Building,present_elec_kwh,lstm,rfecv,0,0,1,year,37659.54869713645,30121.98880815506,0.10995438914088965,./models/xgboost/Service_Building_Data_Extended_present_elec_kwh_lstm_rfecv_0_0_1_year,./models/imp/Service_Building_Data_Extended_present_elec_kwh_lstm,Service_Building_Data_Extended.csv,

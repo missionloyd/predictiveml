@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
-xgboost,Energy Innovation Center,present_htwt_mmbtuh,lstm,rfecv,0,0,1,year,766448.672979454,766448.4135310358,160.18403321006514,./models/xgboost/Energy_Innovation_Center_Data_Extended_present_htwt_mmbtuh_lstm_rfecv_0_0_1_year,./models/imp/Energy_Innovation_Center_Data_Extended_present_htwt_mmbtuh_lstm,Energy_Innovation_Center_Data_Extended.csv,

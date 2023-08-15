@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
-xgboost,WRI and Bureau of Mines,present_elec_kwh,prophet,rfecv,0,0,48,hour,7.964252679290985,6.428610692789971,0.12384454847690805,./models/xgboost/WRI_and_Bureau_of_Mines_Data_Extended_present_elec_kwh_prophet_rfecv_0_0_48_hour,./models/imp/WRI_and_Bureau_of_Mines_Data_Extended_present_elec_kwh_prophet,WRI_and_Bureau_of_Mines_Data_Extended.csv,

@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
-xgboost,Williams Conservatory,present_elec_kwh,linear_regression,rfecv,0,0,1,year,22557.332736384673,16103.584021534713,0.08566389830778015,./models/xgboost/Williams_Conservatory_Data_Extended_present_elec_kwh_linear_regression_rfecv_0_0_1_year,./models/imp/Williams_Conservatory_Data_Extended_present_elec_kwh_linear_regression,Williams_Conservatory_Data_Extended.csv,

@@ -1,2 +1,0 @@
-model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
-xgboost,General Storage,present_elec_kwh,linear_interpolation,rfecv,0,0,1,year,16431.16115720925,16273.2890625,0.1284143089728009,./models/xgboost/General_Storage_Data_Extended_present_elec_kwh_linear_interpolation_rfecv_0_0_1_year,./models/imp/General_Storage_Data_Extended_present_elec_kwh_linear_interpolation,General_Storage_Data_Extended.csv,
