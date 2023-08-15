@@ -19,9 +19,8 @@ def load_config():
   y_column = ['present_elec_kwh', 'present_htwt_mmbtuh', 'present_wtr_usgal', 'present_chll_tonh']
   exclude_column = ['ts', 'bldgname', 'present_co2_tonh', 'campus', 'historical_elec_kwh', 'historical_htwt_mmbtuh', 'historical_wtr_usgal', 'historical_chll_tonh', 'historical_co2_tonh', 'latitude', 'longitude', 'year', 'month', 'day', 'hour']
   exclude_file = ['Summary_Report_Extended.csv', 'East_Campus_Data_Extended.csv', 'West_Campus_Data_Extended.csv']
-  file_path = f'{data_path}/Summary_Report_Extended.csv'
   file_list = get_file_names(data_path, exclude_file)
-  add_feature = get_add_features(file_path, y_column + exclude_column)
+  add_feature = get_add_features(file_list, data_path, y_column + exclude_column)
   header = ['ts'] + y_column + add_feature
   n_feature = list(range(0, len(add_feature)))
 

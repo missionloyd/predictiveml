@@ -19,9 +19,8 @@ def load_config():
   y_column = ['total_ele (kw)']
   exclude_column = ['ts', 'bldgname']
   exclude_file = ['']
-  file_path = f'{data_path}/data.csv'
   file_list = get_file_names(data_path, exclude_file)
-  add_feature = get_add_features(file_path, y_column + exclude_column)
+  add_feature = get_add_features(file_list, data_path, y_column + exclude_column)
   header = ['ts'] + y_column + add_feature
   n_feature = list(range(0, len(add_feature)))
 
