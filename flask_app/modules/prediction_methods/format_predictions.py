@@ -1,6 +1,6 @@
 import pandas as pd
 
-def format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step, target_row, results_header, y_column_flag):
+def format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step, target_row, results_header, y_column_flag, config):
     # Assuming datelevel is a string representing the desired level of grouping: 'hour', 'day', 'month', or 'year'
     if datelevel == 'hour':
         freq = 'H'
@@ -33,8 +33,13 @@ def format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_li
 
     for y_column, building, y_pred_list in y_pred_lists:
         for column in y_column_mapping:
+
             if column == y_column and building == building_file.replace('.csv', ''):
                 aggregated_data[y_column_mapping[column]] = y_pred_list
+
+                if column == 'present_elec_kwh':
+                    aggregated_data[y_column_mapping['present_co2_tonh']] = aggregated_data[y_column_mapping['present_elec_kwh']] * config['CO2EmissionFactor']
+        
             # else:
             #     aggregated_data[y_column_mapping[column]] = None
 

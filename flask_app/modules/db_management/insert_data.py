@@ -13,6 +13,8 @@ def insert_data(results, config):
         building_file = df['building_file'].iloc[0]
         df.drop(columns=['building_file'], inplace=True)
 
+        print(f':: -- Working on {building_file} ...')
+
         # Open the CSV file and extract the specified columns
         building_file_path = f'{config["data_path"]}/{building_file}'
         csv_data = pd.read_csv(building_file_path)
@@ -56,6 +58,8 @@ def insert_data(results, config):
             # df[key] = None
             # df[historical_key] = None
 
+        df['ts'] = df['ts'].dt.strftime(config['datetime_format'])
+        df.replace(to_replace=[np.nan, "None"], value=None, inplace=True)        
         df = df.reindex(columns=schema_columns_list())
 
         # print(df)

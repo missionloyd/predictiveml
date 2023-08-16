@@ -98,6 +98,7 @@ def load_config():
       'models/xgboost',
       # 'models/imp',
     ],
+    'CO2EmissionFactor': 0.00069,
   }
 
   return config
