@@ -42,6 +42,6 @@ def master_prediction(cli_args, winners_in_file_path, config):
             y_pred_lists.append((y_column, building, y_pred_list))
             len_y_pred_list = len(y_pred_list)
 
-            results.append(format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step, target_row, results_header, y_column_flag))
+            results.append(format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step, target_row, results_header, y_column_flag, config))
 
     return results

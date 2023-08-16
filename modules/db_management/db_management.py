@@ -110,8 +110,7 @@ def populate_table(table_name: str, df: pd.DataFrame) -> None:
     for index, row in df.iterrows():
 
         new_row = row.where(pd.notnull(row), None)
-        # run_syntax(db_connection=db_connection, syntax=f"INSERT INTO {table_name} VALUES {value_placeholders} ON CONFLICT(bldgname, ts) DO UPDATE SET {excluded_col_names} = {excluded_placeholders};", entry=tuple(new_row.values))
-        print(f"INSERT INTO {table_name} VALUES {value_placeholders} ON CONFLICT(bldgname, ts) DO UPDATE SET {excluded_col_names} = {excluded_placeholders};")
+        run_syntax(db_connection=db_connection, syntax=f"INSERT INTO {table_name} VALUES {value_placeholders} ON CONFLICT(bldgname, ts) DO UPDATE SET {excluded_col_names} = {excluded_placeholders};", entry=tuple(new_row.values))
 
     db_connection.commit()
     db_connection.close()
