@@ -111,7 +111,7 @@ def main(cli_args, flags):
         if save_predictions_flag:
             results = master_prediction(cli_args, winners_in_file_path, config)
             merged_list = merge_predictions(results, config)
-            save_predictions(merged_list, config)
+            save_predictions(merged_list, config, cli_args)
             
         # Predict on all available models and then insert into database (custom for campus heartbeat)
         if insert_flag:
