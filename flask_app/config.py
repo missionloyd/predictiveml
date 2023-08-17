@@ -27,9 +27,9 @@ def load_config():
   config = {
     # preprocessing/training scope
     'model_type': ["xgboost"],                      # fastest and most lightweight setting
-    # 'imputation_method': ['linear_interpolation'],  # fastest and most lightweight setting
+    'imputation_method': ['linear_interpolation'],  # fastest and most lightweight setting
     # 'model_type': ["xgboost", "solos", "ensembles"],
-    'imputation_method': ['linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
+    # 'imputation_method': ['linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
     'feature_method': ['rfecv', 'lassocv'],
     'time_step': [48],            # window size of the sliding window technique and unit length of forecasts
     'datelevel': ['hour'],
@@ -97,6 +97,7 @@ def load_config():
       'models/solos',
       'models/xgboost',
       # 'models/imp',
+      # 'prediction_data'
     ],
     'CO2EmissionFactor': 0.00069,
   }
