@@ -26,6 +26,8 @@ from modules.logging_methods.main import logger, api_logger, extract_args
 from modules.utils.save_args import save_args
 from modules.utils.save_results import save_preprocessed_args_results
 from modules.utils.save_results import save_training_results
+from modules.prediction_methods.merge_predictions import merge_predictions
+from modules.prediction_methods.save_predictions import save_predictions
 from modules.db_management.insert_data import insert_data
 
 def main(cli_args, flags):
@@ -39,8 +41,9 @@ def main(cli_args, flags):
     train_flag = False if flags['predict_flag'] else flags['train_flag'] 
     save_flag = False if flags['predict_flag'] else flags['save_flag']
     insert_flag = False if flags['predict_flag'] else flags['insert_flag']
+    save_predictions_flag = False if flags['predict_flag'] else flags['save_predictions_flag']
 
-    if run_all_flag or prune_flag or update_add_feature_flag or preprocess_flag or train_flag or save_flag or predict_flag or insert_flag or insert_flag:
+    if run_all_flag or prune_flag or update_add_feature_flag or preprocess_flag or train_flag or save_flag or predict_flag or insert_flag or save_predictions_flag or insert_flag:
 
         config = load_config()
         config = update_config(config, cli_args)
@@ -104,11 +107,18 @@ def main(cli_args, flags):
             logger(results)
             api_logger(results, config)
 
-        if insert_flag:
-            # Predict on all available models and then insert into database (custom for campus heartbeat)
+        # Save predictions merged with original datasets
+        if save_predictions_flag:
             results = master_prediction(cli_args, winners_in_file_path, config)
-            insert_data(results, config)
+            merged_list = merge_predictions(results, config)
+            save_predictions(merged_list, config)
             
+        # Predict on all available models and then insert into database (custom for campus heartbeat)
+        if insert_flag:
+            results = master_prediction(cli_args, winners_in_file_path, config)
+            merged_list = merge_predictions(results, config)
+            insert_data(merged_list, config)
+   
     else:
         logger("No flags specified. Exiting...")
 
@@ -126,6 +136,7 @@ if __name__ == '__main__':
     parser.add_argument('--save', action='store_true', help='Flag for saving model files.')
     parser.add_argument('--predict', action='store_true', help='Flag for prediction.')
     parser.add_argument('--insert', action='store_true', help='Flag for inserting predictings into database.') 
+    parser.add_argument('--save_predictions', action='store_true', help='Flag for saving predictions.') 
     parser.add_argument('--update_add_feature', action='store_true', help='Flag for updating additional features into database.') 
     parser.add_argument('--building_file', type=str, help='Building file for prediction (do not include .csv extension).')
     parser.add_argument('--bldgname', type=str, help='Building name for prediction.')
@@ -151,6 +162,7 @@ if __name__ == '__main__':
         'train_flag': args.train,
         'predict_flag': args.predict,
         'save_flag': args.save,
+        'save_predictions_flag': args.save_predictions,
         'update_add_feature_flag': args.update_add_feature,
     }
 
