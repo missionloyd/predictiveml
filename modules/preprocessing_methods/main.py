@@ -50,6 +50,9 @@ def preprocessing(args, config):
         end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
         df = df.loc[df.index <= end_datetime_obj]
 
+    model_data = model_data.reset_index()
+    model_data['ts'] = model_data['ts'].dt.strftime(datetime_format)
+
     # Cycle through building names if more than one building per file
     for name, group in groups:
         bldgname = name

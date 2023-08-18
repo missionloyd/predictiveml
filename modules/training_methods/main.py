@@ -78,6 +78,7 @@ def train_model(args, config):
         model_data = model_data.loc[model_data.index <= end_datetime_obj]
 
     model_data = model_data.reset_index()
+    model_data['ds'] = model_data['ds'].dt.strftime(datetime_format)
 
     out_path = f'{path}/models/{model_type}'
 
