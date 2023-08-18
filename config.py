@@ -33,9 +33,9 @@ def load_config():
     'feature_method': ['rfecv', 'lassocv'],
     'time_step': [48],            # window size of the sliding window technique and unit length of forecasts
     'datelevel': ['hour'],
-    'train_test_split': 0.7,
-    'train_ratio_threshold': 0.7, # minimum percent non-nans in training set
-    'test_ratio_threshold': 0.7,  # minimum percent non-nans in testing set
+    'train_test_split': 0.5,
+    'train_ratio_threshold': 0.5, # minimum percent non-nans in training set
+    'test_ratio_threshold': 0.5,  # minimum percent non-nans in testing set
     'datetime_format': '%Y-%m-%dT%H:%M:%S',
     'startDateTime': '',
     'endDateTime': '',

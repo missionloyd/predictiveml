@@ -10,7 +10,7 @@ def adaptive_sampling(args, config):
     if temperature > 0 and temperature <= 1.0:
         df_results = pd.read_csv(results_file_path)
         df_results_sorted = df_results.sort_values(by=target_error, ascending=True)
-        print(len(df_results_sorted))
+        # print(len(df_results_sorted))
 
         if len(df_results_sorted) > 0:
             key = ['y_column', 'building_file', 'datelevel', 'time_step']
