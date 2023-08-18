@@ -26,13 +26,12 @@ def preprocessing(args, config):
 
     model_data_path = ''
     df = pd.read_csv(f'{data_path}/{building_file}')
+    
     # Convert the data into a Pandas dataframe
     df['ts'] = pd.to_datetime(df['ts'])
     df = df.drop_duplicates(subset=['bldgname', 'ts'])
     df = df.sort_values(['bldgname', 'ts'])
-
-    # Group the dataframe by building name and timestamp
-    groups = df.groupby('bldgname')
+    
     df = df.set_index('ts')
 
     # Filter the dataframe to include data within the startDateTime and endDateTime
@@ -50,8 +49,11 @@ def preprocessing(args, config):
         end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
         df = df.loc[df.index <= end_datetime_obj]
 
-    model_data = model_data.reset_index()
-    model_data['ts'] = model_data['ts'].dt.strftime(datetime_format)
+    df = df.reset_index()
+    # df['ts'] = df['ts'].dt.strftime(datetime_format)
+
+    # Group the dataframe by building name and timestamp
+    groups = df.groupby('bldgname')
 
     # Cycle through building names if more than one building per file
     for name, group in groups:

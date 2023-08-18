@@ -47,11 +47,6 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
     endDateTime = config['endDateTime']
     datetime_format = config['datetime_format']
 
-    # Convert the data into a Pandas dataframe
-    model_data['ds'] = pd.to_datetime(model_data['ds'])
-    model_data = model_data.drop_duplicates(subset=['ds'])
-    model_data = model_data.sort_values(['ds'])
-
     # Group the dataframe by building name and timestamp
     model_data = model_data.set_index('ds')
 

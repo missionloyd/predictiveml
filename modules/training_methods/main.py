@@ -54,11 +54,6 @@ def train_model(args, config):
     with open(model_data_path, 'rb') as file:
         model_data = pickle.load(file)
 
-    # Convert the data into a Pandas dataframe
-    model_data['ds'] = pd.to_datetime(model_data['ds'])
-    model_data = model_data.drop_duplicates(subset=['ds'])
-    model_data = model_data.sort_values(['ds'])
-
     # Group the dataframe by building name and timestamp
     model_data = model_data.set_index('ds')
 
@@ -78,7 +73,6 @@ def train_model(args, config):
         model_data = model_data.loc[model_data.index <= end_datetime_obj]
 
     model_data = model_data.reset_index()
-    model_data['ds'] = model_data['ds'].dt.strftime(datetime_format)
 
     out_path = f'{path}/models/{model_type}'
 
