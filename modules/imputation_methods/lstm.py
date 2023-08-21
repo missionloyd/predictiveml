@@ -1,13 +1,13 @@
-import logging_config
+from modules.logging_methods.main import logger
 import tensorflow as tf
-tf.keras.utils.disable_interactive_logging()
-
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
 import numpy as np
 import pandas as pd
+pd.options.mode.chained_assignment = None
+tf.keras.utils.disable_interactive_logging()
 
 # Move model compilation and training outside of lstm function
 def compile_and_train_model(model, X_train, y_train, epochs):
@@ -34,7 +34,7 @@ def lstm(model_data):
     y_clean = model_data['y'].dropna()
 
     # Find the unique indices of missing values in model_data['y']
-    missing_indices = np.unique(model_data['y'].index[model_data['y'].isnull()])
+    # missing_indices = np.unique(model_data['y'].index[model_data['y'].isnull()])
 
     missing_gaps = []
     group = []
@@ -68,29 +68,24 @@ def lstm(model_data):
     compile_and_train_model(model, X_train, y_train, epochs)  # Compile and train the model
 
     # Generate predictions for each gap and replace in model_data['y']
-    for gaps in missing_gaps:
-        for i in range(0, len(gaps), time_step):
-            sub_gaps = gaps[i:i+time_step]
-            start_index = sub_gaps[0]
-            end_index = sub_gaps[-1]
-            gap_length = end_index - start_index + 1
+    for gap in missing_gaps:
+        # Handle cases where the gap contains the first or last index
+        if gap[0] == 0 or gap[-1] == len(model_data['y']) - 1:
+            for idx in gap:
+                model_data['y'].iloc[idx] = y_int.iloc[idx]
+            continue
 
-            # Create input sequence for the sub-gap
-            X_pred_gap, _ = create_model_data(data_scaled, time_step)
-            X_pred_gap = X_pred_gap[start_index-time_step:end_index]
-            X_pred_gap = np.reshape(X_pred_gap, (X_pred_gap.shape[0], X_pred_gap.shape[1], 1))
+        # Use values before the gap for prediction
+        input_data = model_data['y'].iloc[gap[0] - time_step:gap[0]].values.reshape(-1, 1)
+        input_data_scaled = scaler.transform(input_data)
+        input_data_scaled = np.reshape(input_data_scaled, (1, time_step, 1))
 
-            # Check if the sub-gap is long enough for making predictions or if there are gaps at the start or end of the data
-            if X_pred_gap.shape[0] < time_step - 1 or gaps[0] == 0 or gaps[-1] == len(model_data) - 1:
-                # Fill in the remaining gaps using interpolation
-                model_data.loc[model_data.index[start_index:end_index+1], 'y'] = y_int.iloc[start_index:end_index+1].values
+        for idx in gap:
+            prediction_scaled = model.predict(input_data_scaled)
+            prediction = scaler.inverse_transform(prediction_scaled)[0, 0]
+            model_data['y'].iloc[idx] = prediction
 
-            else:
-                # Generate prediction for the sub-gap
-                y_pred_gap = model.predict(X_pred_gap)
-                y_pred = scaler.inverse_transform(y_pred_gap.reshape(-1, 1))
-
-                # Replace the sub-gap in model_data['y'] with the predicted values
-                model_data.loc[model_data.index[start_index:end_index+1], 'y'] = y_pred[:gap_length].reshape(-1)
+            # Update input data to use the new predicted value for the next prediction
+            input_data_scaled = np.concatenate((input_data_scaled[:, 1:, :], prediction_scaled.reshape(1, 1, 1)), axis=1)
 
     return model_data

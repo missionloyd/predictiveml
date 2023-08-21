@@ -12,7 +12,7 @@ def prune(prune_flag, config):
         else:
             os.makedirs(directory)
 
-    if prune_flag and not (temperature > 0 and temperature <= 1.0):
+    if (prune_flag and not (temperature > 0 and temperature <= 1.0)) or not os.path.exists(config['results_file_path']):
         with open(config['results_file_path'], 'w') as f:
             csv_writer = csv.writer(f)
             csv_writer.writerow(config['results_header'])
