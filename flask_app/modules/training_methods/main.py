@@ -3,6 +3,7 @@ import sys
 import os
 import pandas as pd
 import numpy as np
+from datetime import datetime
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
 from sklearn.decomposition import PCA
@@ -40,6 +41,9 @@ def train_model(args, config):
     save_model_file = args['save_model_file']
     save_model_plot = config['save_model_plot']
     path = config['path']
+    startDateTime = config['startDateTime']
+    endDateTime = config['endDateTime']
+    datetime_format = config['datetime_format']
 
     # Check if the file exists
     if not os.path.exists(model_data_path):
@@ -49,6 +53,26 @@ def train_model(args, config):
     # Load model_data separately within each task
     with open(model_data_path, 'rb') as file:
         model_data = pickle.load(file)
+
+    # Group the dataframe by building name and timestamp
+    model_data = model_data.set_index('ds')
+
+    # Filter the dataframe to include data within the startDateTime and endDateTime
+    if startDateTime and endDateTime:
+        # Convert startDateTime and endDateTime to datetime objects
+        start_datetime_obj = datetime.strptime(startDateTime, datetime_format)
+        end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
+        model_data = model_data.loc[(model_data.index >= start_datetime_obj) & (model_data.index <= end_datetime_obj)]
+    elif startDateTime:
+        # Convert startDateTime to datetime object
+        start_datetime_obj = datetime.strptime(startDateTime, datetime_format)
+        model_data = model_data.loc[model_data.index >= start_datetime_obj]
+    elif endDateTime:
+        # Convert endDateTime to datetime object
+        end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
+        model_data = model_data.loc[model_data.index <= end_datetime_obj]
+
+    model_data = model_data.reset_index()
 
     out_path = f'{path}/models/{model_type}'
 
@@ -138,7 +162,7 @@ def train_model(args, config):
 
         return X, y
 
-    if len(train_data) >= time_step and len(test_data) >= time_step:
+    if len(train_data) > time_step and len(test_data) > time_step:
         # create the training and testing data sets with sliding door
         X_train, y_train = create_dataset(train_data, time_step)
         X_test, _ = create_dataset(test_data, time_step)

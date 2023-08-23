@@ -1,7 +1,7 @@
 import os, sys, json
 import pandas as pd
 
-job_id = None
+job_id = 0
 user_commands = None
 
 def logger(message):

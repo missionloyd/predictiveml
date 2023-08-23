@@ -43,7 +43,30 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
     save_model_file = args['save_model_file']
     save_model_plot = config['save_model_plot']
     path = config['path']
+    startDateTime = config['startDateTime']
+    endDateTime = config['endDateTime']
+    datetime_format = config['datetime_format']
 
+    # Group the dataframe by building name and timestamp
+    model_data = model_data.set_index('ds')
+
+    # Filter the dataframe to include data within the startDateTime and endDateTime
+    if startDateTime and endDateTime:
+        # Convert startDateTime and endDateTime to datetime objects
+        start_datetime_obj = datetime.strptime(startDateTime, datetime_format)
+        end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
+        model_data = model_data.loc[(model_data.index >= start_datetime_obj) & (model_data.index <= end_datetime_obj)]
+    elif startDateTime:
+        # Convert startDateTime to datetime object
+        start_datetime_obj = datetime.strptime(startDateTime, datetime_format)
+        model_data = model_data.loc[model_data.index >= start_datetime_obj]
+    elif endDateTime:
+        # Convert endDateTime to datetime object
+        end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
+        model_data = model_data.loc[model_data.index <= end_datetime_obj]
+
+    model_data = model_data.reset_index()
+    
     original_datelevel = detect_data_frequency(model_data)
 
     # This code aggregates and resamples a DataFrame based on given datelevel
