@@ -2,10 +2,10 @@ from modules.utils.get_file_names import get_file_names
 from modules.utils.get_add_features import get_add_features
 from modules.utils.create_results_file_path import create_results_file_path
 
-def load_config():
-  path = '.'
-  data_path = f'{path}/building_data'
-  clean_data_path = f'{path}/clean_data'
+def load_config(path='', data_path='', clean_data_path=''):
+  path = path or '.'
+  data_path = data_path or f'{path}/building_data'
+  clean_data_path = clean_data_path or f'{path}/clean_data'
   tmp_path = f'{path}/models/tmp'
   imp_path = f'{path}/models/imp'
   log_path = f'{path}/logs'

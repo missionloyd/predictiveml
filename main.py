@@ -45,7 +45,10 @@ def main(cli_args, flags):
 
     if run_all_flag or prune_flag or update_add_feature_flag or preprocess_flag or train_flag or save_flag or predict_flag or insert_flag or save_predictions_flag or insert_flag:
 
-        config = load_config()
+        path = cli_args['path']
+        data_path = cli_args['data_path']
+        clean_data_path = cli_args['clean_data_path']
+        config = load_config(path, data_path, clean_data_path)
         config = update_config(config, cli_args)
         setup_logger(config)
         path = config['path']
@@ -150,6 +153,9 @@ if __name__ == '__main__':
     parser.add_argument('--save_preprocessed_files', action='store_true', help='Flag for saving/reusing preprocessed files.')
     parser.add_argument('--temperature', type=float, help='Temperature for training.') 
     parser.add_argument('--job_id', type=int, help='Job ID for logging.')
+    parser.add_argument('--path', type=str, help='Path of root project directory.')
+    parser.add_argument('--data_path', type=str, help='Path to training data folder.')
+    parser.add_argument('--clean_data_path', type=str, help='Path to preprocessing data folder.')
 
     args = parser.parse_args()
     extract_args()
@@ -179,6 +185,9 @@ if __name__ == '__main__':
         'results_file': args.results_file,
         'temperature': args.temperature,
         'save_preprocessed_files': args.save_preprocessed_files,
+        'path': args.path,
+        'data_path': args.data_path,
+        'clean_data_path': args.clean_data_path,
     }
 
     main(cli_args, flags)
