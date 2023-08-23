@@ -6,6 +6,7 @@ from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
 import numpy as np
 import pandas as pd
+import sys
 pd.options.mode.chained_assignment = None
 tf.keras.utils.disable_interactive_logging()
 
@@ -69,23 +70,39 @@ def lstm(model_data):
 
     # Generate predictions for each gap and replace in model_data['y']
     for gap in missing_gaps:
-        # Handle cases where the gap contains the first or last index
         if gap[0] == 0 or gap[-1] == len(model_data['y']) - 1:
             for idx in gap:
-                model_data['y'].iloc[idx] = y_int.iloc[idx]
+                model_data['y'].iloc[idx] = np.float32(y_int.iloc[idx])
             continue
 
-        # Use values before the gap for prediction
-        input_data = model_data['y'].iloc[gap[0] - time_step:gap[0]].values.reshape(-1, 1)
-        input_data_scaled = scaler.transform(input_data)
-        input_data_scaled = np.reshape(input_data_scaled, (1, time_step, 1))
+        if gap[0] - time_step >= 0:  # Check if there are enough data points before the gap
+            input_data = model_data['y'].iloc[gap[0] - time_step:gap[0]].values.reshape(-1, 1)
+            input_data_scaled = scaler.transform(input_data)
+            input_data_scaled = np.reshape(input_data_scaled, (1, time_step, 1))
 
-        for idx in gap:
-            prediction_scaled = model.predict(input_data_scaled)
-            prediction = scaler.inverse_transform(prediction_scaled)[0, 0]
-            model_data['y'].iloc[idx] = prediction
+            for idx in gap:
+                input_data = model_data['y'].iloc[idx - time_step:idx].values.reshape(-1, 1)
+                input_data_scaled = scaler.transform(input_data)
+                input_data_scaled = np.reshape(input_data_scaled, (1, time_step, 1))
 
-            # Update input data to use the new predicted value for the next prediction
-            input_data_scaled = np.concatenate((input_data_scaled[:, 1:, :], prediction_scaled.reshape(1, 1, 1)), axis=1)
+                prediction_scaled = model.predict(input_data_scaled)
+                prediction = scaler.inverse_transform(prediction_scaled)[0, 0]
+                model_data['y'].iloc[idx] = np.float32(prediction)
+
+                # Update input_data_scaled for the next iteration
+                input_data_scaled = np.concatenate((input_data_scaled[:, 1:, :], prediction_scaled.reshape(1, 1, 1)), axis=1)
+
+        else:
+            for idx in gap:
+                # Use the actual value at the index if there are not enough previous data points
+                model_data['y'].iloc[idx] = np.float32(y_int.iloc[idx])  # Convert to float32
+
+    # Check for any more missing values and address them
+    missing_indices = np.unique(model_data['y'].index[model_data['y'].isnull()])
+
+    if len(missing_indices) > 0:
+        print(missing_indices)
+        print('Unable to successfully fill in missing gaps using LSTM.')
+        sys.exit()
 
     return model_data

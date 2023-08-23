@@ -8,7 +8,7 @@ def insert_data(merged_list, config):
     table = config['table']
 
     for df in merged_list:
-        # print(df)
-        populate_table(table_name=table, df=df)
+        print(df)
+        # populate_table(table_name=table, df=df)
   
     return
