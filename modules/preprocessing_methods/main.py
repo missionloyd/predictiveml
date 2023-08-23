@@ -32,25 +32,24 @@ def preprocessing(args, config):
     df = df.drop_duplicates(subset=['bldgname', 'ts'])
     df = df.sort_values(['bldgname', 'ts'])
     
-    df = df.set_index('ts')
+    # df = df.set_index('ts')
 
-    # Filter the dataframe to include data within the startDateTime and endDateTime
-    if startDateTime and endDateTime:
-        # Convert startDateTime and endDateTime to datetime objects
-        start_datetime_obj = datetime.strptime(startDateTime, datetime_format)
-        end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
-        df = df.loc[(df.index >= start_datetime_obj) & (df.index <= end_datetime_obj)]
-    elif startDateTime:
-        # Convert startDateTime to datetime object
-        start_datetime_obj = datetime.strptime(startDateTime, datetime_format)
-        df = df.loc[df.index >= start_datetime_obj]
-    elif endDateTime:
-        # Convert endDateTime to datetime object
-        end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
-        df = df.loc[df.index <= end_datetime_obj]
+    # # Filter the dataframe to include data within the startDateTime and endDateTime
+    # if startDateTime and endDateTime:
+    #     # Convert startDateTime and endDateTime to datetime objects
+    #     start_datetime_obj = datetime.strptime(startDateTime, datetime_format)
+    #     end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
+    #     df = df.loc[(df.index >= start_datetime_obj) & (df.index <= end_datetime_obj)]
+    # elif startDateTime:
+    #     # Convert startDateTime to datetime object
+    #     start_datetime_obj = datetime.strptime(startDateTime, datetime_format)
+    #     df = df.loc[df.index >= start_datetime_obj]
+    # elif endDateTime:
+    #     # Convert endDateTime to datetime object
+    #     end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
+    #     df = df.loc[df.index <= end_datetime_obj]
 
-    df = df.reset_index()
-    # df['ts'] = df['ts'].dt.strftime(datetime_format)
+    # df = df.reset_index()
 
     # Group the dataframe by building name and timestamp
     groups = df.groupby('bldgname')

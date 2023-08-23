@@ -21,8 +21,8 @@ while [[ "$current_timestamp" < "$end_date" ]]; do
     echo "Running script with --endDateTime $current_timestamp"
 
     # Call your python script here passing the current timestamp
-    python3 main.py --prune --run_all --temperature 0.5 --time_step 48 --datelevel hour --endDateTime "$current_timestamp"
-    python3 main.py --save_predictions --time_step 48 --datelevel hour --endDateTime "$current_timestamp"
+    python3 main.py --prune --run_all --temperature 0.5 --time_step 48 --datelevel hour --results_file 48_hour.csv --endDateTime "$current_timestamp"
+    python3 main.py --save_predictions --time_step 48 --datelevel hour --results_file 48_hour.csv --endDateTime "$current_timestamp"
 
     # Save the current end_date in the loop to the file
     echo "$current_timestamp" >> end_date_record.txt
