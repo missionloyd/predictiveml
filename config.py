@@ -6,6 +6,7 @@ def load_config(path='', data_path='', clean_data_path=''):
   path = path or '.'
   data_path = data_path or f'{path}/building_data'
   clean_data_path = clean_data_path or f'{path}/clean_data'
+  prediction_data_path = f'{path}/prediction_data'
   tmp_path = f'{path}/models/tmp'
   imp_path = f'{path}/models/imp'
   log_path = f'{path}/logs'
@@ -27,12 +28,12 @@ def load_config(path='', data_path='', clean_data_path=''):
   config = {
     # preprocessing/training scope
     'model_type': ["xgboost"],                      # fastest and most lightweight setting
-    # 'imputation_method': ['linear_interpolation'],  # fastest and most lightweight setting
+    'imputation_method': ['zero_fill'],  # fastest and most lightweight setting
     # 'model_type': ["xgboost", "solos", "ensembles"],
-    'imputation_method': ['linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
+    # 'imputation_method': ['zero_fill', 'linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
     'feature_method': ['rfecv', 'lassocv'],
     'time_step': [48],            # window size of the sliding window technique and unit length of forecasts
-    'datelevel': ['hour'],
+    'datelevel': ['month'],
     'train_test_split': 0.5,
     'train_ratio_threshold': 0.5, # minimum percent non-nans in training set
     'test_ratio_threshold': 0.5,  # minimum percent non-nans in testing set
@@ -53,6 +54,7 @@ def load_config(path='', data_path='', clean_data_path=''):
     'path': path,
     'data_path': data_path,
     'clean_data_path': clean_data_path,
+    'prediction_data_path': prediction_data_path,
     'tmp_path': tmp_path,
     'imp_path': imp_path,
     'log_path': log_path,

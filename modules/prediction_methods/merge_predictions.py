@@ -12,7 +12,7 @@ def merge_predictions(results, config):
         building_file = df['building_file'].iloc[0]
         df.drop(columns=['building_file'], inplace=True)
 
-        print(f':: -- Working on {building_file} ...')
+        print(f':: -- Generating forecast: {building_file} ...')
 
         # Open the CSV file and extract the specified columns
         building_file_path = f'{config["data_path"]}/{building_file}'

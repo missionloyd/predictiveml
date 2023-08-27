@@ -126,13 +126,23 @@ def train_model(args, config):
         selected_features_delimited = ''
     
     # split the data into training and testing sets
-    train_size = int(len(data_scaled) * train_test_split)
-    train_data = data_scaled[:train_size, :]
-    test_data = data_scaled[train_size:, :]
+    if save_model_file == True:
+        train_size = int(len(data_scaled) * train_test_split)
+        train_data = data_scaled
+        test_data = data_scaled
 
-    # save y values for benchmarking/plotting
-    y_test = model_data['y'].iloc[train_size:].reset_index(drop=True)
-    saved_y_test = model_data['y_saved'].iloc[train_size:].reset_index(drop=True)
+        # save y values for benchmarking/plotting
+        y_test = model_data['y'].reset_index(drop=True)
+        saved_y_test = model_data['y_saved'].reset_index(drop=True)
+
+    else:
+        train_size = int(len(data_scaled) * train_test_split)
+        train_data = data_scaled[:train_size, :]
+        test_data = data_scaled[train_size:, :]
+
+        # save y values for benchmarking/plotting
+        y_test = model_data['y'].iloc[train_size:].reset_index(drop=True)
+        saved_y_test = model_data['y_saved'].iloc[train_size:].reset_index(drop=True)
 
     # create the training and testing data sets with sliding door 
     def create_dataset(dataset, time_step):
@@ -227,6 +237,13 @@ def train_model(args, config):
     # Inverse transform the predictions and actual values
     y_pred = scaler.inverse_transform(y_pred.reshape(-1, 1))
     y_train = scaler.inverse_transform(y_train.reshape(-1, 1))
+
+    # print(building_file)
+    # print(y_pred[0,0])
+    # print(y_pred)
+    
+    y_pred = np.insert(y_pred, 0, y_test.iloc[0])
+    y_pred = y_pred[:-1]
 
     # save the model name
     model_file = f'{out_path}/{building_file}_{y_column}_{imputation_method}_{feature_method}_{n_feature}_{updated_n_feature}_{time_step}_{datelevel}'

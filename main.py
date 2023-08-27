@@ -20,6 +20,7 @@ from modules.utils.match_args import match_args
 from modules.training_methods.main import train_model
 from modules.prediction_methods.on_demand_prediction import on_demand_prediction
 from modules.prediction_methods.master_prediction import master_prediction
+from modules.prediction_methods.saved_on_demand_prediction import saved_on_demand_prediction
 from modules.utils.load_args import load_args
 from modules.utils.calculate_duration import calculate_duration
 from modules.logging_methods.main import logger, api_logger, extract_args
@@ -37,13 +38,14 @@ def main(cli_args, flags):
     prune_flag = flags['prune_flag']
     update_add_feature_flag = flags['update_add_feature_flag']
     predict_flag = flags['predict_flag']
+    saved_predict_flag = flags['saved_predict_flag']
     preprocess_flag = False if flags['predict_flag'] else flags['preprocess_flag']
     train_flag = False if flags['predict_flag'] else flags['train_flag'] 
     save_flag = False if flags['predict_flag'] else flags['save_flag']
     insert_flag = False if flags['predict_flag'] else flags['insert_flag']
     save_predictions_flag = False if flags['predict_flag'] else flags['save_predictions_flag']
 
-    if run_all_flag or prune_flag or update_add_feature_flag or preprocess_flag or train_flag or save_flag or predict_flag or insert_flag or save_predictions_flag or insert_flag:
+    if run_all_flag or prune_flag or update_add_feature_flag or preprocess_flag or train_flag or save_flag or predict_flag or saved_predict_flag or insert_flag or save_predictions_flag or insert_flag:
 
         path = cli_args['path']
         data_path = cli_args['data_path']
@@ -110,6 +112,17 @@ def main(cli_args, flags):
             logger(results)
             api_logger(results, config)
 
+        if saved_predict_flag:
+            required_columns = ['time_step', 'datelevel']
+
+            if not all(key in cli_args for key in required_columns):
+                logger(f"Required arguments missing for prediction. Please provide {required_columns}.")
+                return
+            
+            results = saved_on_demand_prediction(cli_args, config)
+            logger(results)
+            api_logger(results, config)
+
         # Save predictions merged with original datasets
         if save_predictions_flag:
             results = master_prediction(cli_args, winners_in_file_path, config)
@@ -138,6 +151,7 @@ if __name__ == '__main__':
     parser.add_argument('--train', action='store_true', help='Flag for training.')
     parser.add_argument('--save', action='store_true', help='Flag for saving model files.')
     parser.add_argument('--predict', action='store_true', help='Flag for prediction.')
+    parser.add_argument('--saved_predict', action='store_true', help='Flag for loading saved local prediction.')
     parser.add_argument('--insert', action='store_true', help='Flag for inserting predictings into database.') 
     parser.add_argument('--save_predictions', action='store_true', help='Flag for saving predictions.') 
     parser.add_argument('--update_add_feature', action='store_true', help='Flag for updating additional features into database.') 
@@ -167,6 +181,7 @@ if __name__ == '__main__':
         'preprocess_flag': args.preprocess,
         'train_flag': args.train,
         'predict_flag': args.predict,
+        'saved_predict_flag': args.saved_predict,
         'save_flag': args.save,
         'save_predictions_flag': args.save_predictions,
         'update_add_feature_flag': args.update_add_feature,

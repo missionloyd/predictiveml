@@ -3,6 +3,7 @@ import pandas as pd
 
 def save_predictions(merged_list, config, cli_args):
     path = config['path']
+    results_file = config['results_file']
     datelevel = 'hour'
     time_step = 48
 
@@ -29,7 +30,7 @@ def save_predictions(merged_list, config, cli_args):
     for building_file_name, df in building_data_dict.items():
         # print(building_file_name)
         modified_building_file_name = building_file_name.replace('.csv', '')
-        modified_building_file_name = f'{modified_building_file_name}_{time_step}_{datelevel}.csv'
+        modified_building_file_name = f'{modified_building_file_name}_{results_file}'
         building_file_path = os.path.join(file_path, modified_building_file_name)
 
         # print(df)
