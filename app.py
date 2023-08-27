@@ -213,7 +213,7 @@ def run_forecast():
 
     # Preset (Hardcoded since we know we have already trained on these time_steps/datelevel combinations)
     frequency_mapping = {
-        'hour': '48',
+        'hour': '24',
         'day': '30',
         'month': '12',
         'year': '1'

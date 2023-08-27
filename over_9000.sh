@@ -3,11 +3,12 @@
 # Function to increment timestamp
 increment_timestamp() {
     current_timestamp=$(date -d "$1" +%s)
-    # 1. 48 hours 
-    # next_timestamp=$(date -d "@$((current_timestamp + 48 * 3600))" +"%Y-%m-%dT%H:%M:%S") # 48 hours
+    # 1. 24 hours 
+    next_date=$(date -d "$current_date + 1 day" +"%Y-%m-%d")
+    next_timestamp=$(date -d "@$((current_timestamp + 24 * 3600))" +"%Y-%m-%dT23:00:00") # 24 hours
 
     # 2. 1 day
-    next_timestamp=$(date -d "@$((current_timestamp + 1 * 24 * 3600))" +"%Y-%m-%dT%H:%M:%S")
+    # next_timestamp=$(date -d "@$((current_timestamp + 1 * 24 * 3600))" +"%Y-%m-%dT%H:%M:%S")
 
     # 3. 1 month
     # current_month=$(date -d "$1" +"%-m")  # Remove leading zero from month
@@ -32,7 +33,7 @@ increment_timestamp() {
 # end_date="2023-02-04T23:00:00"
 #2. Day
 start_date="2022-01-31T23:00:00"
-end_date="2023-01-31T23:00:00"
+end_date="2023-02-04T23:00:00"
 # 3. Month
 # start_date="2022-01-31T23:00:00"
 # end_date="2023-01-31T23:00:00"
@@ -67,8 +68,8 @@ while [[ "$current_timestamp" < "$end_date" ]]; do
 
     # time_step=$days_in_month
     # echo "$days_in_month"
-    time_step=1
-    datelevel="day"
+    time_step=24
+    datelevel="hour"
 
     # Call your python script here passing the current timestamp
     python3 main.py --prune --run_all --save_predictions --temperature 0.5 --time_step "$time_step" --datelevel "$datelevel" --results_file "${datelevel}.csv" --endDateTime "$current_timestamp"

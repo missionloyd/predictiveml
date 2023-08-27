@@ -5,7 +5,7 @@ def save_predictions(merged_list, config, cli_args):
     path = config['path']
     results_file = config['results_file']
     datelevel = 'hour'
-    time_step = 48
+    time_step = 24
 
     if len(config['datelevel']) > 0:
         datelevel = str(config['datelevel'][0])
