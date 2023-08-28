@@ -32,11 +32,11 @@ increment_timestamp() {
 # start_date="2022-02-04T23:00:00"
 # end_date="2023-02-04T23:00:00"
 #2. Day
-start_date="2022-01-31T23:00:00"
-end_date="2023-02-04T23:00:00"
-# 3. Month
 # start_date="2022-01-31T23:00:00"
-# end_date="2023-01-31T23:00:00"
+# end_date="2023-02-04T23:00:00"
+# 3. Month
+start_date="2022-01-31T23:00:00"
+end_date="2023-01-31T23:00:00"
 # 3.1 12 Month
 # start_date="2023-01-31T23:00:00"
 # end_date="2024-01-31T23:00:00"
