@@ -4,8 +4,9 @@ import pandas as pd
 def save_predictions(merged_list, config, cli_args):
     path = config['path']
     results_file = config['results_file']
+    prediction_data_path = config['prediction_data_path']
     datelevel = 'hour'
-    time_step = 24
+    time_step = 1
 
     if len(config['datelevel']) > 0:
         datelevel = str(config['datelevel'][0])
@@ -15,7 +16,6 @@ def save_predictions(merged_list, config, cli_args):
 
     datelevel = cli_args['datelevel'] or datelevel
     time_step = str(cli_args['time_step']) or time_step
-    file_path = f'{path}/prediction_data'
 
     building_data_dict = {}
 
@@ -31,7 +31,7 @@ def save_predictions(merged_list, config, cli_args):
         # print(building_file_name)
         modified_building_file_name = building_file_name.replace('.csv', '')
         modified_building_file_name = f'{modified_building_file_name}_{results_file}'
-        building_file_path = os.path.join(file_path, modified_building_file_name)
+        building_file_path = os.path.join(prediction_data_path, modified_building_file_name)
 
         # print(df)
 

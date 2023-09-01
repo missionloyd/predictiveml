@@ -1,4 +1,5 @@
-import csv
+import csv, warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 import numpy as np
 import pandas as pd
 from timezonefinder import TimezoneFinder

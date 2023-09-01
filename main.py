@@ -50,7 +50,8 @@ def main(cli_args, flags):
         path = cli_args['path']
         data_path = cli_args['data_path']
         clean_data_path = cli_args['clean_data_path']
-        config = load_config(path, data_path, clean_data_path)
+        table = cli_args['table']
+        config = load_config(path, data_path, clean_data_path, table)
         config = update_config(config, cli_args)
         setup_logger(config)
         path = config['path']

@@ -2,13 +2,12 @@
 
 # Function to increment timestamp
 increment_timestamp() {
-    current_timestamp=$(date -d "$1" +%s)
-    # 1. 24 hours 
-    next_date=$(date -d "$current_date + 1 day" +"%Y-%m-%d")
-    next_timestamp=$(date -d "@$((current_timestamp + 24 * 3600))" +"%Y-%m-%dT23:00:00") # 24 hours
-
-    # 2. 1 day
-    # next_timestamp=$(date -d "@$((current_timestamp + 1 * 24 * 3600))" +"%Y-%m-%dT%H:%M:%S")
+    # current_timestamp=$(date -d "$1" +%s)
+    # 1. 24 hours / 1 Day
+    input_date="$1"
+    current_timestamp=$(date -d "$input_date" +%s)
+    export TZ="UTC"
+    next_timestamp=$(date -d "@$((current_timestamp + 1 * 24 * 3600))" +"%Y-%m-%dT23:00:00")
 
     # 3. 1 month
     # current_month=$(date -d "$1" +"%-m")  # Remove leading zero from month
@@ -28,21 +27,21 @@ increment_timestamp() {
 }
 
 # Set the start and end dates
-# 1. Hour
-# start_date="2022-02-04T23:00:00"
-# end_date="2023-02-04T23:00:00"
-#2. Day
-# start_date="2022-01-31T23:00:00"
-# end_date="2023-02-04T23:00:00"
-# 3. Month
+# 1. Hour / Day
 start_date="2022-01-31T23:00:00"
-end_date="2023-01-31T23:00:00"
+end_date="2023-02-04T23:00:00"
+# 3. Month
+# start_date="2022-01-31T23:00:00"
+# end_date="2023-01-31T23:00:00"
 # 3.1 12 Month
 # start_date="2023-01-31T23:00:00"
 # end_date="2024-01-31T23:00:00"
 # 4. Year
 # start_date="2023-12-31T23:00:00"
 # end_date="2024-12-31T23:00:00"
+
+# start_date="2023-02-04T23:00:00"
+# end_date="2023-08-26T23:00:00"
 
 # Initialize the current timestamp with the start date
 current_timestamp=$start_date
@@ -70,9 +69,10 @@ while [[ "$current_timestamp" < "$end_date" ]]; do
     # echo "$days_in_month"
     time_step=24
     datelevel="hour"
+    table="spaces"
 
     # Call your python script here passing the current timestamp
-    python3 main.py --prune --run_all --save_predictions --temperature 0.5 --time_step "$time_step" --datelevel "$datelevel" --results_file "${datelevel}.csv" --endDateTime "$current_timestamp"
+    python3 main.py --prune --run_all --save_predictions --temperature 0.5 --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${datelevel}.csv" --endDateTime "$current_timestamp"
     # python3 main.py --save_predictions --time_step "$time_step" --datelevel "$datelevel" --results_file "${datelevel}.csv" --endDateTime "$current_timestamp"
 
     # Save the current end_date in the loop to the file

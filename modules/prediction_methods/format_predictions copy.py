@@ -5,11 +5,10 @@ def format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_li
 
     if datelevel == 'hour':
         freq = 'H'
-        offset = pd.DateOffset(hours=0)
+        offset = pd.DateOffset(hours=int(time_step))
     elif datelevel == 'day':
         freq = 'D'
-        offset = pd.DateOffset(days=0)
-        if int(time_step) > 1: offset = pd.DateOffset(days=int(time_step))
+        offset = pd.DateOffset(days=int(time_step))
         end = end.replace(hour=0)
     elif datelevel == 'month':
         freq = 'MS'

@@ -76,20 +76,17 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
             model_data = model_data.loc[model_data.index >= end_datetime_obj]
         else:
             model_data = model_data.loc[model_data.index > end_datetime_obj]
+            
+    else:
+        n_feature = 0
 
     model_data = model_data.reset_index()
     
-    original_datelevel = detect_data_frequency(model_data)
-
     # This code aggregates and resamples a DataFrame based on given datelevel
     model_data = resample_data(model_data, datelevel, original_datelevel)
 
-    future = False
-
     if len(model_data) <= time_step:
-        future = True
         model_data = model_data_copy
-        original_datelevel = detect_data_frequency(model_data)
         model_data = resample_data(model_data, datelevel, original_datelevel)
 
     # normalize the data, save orginal data column for graphing later
@@ -154,15 +151,10 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
         return np.array(X)
     
     # Get the most recent time_steps from the data
-    if future == False:
-        test_data = data_scaled
-        recent_data  = create_dataset(test_data, time_step)
-        X_test = recent_data
-    else:
-        test_data = data_scaled[train_size:, :]
-        recent_data = data_scaled[-time_step:, :]
-        X_test = recent_data
-    
+    test_data = data_scaled
+    recent_data  = create_dataset(test_data, time_step)
+    X_test = recent_data
+
     # Initialize an array to store the predicted consumption
     y_pred_list = []
 
@@ -170,11 +162,7 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
 
     for i in range(pred_len):
         # Take the last time_step days from the test_data to make the prediction
-        if future == False:
-            X_test = recent_data
-        else:
-            X_test = recent_data[-time_step:, :]
-            X_test = np.reshape(X_test, (1, X_test.shape[0] * X_test.shape[1]))
+        X_test = recent_data
 
         if model_type == 'xgboost':
             X_test = xgb.DMatrix(X_test)

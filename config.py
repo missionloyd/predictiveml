@@ -2,19 +2,20 @@ from modules.utils.get_file_names import get_file_names
 from modules.utils.get_add_features import get_add_features
 from modules.utils.create_results_file_path import create_results_file_path
 
-def load_config(path='', data_path='', clean_data_path=''):
+def load_config(path='', data_path='', clean_data_path='', table=''):
   path = path or '.'
-  data_path = data_path or f'{path}/building_data'
-  clean_data_path = clean_data_path or f'{path}/clean_data'
-  prediction_data_path = f'{path}/prediction_data'
-  tmp_path = f'{path}/models/tmp'
-  imp_path = f'{path}/models/imp'
+  table = table or 'spaces'
+  data_path = data_path or f'{path}/{table}_data'
+  clean_data_path = clean_data_path or f'{path}/{table}_clean_data'
+  prediction_data_path = f'{path}/{table}_prediction_data'
+  tmp_path = f'{path}/models/{table}_tmp'
+  imp_path = f'{path}/models/{table}_imp'
   log_path = f'{path}/logs'
+  args_file_path = f'{path}/models/{table}_tmp/_args'
+  winners_in_file_path = f'{path}/models/{table}_tmp'
+  winners_out_file_path = f'{path}/models/{table}_tmp'
   results_file = 'results.csv'
   results_file_path = create_results_file_path(path, results_file)
-  args_file_path = f'{path}/models/tmp/_args'
-  winners_in_file_path = f'{path}/models/tmp'
-  winners_out_file_path = f'{path}/models/tmp'
   winners_out_file = f'{winners_out_file_path}/_winners.out'
   results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_feature', 'updated_n_feature', 'time_step', 'datelevel', 'rmse', 'mae', 'mape', 'model_file', 'model_data_path', 'building_file', 'selected_features_delimited']
   y_column = ['present_elec_kwh', 'present_htwt_mmbtuh', 'present_wtr_usgal', 'present_chll_tonh']
@@ -28,9 +29,9 @@ def load_config(path='', data_path='', clean_data_path=''):
   config = {
     # preprocessing/training scope
     'model_type': ["xgboost"],                      # fastest and most lightweight setting
-    'imputation_method': ['zero_fill'],  # fastest and most lightweight setting
+    # 'imputation_method': ['zero_fill'],  # fastest and most lightweight setting
     # 'model_type': ["xgboost", "solos", "ensembles"],
-    # 'imputation_method': ['zero_fill', 'linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
+    'imputation_method': ['zero_fill', 'linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
     'feature_method': ['rfecv', 'lassocv'],
     'time_step': [24],            # window size of the sliding window technique and unit length of forecasts
     'datelevel': ['month'],
@@ -94,10 +95,10 @@ def load_config(path='', data_path='', clean_data_path=''):
       'logs/error_log',
       'logs/flask_log',
       'logs/info_log',
-      'models/tmp',
-      'models/ensembles',
-      'models/solos',
-      'models/xgboost',
+      f'models/{table}_tmp',
+      f'models/{table}_ensembles',
+      f'models/{table}_solos',
+      f'models/{table}_xgboost',
       # 'models/imp',
       # 'prediction_data'
     ],

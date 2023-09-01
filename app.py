@@ -248,7 +248,7 @@ def run_forecast():
     #     return jsonify({'job_id': 0, 'data': data, 'status': 'ok'})
     
     # No previous result found, proceed with running the prediction
-    job_id = run_main(['--saved_predict', '--results_file', results_file, '--time_step', time_step, '--datelevel', datelevel, '--building_file', building_file, '--startDateTime', startDateTime, '--endDateTime', endDateTime])
+    job_id = run_main(['--saved_predict', '--results_file', results_file, '--time_step', time_step, '--datelevel', datelevel, '--building_file', building_file, '--startDateTime', startDateTime, '--endDateTime', endDateTime, '--table', table])
     api_file = f'logs/api_log/{job_id}.log'
 
     # Wait for the API file to become available
@@ -258,7 +258,7 @@ def run_forecast():
     data = run_api_log(api_file)
 
     # Save the result for future use
-    previous_results[key] = api_file
+    # previous_results[key] = api_file
 
     return jsonify({'job_id': job_id, 'data': data, 'status': 'ok'})
 

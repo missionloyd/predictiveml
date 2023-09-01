@@ -44,6 +44,7 @@ def train_model(args, config):
     startDateTime = config['startDateTime']
     endDateTime = config['endDateTime']
     datetime_format = config['datetime_format']
+    table = config['table']
 
     # Check if the file exists
     if not os.path.exists(model_data_path):
@@ -71,10 +72,12 @@ def train_model(args, config):
         # Convert endDateTime to datetime object
         end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
         model_data = model_data.loc[model_data.index <= end_datetime_obj]
+    else:
+        n_feature = 0
 
     model_data = model_data.reset_index()
 
-    out_path = f'{path}/models/{model_type}'
+    out_path = f'{path}/models/{table}_{model_type}'
 
     original_datelevel = detect_data_frequency(model_data)
 
