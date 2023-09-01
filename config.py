@@ -51,7 +51,7 @@ def load_config(path='', data_path='', clean_data_path='', table=''):
 
     # settings
     'job_id': 0,
-    'table': 'spaces',
+    'table': table,
     'path': path,
     'data_path': data_path,
     'clean_data_path': clean_data_path,

@@ -48,6 +48,7 @@ def train_model(args, config):
 
     # Check if the file exists
     if not os.path.exists(model_data_path):
+        print(model_data_path)
         logger("File not found. Please set save_preprocessed_files: True and run with --preprocess")
         sys.exit()
 

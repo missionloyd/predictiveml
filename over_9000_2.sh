@@ -28,8 +28,8 @@ increment_timestamp() {
 
 # Set the start and end dates
 # 1. Hour / Day
-start_date="2022-01-31T23:00:00"
-end_date="2023-02-04T23:00:00"
+start_date="2023-07-01T23:00:00"
+end_date="2023-08-25T23:00:00"
 # 3. Month
 # start_date="2022-01-31T23:00:00"
 # end_date="2023-01-31T23:00:00"
@@ -69,7 +69,7 @@ while [[ "$current_timestamp" < "$end_date" ]]; do
     # echo "$days_in_month"
     time_step=24
     datelevel="hour"
-    table="spaces"
+    table="science"
 
     # Call your python script here passing the current timestamp
     python3 main.py --prune --run_all --save_predictions --temperature 0.5 --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --endDateTime "$current_timestamp"
