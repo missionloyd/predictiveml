@@ -48,6 +48,8 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
     datetime_format = config['datetime_format']
 
     # Group the dataframe by building name and timestamp
+    model_data_copy = model_data.copy()
+    original_datelevel = detect_data_frequency(model_data)
     model_data = model_data.set_index('ds')
 
     # Filter the dataframe to include data within the startDateTime and endDateTime
@@ -55,22 +57,37 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
         # Convert startDateTime and endDateTime to datetime objects
         start_datetime_obj = datetime.strptime(startDateTime, datetime_format)
         end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
-        model_data = model_data.loc[(model_data.index >= start_datetime_obj) & (model_data.index <= end_datetime_obj)]
+
+        if datelevel == original_datelevel:
+            model_data = model_data.loc[(model_data.index <= start_datetime_obj) & (model_data.index >= end_datetime_obj)]
+        else:
+            model_data = model_data.loc[(model_data.index < start_datetime_obj) & (model_data.index > end_datetime_obj)]
     elif startDateTime:
         # Convert startDateTime to datetime object
         start_datetime_obj = datetime.strptime(startDateTime, datetime_format)
-        model_data = model_data.loc[model_data.index >= start_datetime_obj]
+        if datelevel == original_datelevel:
+            model_data = model_data.loc[model_data.index <= start_datetime_obj]
+        else:
+            model_data = model_data.loc[model_data.index < start_datetime_obj]
     elif endDateTime:
         # Convert endDateTime to datetime object
         end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
-        model_data = model_data.loc[model_data.index <= end_datetime_obj]
+        if datelevel == original_datelevel:
+            model_data = model_data.loc[model_data.index >= end_datetime_obj]
+        else:
+            model_data = model_data.loc[model_data.index > end_datetime_obj]
+            
+    else:
+        n_feature = 0
 
     model_data = model_data.reset_index()
     
-    original_datelevel = detect_data_frequency(model_data)
-
     # This code aggregates and resamples a DataFrame based on given datelevel
     model_data = resample_data(model_data, datelevel, original_datelevel)
+
+    if len(model_data) <= time_step:
+        model_data = model_data_copy
+        model_data = resample_data(model_data, datelevel, original_datelevel)
 
     # normalize the data, save orginal data column for graphing later
     scaler = StandardScaler()
@@ -90,66 +107,83 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
     # normalize selected features
     add_data_scaled = np.empty((model_data.shape[0], 0))
 
+    flag = False
+
     if len(selected_features) > 0 and n_feature > 0:
         for feature in selected_features:
-            feature_scaler = StandardScaler()
-            add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
-            add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
+            if feature:
+                feature_scaler = StandardScaler()
+                add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
+                add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
+                flag = True
+                break
 
-        # ensures that updated_n_feature does not exceed the number of selected features or the number of samples in add_data_scaled
-        max_nfeatures_nsamples = min(add_data_scaled.shape[0], add_data_scaled.shape[1])
-        if updated_n_feature > max_nfeatures_nsamples:
-            updated_n_feature = max_nfeatures_nsamples
+        if flag == True:
+            # ensures that updated_n_feature does not exceed the number of selected features or the number of samples in add_data_scaled
+            max_nfeatures_nsamples = min(add_data_scaled.shape[0], add_data_scaled.shape[1])
+            if updated_n_feature > max_nfeatures_nsamples:
+                updated_n_feature = max_nfeatures_nsamples
 
-        # train PCA (Linear Dimensionality Reduction) with multi-feature output
-        pca = PCA(n_components=updated_n_feature)
-        pca_data = pca.fit_transform(add_data_scaled)
-        data_scaled = np.concatenate((data_scaled, pca_data), axis=1)
+            # train PCA (Linear Dimensionality Reduction) with multi-feature output
+            pca = PCA(n_components=updated_n_feature)
+            pca_data = pca.fit_transform(add_data_scaled)
+            data_scaled = np.concatenate((data_scaled, pca_data), axis=1)
 
     # split the data into training and testing sets
     train_size = int(len(data_scaled) * train_test_split)
-    # train_data = data_scaled[:train_size, :]
-    test_data = data_scaled[train_size:, :]
+
+    # create the training and testing data sets with sliding door 
+    def create_dataset(dataset, time_step):
+        X = []
+
+        for i in range(time_step, len(dataset)):
+            X.append(dataset[i-time_step:i, :])
+
+        X = np.array(X)
+        X = np.reshape(X, (X.shape[0], X.shape[1]*X.shape[2]))
+
+        # Pad with zeros if the lengths are still not equal
+        if len(X) < len(dataset):
+            num_missing = len(dataset) - len(X)
+            missing_data = np.zeros((num_missing, X.shape[1]))
+            X = np.concatenate((X, missing_data), axis=0)
+
+        return np.array(X)
     
-    if len(test_data) < time_step:
-        # handle the case where train_data length is smaller than time_step
-        print("Error: the 'train_test_split' value is too high for the current number of samples. Please lower it or adjust the 'time_step' value.")
-        sys.exit(0)
-    
-    # Get the most recent time_step days from the data
-    recent_data = data_scaled[-time_step:, :]
-    
+    # Get the most recent time_steps from the data
+    test_data = data_scaled
+    recent_data  = create_dataset(test_data, time_step)
+    X_test = recent_data
+
     # Initialize an array to store the predicted consumption
     y_pred_list = []
 
     pred_len = time_step
 
-    for _ in range(pred_len):
+    for i in range(pred_len):
         # Take the last time_step days from the test_data to make the prediction
-        X_pred = recent_data[-time_step:, :]
-
-        # Reshape the input data
-        X_pred = np.reshape(X_pred, (1, X_pred.shape[0] * X_pred.shape[1]))
+        X_test = recent_data
 
         if model_type == 'xgboost':
-            X_pred = xgb.DMatrix(X_pred)
+            X_test = xgb.DMatrix(X_test)
 
         # Predict the next day's consumption
-        y_pred = model.predict(X_pred)
+        y_pred = model.predict(X_test)
 
         # Inverse transform the prediction
         y_pred = scaler.inverse_transform(y_pred.reshape(-1, 1))
 
-        # Append the predicted consumption to the list
-        y_pred_list.append(y_pred[0, 0])
+        # Append the predicted consumption to the list          
+        if y_pred[0, 0] < 0.0:
+            y_pred_list.append(np.float32(0.0))
+        else:
+            y_pred_list.append(y_pred[0, 0])
 
-        # Shift the recent_data window by one hour
+        # print(building_file)
+        # print(y_pred)
+        # print(y_pred[time_step:])
         recent_data = np.roll(recent_data, -1, axis=0)
-        
-    # Print the predicted consumption
-    # print(f"Predicted consumption for the next {pred_len} hours:")
-    # for i, consumption in enumerate(y_pred_list):
-    #     print(f"Hour {i+1}: {consumption} kWh")
+        recent_data = recent_data[:-1]
 
     # Checking if startDateTime is a non-empty string
     if len(startDateTime) > 0:

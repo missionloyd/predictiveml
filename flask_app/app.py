@@ -1,4 +1,5 @@
 import subprocess, os
+from datetime import datetime
 import threading
 import os, time, json
 from flask import Flask, url_for, jsonify, request, render_template
@@ -210,35 +211,49 @@ def run_predict(building_file, y_column):
 @server.route('/api/forecast', methods=['POST'])
 def run_forecast():
 
-    # Preset (Hardcoded since we know we have already trained on these time_steps/datelevels)
+    # Preset (Hardcoded since we know we have already trained on these time_steps/datelevel combinations)
     frequency_mapping = {
-        'hour': '48',
+        'hour': '24',
         'day': '30',
         'month': '12',
         'year': '1'
     }
+
+    building_file = request.json.get('building_file')
+
+    if 'Data' not in building_file:
+        print('test')
+        building_file = building_file.replace('_Extended', '_Data_Extended')
         
     # Extract parameters from the request body
     y_column = request.json.get('y_column')
-    building_file = request.json.get('building_file')
-    startDateTime = request.json.get('startDateTime') 
-    endDateTime = request.json.get('endDateTime') 
+    startDateTime = request.json.get('startDateTime') or ''
+    endDateTime = request.json.get('endDateTime') or ''
     datelevel = request.json.get('datelevel') 
     table = request.json.get('table')
     time_step = frequency_mapping[datelevel]
     # time_step = request.json.get('time_step')
+    results_file = f'{table}_{datelevel}.csv'
+
+    if startDateTime and endDateTime:
+        startDateTime = datetime.strptime(startDateTime, "%m-%d-%Y").strftime("%Y-%m-%dT%H:%M:%S")
+        endDateTime = datetime.strptime(endDateTime, "%m-%d-%Y").strftime("%Y-%m-%dT%H:%M:%S")
+    elif request.json.get('startDateTime') and not request.json.get('endDateTime'):
+        startDateTime = datetime.strptime(startDateTime, "%m-%d-%Y").strftime("%Y-%m-%dT%H:%M:%S")
+    elif request.json.get('endDateTime') and not request.json.get('startDateTime'):
+        endDateTime = datetime.strptime(endDateTime, "%m-%d-%Y").strftime("%Y-%m-%dT%H:%M:%S")
 
     # Create a key tuple from the input arguments
-    key = (y_column, building_file, startDateTime, endDateTime, time_step, datelevel, table)
+    # key = (y_column, building_file, results_file, startDateTime, endDateTime, time_step, datelevel, table)
 
     # Check if the key exists in the previous results
-    if key in previous_results:
-        api_file = previous_results[key]
-        data = run_api_log(api_file)
-        return jsonify({'job_id': 0, 'data': data, 'status': 'ok'})
+    # if key in previous_results:
+    #     api_file = previous_results[key]
+    #     data = run_api_log(api_file)
+    #     return jsonify({'job_id': 0, 'data': data, 'status': 'ok'})
     
     # No previous result found, proceed with running the prediction
-    job_id = run_main(['--predict', '--building_file', building_file, '--y_column', 'present_elec_kwh', '--time_step', time_step, '--datelevel', datelevel])
+    job_id = run_main(['--saved_predict', '--results_file', results_file, '--time_step', time_step, '--datelevel', datelevel, '--building_file', building_file, '--startDateTime', startDateTime, '--endDateTime', endDateTime, '--table', table])
     api_file = f'logs/api_log/{job_id}.log'
 
     # Wait for the API file to become available
@@ -248,7 +263,7 @@ def run_forecast():
     data = run_api_log(api_file)
 
     # Save the result for future use
-    previous_results[key] = api_file
+    # previous_results[key] = api_file
 
     return jsonify({'job_id': job_id, 'data': data, 'status': 'ok'})
 

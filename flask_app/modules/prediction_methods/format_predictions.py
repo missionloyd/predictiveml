@@ -2,18 +2,23 @@ import pandas as pd
 
 def format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step, target_row, results_header, y_column_flag, config):
     # Assuming datelevel is a string representing the desired level of grouping: 'hour', 'day', 'month', or 'year'
+
     if datelevel == 'hour':
         freq = 'H'
-        offset = pd.DateOffset(hours=int(time_step))
+        offset = pd.DateOffset(hours=0)
     elif datelevel == 'day':
         freq = 'D'
-        offset = pd.DateOffset(days=int(time_step))
+        offset = pd.DateOffset(days=0)
+        if int(time_step) > 1: offset = pd.DateOffset(days=int(time_step))
+        end = end.replace(hour=0)
     elif datelevel == 'month':
         freq = 'MS'
         offset = pd.offsets.MonthBegin(int(time_step))
+        end = end.replace(hour=0)
     elif datelevel == 'year':
         freq = 'YS'
         offset = pd.offsets.YearBegin(int(time_step))
+        end = end.replace(hour=0)
     else:
         raise ValueError("Invalid datelevel")
     

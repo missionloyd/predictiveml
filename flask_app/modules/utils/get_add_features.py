@@ -6,7 +6,7 @@ def get_add_features(file_list, data_path, exclude_column):
     if len(file_list) > 0:
         file_path = f'{data_path}/{file_list[0]}'
     
-    if os.path.exists(file_path) and len(file_path) > 0:
+    if os.path.exists(file_path) and len(file_path) > 0 and file_path.endswith('.csv'):
         with open(file_path, 'r', encoding='utf-8-sig') as file:
             reader = csv.reader(file)
             header_row = next(reader)  # Read the first row (header)

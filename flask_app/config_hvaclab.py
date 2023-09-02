@@ -31,7 +31,7 @@ def load_config():
     # 'model_type': ["xgboost", "solos", "ensembles"],
     # 'imputation_method': ['linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
     'feature_method': ['rfecv', 'lassocv'],
-    'time_step': [48],             # window size of the sliding window technique and unit length of forecasts
+    'time_step': [24],             # window size of the sliding window technique and unit length of forecasts
     'datelevel': ['hour'],
     'train_test_split': 0.8,
     'train_ratio_threshold': 0.8, # minimum percent non-nans in training set

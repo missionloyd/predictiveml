@@ -1,0 +1,2 @@
+campus,bldgname,ts,latitude,longitude,year,month,day,hour,predicted_elec_kwh,predicted_htwt_mmbtuh,predicted_chll_tonh,predicted_co2_tonh
+West,Engineering,2023-01-01T00:00:00,41.314491,-105.581916,2023,1,1,0,2703372.5,,,1865.327

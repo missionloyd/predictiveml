@@ -1,4 +1,5 @@
-import csv
+import csv, warnings, time
+warnings.simplefilter(action='ignore', category=FutureWarning)
 import numpy as np
 import pandas as pd
 from timezonefinder import TimezoneFinder
@@ -99,6 +100,8 @@ def create_extended_datafile_main(csv_name, config):
 
             # Append the combined_row to the new DataFrame
             df_extended = pd.concat([df_extended, combined_series.to_frame().T], axis=0)  # to_frame().T converts the Series to a DataFrame row
+
+        time.sleep(0.1)
 
     if file_invalid:
         print(f':: ** File {csv_name}_Extended.csv cannot be processed due to invalid entries...')

@@ -1,8 +1,9 @@
 from datetime import datetime
 import pandas as pd
 from modules.imputation_methods.main import imputation
-# from modules.logging_methods.main import logger
+from modules.logging_methods.main import logger
 import pickle
+import numpy as np
 
 def preprocessing(args, config):
     updated_arguments = []
@@ -80,6 +81,7 @@ def preprocessing(args, config):
 
             if save_preprocessed_files == True:
                 # Save the original values into a new column
+                model_data['y'] = model_data['y'].astype(np.float32)
                 model_data['y_saved'] = model_data['y']
 
                 # Fill in missing values (preprocessing)
@@ -96,6 +98,9 @@ def preprocessing(args, config):
                 'bldgname': bldgname
             }
             updated_arguments.append(updated_arg)
+
+        # else:
+        #     logger(f'{building_file} // {y_column} cannot be trained. Try adjusting preprocessing/training scope in the config file.')
 
     if updated_arguments and model_data_path:
         return updated_arguments

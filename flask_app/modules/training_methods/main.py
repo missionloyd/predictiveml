@@ -44,9 +44,11 @@ def train_model(args, config):
     startDateTime = config['startDateTime']
     endDateTime = config['endDateTime']
     datetime_format = config['datetime_format']
+    table = config['table']
 
     # Check if the file exists
     if not os.path.exists(model_data_path):
+        print(model_data_path)
         logger("File not found. Please set save_preprocessed_files: True and run with --preprocess")
         sys.exit()
 
@@ -71,10 +73,15 @@ def train_model(args, config):
         # Convert endDateTime to datetime object
         end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
         model_data = model_data.loc[model_data.index <= end_datetime_obj]
+    
+    # Comment out if you would like to view selected features without datetimes
+    if not startDateTime and not endDateTime and save_model_file == True:
+        logger('test')
+        n_feature = 0
 
     model_data = model_data.reset_index()
 
-    out_path = f'{path}/models/{model_type}'
+    out_path = f'{path}/models/{table}_{model_type}'
 
     original_datelevel = detect_data_frequency(model_data)
 
@@ -126,13 +133,23 @@ def train_model(args, config):
         selected_features_delimited = ''
     
     # split the data into training and testing sets
-    train_size = int(len(data_scaled) * train_test_split)
-    train_data = data_scaled[:train_size, :]
-    test_data = data_scaled[train_size:, :]
+    if save_model_file == True:
+        train_size = int(len(data_scaled) * train_test_split)
+        train_data = data_scaled
+        test_data = data_scaled
 
-    # save y values for benchmarking/plotting
-    y_test = model_data['y'].iloc[train_size:].reset_index(drop=True)
-    saved_y_test = model_data['y_saved'].iloc[train_size:].reset_index(drop=True)
+        # save y values for benchmarking/plotting
+        y_test = model_data['y'].reset_index(drop=True)
+        saved_y_test = model_data['y_saved'].reset_index(drop=True)
+
+    else:
+        train_size = int(len(data_scaled) * train_test_split)
+        train_data = data_scaled[:train_size, :]
+        test_data = data_scaled[train_size:, :]
+
+        # save y values for benchmarking/plotting
+        y_test = model_data['y'].iloc[train_size:].reset_index(drop=True)
+        saved_y_test = model_data['y_saved'].iloc[train_size:].reset_index(drop=True)
 
     # create the training and testing data sets with sliding door 
     def create_dataset(dataset, time_step):
@@ -227,6 +244,13 @@ def train_model(args, config):
     # Inverse transform the predictions and actual values
     y_pred = scaler.inverse_transform(y_pred.reshape(-1, 1))
     y_train = scaler.inverse_transform(y_train.reshape(-1, 1))
+
+    # print(building_file)
+    # print(y_pred[0,0])
+    # print(y_pred)
+    
+    y_pred = np.insert(y_pred, 0, y_test.iloc[0])
+    y_pred = y_pred[:-1]
 
     # save the model name
     model_file = f'{out_path}/{building_file}_{y_column}_{imputation_method}_{feature_method}_{n_feature}_{updated_n_feature}_{time_step}_{datelevel}'

@@ -1,0 +1,2 @@
+campus,bldgname,ts,latitude,longitude,year,month,day,hour,predicted_elec_kwh,predicted_htwt_mmbtuh,predicted_chll_tonh,predicted_co2_tonh
+East,Arena Auditorium,2023-01-01T00:00:00,41.313276,-105.569515,2023,1,1,0,6557940.0,,,4524.9785

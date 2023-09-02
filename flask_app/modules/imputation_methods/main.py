@@ -1,6 +1,7 @@
 import sys
 from .linear_regression import linear_regression
 from .linear_interpolation import linear_interpolation
+from .zero_fill import zero_fill
 from .prophet import prophet
 from .lstm import lstm
 from modules.logging_methods.main import logger
@@ -11,6 +12,9 @@ def imputation(model_data, imputation_method):
 
     elif(imputation_method == 'linear_interpolation'):
         model_data = linear_interpolation(model_data)  
+    
+    elif(imputation_method == 'zero_fill'):
+        model_data = zero_fill(model_data)
 
     elif(imputation_method == 'prophet'):
         model_data = prophet(model_data)  
