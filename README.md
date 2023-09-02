@@ -95,7 +95,7 @@ python3 main.py --predict --building_file Stadium_Data_Extended --y_column all -
 Current Heartbeat Examples:
 - Genesis Run
 ```shell
-python3 main.py --prune --preprocess --save_preprocessed_files --update_add_feature
+python3 main.py --prune --preprocess --save_preprocessed_files --update_add_feature --table
 ```
 - Proceeding Runs
 ```shell

@@ -73,7 +73,9 @@ def train_model(args, config):
         # Convert endDateTime to datetime object
         end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
         model_data = model_data.loc[model_data.index <= end_datetime_obj]
-    else:
+    
+    # Comment out if you would like to view selected features without datetimes
+    if not startDateTime and not endDateTime and save_model_file == True:
         n_feature = 0
 
     model_data = model_data.reset_index()
