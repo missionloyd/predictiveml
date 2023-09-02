@@ -72,7 +72,7 @@ while [[ "$current_timestamp" < "$end_date" ]]; do
     table="science"
 
     # Call your python script here passing the current timestamp
-    python3 main.py --prune --run_all --save_predictions --temperature 0.5 --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --endDateTime "$current_timestamp"
+    python3 main.py --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --endDateTime "$current_timestamp"
     # python3 main.py --save_predictions --time_step "$time_step" --datelevel "$datelevel" --results_file "${datelevel}.csv" --endDateTime "$current_timestamp"
 
     # Save the current end_date in the loop to the file

@@ -1,2 +1,1 @@
 Current end_date in the loop:
-2023-07-01T23:00:00
