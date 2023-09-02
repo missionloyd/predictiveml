@@ -8,9 +8,9 @@ file_list = os.listdir(script_directory)
 
 # Iterate through the files and rename those that match the pattern
 for filename in file_list:
-    if not filename.endswith(".py"):
-        if "_present" in filename:
-            new_filename = filename.replace('_present', '_Data_Extended_present')
+    if filename.endswith(".csv"):
+        if "Extended_" in filename:
+            new_filename = filename.replace('Extended_', 'Extended_spaces_')
             file_path = os.path.join(script_directory, filename)
             new_file_path = os.path.join(script_directory, new_filename)
             

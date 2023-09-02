@@ -1,0 +1,2 @@
+campus,bldgname,ts,latitude,longitude,year,month,day,hour,predicted_elec_kwh,predicted_htwt_mmbtuh,predicted_chll_tonh,predicted_co2_tonh
+West,Earth Sciences,2023-01-01T00:00:00,41.314669,-105.583639,2023,1,1,0,,,18010.46,

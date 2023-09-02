@@ -218,17 +218,22 @@ def run_forecast():
         'month': '12',
         'year': '1'
     }
+
+    building_file = request.json.get('building_file')
+
+    if 'Data' not in building_file:
+        print('test')
+        building_file = building_file.replace('_Extended', '_Data_Extended')
         
     # Extract parameters from the request body
     y_column = request.json.get('y_column')
-    building_file = request.json.get('building_file')
     startDateTime = request.json.get('startDateTime') or ''
     endDateTime = request.json.get('endDateTime') or ''
     datelevel = request.json.get('datelevel') 
     table = request.json.get('table')
     time_step = frequency_mapping[datelevel]
     # time_step = request.json.get('time_step')
-    results_file = f'{datelevel}.csv'
+    results_file = f'{table}_{datelevel}.csv'
 
     if startDateTime and endDateTime:
         startDateTime = datetime.strptime(startDateTime, "%m-%d-%Y").strftime("%Y-%m-%dT%H:%M:%S")
@@ -239,7 +244,7 @@ def run_forecast():
         endDateTime = datetime.strptime(endDateTime, "%m-%d-%Y").strftime("%Y-%m-%dT%H:%M:%S")
 
     # Create a key tuple from the input arguments
-    key = (y_column, building_file, results_file, startDateTime, endDateTime, time_step, datelevel, table)
+    # key = (y_column, building_file, results_file, startDateTime, endDateTime, time_step, datelevel, table)
 
     # Check if the key exists in the previous results
     # if key in previous_results:
