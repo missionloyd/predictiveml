@@ -76,7 +76,6 @@ def train_model(args, config):
     
     # Comment out if you would like to view selected features without datetimes
     if not startDateTime and not endDateTime and save_model_file == True:
-        logger('test')
         n_feature = 0
 
     model_data = model_data.reset_index()

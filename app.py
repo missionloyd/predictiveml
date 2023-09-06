@@ -222,7 +222,6 @@ def run_forecast():
     building_file = request.json.get('building_file')
 
     if 'Data' not in building_file:
-        print('test')
         building_file = building_file.replace('_Extended', '_Data_Extended')
         
     # Extract parameters from the request body

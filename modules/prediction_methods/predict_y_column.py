@@ -57,26 +57,15 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
         # Convert startDateTime and endDateTime to datetime objects
         start_datetime_obj = datetime.strptime(startDateTime, datetime_format)
         end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
-
-        if datelevel == original_datelevel:
-            model_data = model_data.loc[(model_data.index <= start_datetime_obj) & (model_data.index >= end_datetime_obj)]
-        else:
-            model_data = model_data.loc[(model_data.index < start_datetime_obj) & (model_data.index > end_datetime_obj)]
+        model_data = model_data.loc[(model_data.index < start_datetime_obj) & (model_data.index > end_datetime_obj)]
     elif startDateTime:
         # Convert startDateTime to datetime object
         start_datetime_obj = datetime.strptime(startDateTime, datetime_format)
-        if datelevel == original_datelevel:
-            model_data = model_data.loc[model_data.index <= start_datetime_obj]
-        else:
-            model_data = model_data.loc[model_data.index < start_datetime_obj]
+        model_data = model_data.loc[model_data.index < start_datetime_obj]
     elif endDateTime:
         # Convert endDateTime to datetime object
         end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
-        if datelevel == original_datelevel:
-            model_data = model_data.loc[model_data.index >= end_datetime_obj]
-        else:
-            model_data = model_data.loc[model_data.index > end_datetime_obj]
-            
+        model_data = model_data.loc[model_data.index > end_datetime_obj]        
     else:
         n_feature = 0
 
@@ -107,27 +96,21 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
     # normalize selected features
     add_data_scaled = np.empty((model_data.shape[0], 0))
 
-    flag = False
-
-    if len(selected_features) > 0 and n_feature > 0:
+    if len(selected_features) > 0 and n_feature > 0 and (startDateTime or endDateTime):
         for feature in selected_features:
-            if feature:
-                feature_scaler = StandardScaler()
-                add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
-                add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
-                flag = True
-                break
+            feature_scaler = StandardScaler()
+            add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
+            add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
 
-        if flag == True:
-            # ensures that updated_n_feature does not exceed the number of selected features or the number of samples in add_data_scaled
-            max_nfeatures_nsamples = min(add_data_scaled.shape[0], add_data_scaled.shape[1])
-            if updated_n_feature > max_nfeatures_nsamples:
-                updated_n_feature = max_nfeatures_nsamples
+        # ensures that updated_n_feature does not exceed the number of selected features or the number of samples in add_data_scaled
+        max_nfeatures_nsamples = min(add_data_scaled.shape[0], add_data_scaled.shape[1])
+        if updated_n_feature > max_nfeatures_nsamples:
+            updated_n_feature = max_nfeatures_nsamples
 
-            # train PCA (Linear Dimensionality Reduction) with multi-feature output
-            pca = PCA(n_components=updated_n_feature)
-            pca_data = pca.fit_transform(add_data_scaled)
-            data_scaled = np.concatenate((data_scaled, pca_data), axis=1)
+        # train PCA (Linear Dimensionality Reduction) with multi-feature output
+        pca = PCA(n_components=updated_n_feature)
+        pca_data = pca.fit_transform(add_data_scaled)
+        data_scaled = np.concatenate((data_scaled, pca_data), axis=1)
 
     # split the data into training and testing sets
     train_size = int(len(data_scaled) * train_test_split)
@@ -158,9 +141,7 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
     # Initialize an array to store the predicted consumption
     y_pred_list = []
 
-    pred_len = time_step
-
-    for i in range(pred_len):
+    for _ in range(time_step):
         # Take the last time_step days from the test_data to make the prediction
         X_test = recent_data
 
