@@ -1,2 +1,2 @@
 campus,bldgname,ts,latitude,longitude,year,month,day,hour,predicted_elec_kwh,predicted_htwt_mmbtuh,predicted_chll_tonh,predicted_co2_tonh
-West,Energy Innovation Center,2023-01-01T00:00:00,41.314848,-105.583095,2023,1,1,0,980557.3,1953713.2,2412.5215,676.58453
+West,Energy Innovation Center,2024-01-01T00:00:00,41.314848,-105.583095,2024,1,1,0,868495.0,138141.17,3770.766,599.26154

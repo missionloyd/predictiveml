@@ -48,7 +48,6 @@ def train_model(args, config):
 
     # Check if the file exists
     if not os.path.exists(model_data_path):
-        print(model_data_path)
         logger("File not found. Please set save_preprocessed_files: True and run with --preprocess")
         sys.exit()
 
@@ -73,11 +72,15 @@ def train_model(args, config):
         # Convert endDateTime to datetime object
         end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
         model_data = model_data.loc[model_data.index <= end_datetime_obj]
-    
+
+    future_condition = not startDateTime and not endDateTime and save_model_file == True
+
     # Comment out if you would like to view selected features without datetimes
-    if not startDateTime and not endDateTime and save_model_file == True:
-        logger('test')
+    if future_condition:
+        saved_n_feature = n_feature
+        saved_updated_n_feature = updated_n_feature
         n_feature = 0
+        updated_n_feature = 0
 
     model_data = model_data.reset_index()
 
@@ -133,7 +136,9 @@ def train_model(args, config):
         selected_features_delimited = ''
     
     # split the data into training and testing sets
-    if save_model_file == True:
+    if save_model_file == True and save_model_plot == False:
+        # data_scaled = data_scaled[-time_step:, :]
+        # model_data = model_data.iloc[-time_step:]
         train_size = int(len(data_scaled) * train_test_split)
         train_data = data_scaled
         test_data = data_scaled
@@ -251,6 +256,11 @@ def train_model(args, config):
     
     y_pred = np.insert(y_pred, 0, y_test.iloc[0])
     y_pred = y_pred[:-1]
+
+    # Comment out if you would like to view selected features without datetimes
+    if future_condition:
+        n_feature = saved_n_feature
+        updated_n_feature = saved_updated_n_feature
 
     # save the model name
     model_file = f'{out_path}/{building_file}_{y_column}_{imputation_method}_{feature_method}_{n_feature}_{updated_n_feature}_{time_step}_{datelevel}'

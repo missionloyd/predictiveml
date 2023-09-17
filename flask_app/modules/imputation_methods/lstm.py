@@ -1,14 +1,11 @@
-from modules.logging_methods.main import logger
-import tensorflow as tf
-from sklearn.preprocessing import MinMaxScaler
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout
-from tensorflow.keras.callbacks import EarlyStopping
+import sys
 import numpy as np
 import pandas as pd
-import sys
+from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense, Dropout
+from sklearn.preprocessing import MinMaxScaler
 pd.options.mode.chained_assignment = None
-tf.keras.utils.disable_interactive_logging()
 
 # Move model compilation and training outside of lstm function
 def compile_and_train_model(model, X_train, y_train, epochs):

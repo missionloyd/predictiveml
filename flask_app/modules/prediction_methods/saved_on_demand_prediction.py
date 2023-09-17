@@ -1,10 +1,8 @@
 import os
-from modules.prediction_methods.create_predictions import create_predictions
-from modules.prediction_methods.format_predictions import format_predictions
-from modules.logging_methods.main import logger
 import pandas as pd
 from datetime import datetime
 import numpy as np
+# from modules.logging_methods.main import logger
 
 def saved_on_demand_prediction(cli_args, config):
     # Replace 'None' values in cli_args with corresponding values from config
