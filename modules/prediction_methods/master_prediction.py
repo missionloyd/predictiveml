@@ -1,7 +1,7 @@
 import os
 from modules.prediction_methods.create_predictions import create_predictions
 from modules.prediction_methods.format_predictions import format_predictions
-from modules.logging_methods.main import logger
+# from modules.logging_methods.main import logger
 
 def master_prediction(cli_args, winners_in_file_path, config):
     # Replace 'None' values in cli_args with corresponding values from config

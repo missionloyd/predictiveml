@@ -38,11 +38,9 @@ def run_job(job_id, command):
         error_log.write("")
 
     def emit_info_log_lines():
+        # Wait for the info file to become available with content
         info_log_file = f'logs/info_log/{job_id}.log'
-
-        # Wait for the file to become available
-        while not os.path.isfile(info_log_file):
-            time.sleep(0.2)  # Sleep for 1 second
+        wait_for_file_with_content(info_log_file)
 
         process = subprocess.Popen(
             ['tail', '-f', info_log_file],
@@ -118,6 +116,21 @@ def run_info_log(log_file):
     lines = [line.strip() for line in lines]  # Remove leading/trailing spaces
     return '<br>'.join(lines)
 
+def wait_for_file_with_content(file_path, polling_interval=0.1, timeout=10, api_file=False):
+    start_time = time.time()
+
+    while True:
+        if os.path.isfile(file_path):
+            if os.path.getsize(file_path) > 0 and api_file == True:
+                break
+            elif os.path.getsize(file_path) >= 0 and api_file == False:
+                break
+        
+        if timeout is not None and time.time() - start_time >= timeout:
+            raise TimeoutError(f"Timeout exceeded while waiting for {file_path} with content")
+
+        time.sleep(polling_interval)
+
 def generate_command_links():
     links = '<br>'.join([
         f'<a href="/">Home</a>',
@@ -131,8 +144,8 @@ def generate_command_links():
 
 def generate_log_links(job_id):
 
-    while not os.path.isfile(f'logs/info_log/{job_id}.log'):
-        time.sleep(0.2)  # Sleep for 1 second
+    info_log_file = f'logs/info_log/{job_id}.log'
+    wait_for_file_with_content(info_log_file)
 
     links = '<br>'.join([
         f'',
@@ -195,11 +208,10 @@ def run_predict(building_file, y_column):
 
     # No previous result found, proceed with running the prediction
     job_id = run_main(['--predict', '--building_file', building_file, '--y_column', y_column, '--time_step', '12', '--datelevel', 'month'])
-    api_file = f'logs/api_log/{job_id}.log'
 
     # Wait for the API file to become available
-    while not os.path.isfile(api_file):
-        time.sleep(0.2)  # Sleep for 1 second
+    api_file = f'logs/api_log/{job_id}.log'
+    wait_for_file_with_content(api_file, api_file=True)
 
     data = run_api_log(api_file)
 
@@ -253,11 +265,10 @@ def run_forecast():
     
     # No previous result found, proceed with running the prediction
     job_id = run_main(['--saved_predict', '--results_file', results_file, '--time_step', time_step, '--datelevel', datelevel, '--building_file', building_file, '--startDateTime', startDateTime, '--endDateTime', endDateTime, '--table', table])
+    
+    # Wait for the API file to become available with content
     api_file = f'logs/api_log/{job_id}.log'
-
-    # Wait for the API file to become available
-    while not os.path.isfile(api_file):
-        time.sleep(0.2)  # Sleep for 0.2 second
+    wait_for_file_with_content(api_file, api_file=True)
 
     data = run_api_log(api_file)
 
