@@ -1,2 +1,2 @@
 campus,bldgname,ts,latitude,longitude,year,month,day,hour,predicted_elec_kwh,predicted_htwt_mmbtuh,predicted_chll_tonh,predicted_co2_tonh
-West,Williams Conservatory,2023-01-01T00:00:00,41.312693,-105.584754,2023,1,1,0,192335.05,,,132.71118
+West,Williams Conservatory,2024-01-01T00:00:00,41.312693,-105.584754,2024,1,1,0,131339.34,,,90.624146

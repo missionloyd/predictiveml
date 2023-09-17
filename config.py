@@ -28,10 +28,10 @@ def load_config(path='', data_path='', clean_data_path='', table=''):
 
   config = {
     # preprocessing/training scope
-    'model_type': ["xgboost"],                      # fastest and most lightweight setting
-    # 'imputation_method': ['zero_fill'],  # fastest and most lightweight setting
+    'model_type': ["xgboost"],           # fastest and most lightweight setting
+    'imputation_method': ['zero_fill'],  # fastest and most lightweight setting
     # 'model_type': ["xgboost", "solos", "ensembles"],
-    'imputation_method': ['zero_fill', 'linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
+    # 'imputation_method': ['zero_fill', 'linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
     'feature_method': ['rfecv', 'lassocv'],
     'time_step': [24],            # window size of the sliding window technique and unit length of forecasts
     'datelevel': ['month'],
@@ -68,7 +68,6 @@ def load_config(path='', data_path='', clean_data_path='', table=''):
     'save_preprocessed_files': False,
     'save_model_file': False,
     'save_model_plot': False,
-    'save_at_each_delta': True,
     'n_jobs': -1,
     'batch_size': 8,
     'memory_limit': 102400,

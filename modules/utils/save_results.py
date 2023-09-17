@@ -48,28 +48,26 @@ def save_winners_in(results_file_path, winners_in_file_path, config):
             writer.writerow(lowest_error_row)
             
             # Print the lowest error row for each bldgname and y_column
-            logger(f"Lowest error for building_file '{building_file}', y_column '{y_column}', time_step, '{time_step}', and datelevel '{datelevel}': {lowest_error[0]}")
-            logger('')
+            # logger(f"Lowest error for building_file '{building_file}', y_column '{y_column}', time_step, '{time_step}', and datelevel '{datelevel}': {lowest_error[0]}")
+            # logger('')
 
-            if config['save_at_each_delta']:
-                with open(f'{winners_in_file_path}/_winners_{building_file}_{y_column}_{time_step}_{datelevel}.in', mode='w') as results_file:
-                    results_writer = csv.writer(results_file)
-                    results_writer.writerow(results_header)
-                    results_writer.writerow(lowest_error_row)
+            with open(f'{winners_in_file_path}/_winners_{building_file}_{y_column}_{time_step}_{datelevel}.in', mode='w') as results_file:
+                results_writer = csv.writer(results_file)
+                results_writer.writerow(results_header)
+                results_writer.writerow(lowest_error_row)
 
     return
 
 def save_winners_out(winners_out_file_path, results, config):
-    if config['save_at_each_delta']:
-        for arg in results:
+    for arg in results:
 
-            building_file = arg['building_file'].replace('.csv', '')
-            y_column = arg['y_column']
-            time_step = arg['time_step']
-            datelevel = arg['datelevel']
+        building_file = arg['building_file'].replace('.csv', '')
+        y_column = arg['y_column']
+        time_step = arg['time_step']
+        datelevel = arg['datelevel']
 
-            with open(f'{winners_out_file_path}/_winners_{building_file}_{y_column}_{time_step}_{datelevel}.out', mode='w') as results_file:
-                results_file.write(str(arg))
+        with open(f'{winners_out_file_path}/_winners_{building_file}_{y_column}_{time_step}_{datelevel}.out', mode='w') as results_file:
+            results_file.write(str(arg))
 
 
     with open(f'{winners_out_file_path}/_winners.out', mode='w') as results_file:

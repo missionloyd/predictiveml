@@ -1,2 +1,2 @@
 campus,bldgname,ts,latitude,longitude,year,month,day,hour,predicted_elec_kwh,predicted_htwt_mmbtuh,predicted_chll_tonh,predicted_co2_tonh
-West,Education Annex,2023-01-01T00:00:00,41.314659,-105.579893,2023,1,1,0,181193.55,,,125.02355
+West,Education Annex,2024-01-01T00:00:00,41.314659,-105.579893,2024,1,1,0,171795.83,,,118.53912

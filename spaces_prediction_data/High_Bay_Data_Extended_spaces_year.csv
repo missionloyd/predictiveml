@@ -1,2 +1,2 @@
 campus,bldgname,ts,latitude,longitude,year,month,day,hour,predicted_elec_kwh,predicted_htwt_mmbtuh,predicted_chll_tonh,predicted_co2_tonh
-East,High Bay,2023-01-01T00:00:00,41.316968,-105.570552,2023,1,1,0,1838708.1,,,1268.7086
+East,High Bay,2024-01-01T00:00:00,41.316968,-105.570552,2024,1,1,0,1538919.2,,,1061.8542

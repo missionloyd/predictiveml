@@ -65,7 +65,6 @@ def load_config():
     'save_preprocessed_files': True,
     'save_model_file': False,
     'save_model_plot': False,
-    'save_at_each_delta': True,
     'n_jobs': -1,
     'batch_size': 8,
     'memory_limit': 102400,

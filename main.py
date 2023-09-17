@@ -142,10 +142,10 @@ def main(cli_args, flags):
     # Calculate duration of the script
     duration = calculate_duration(start_time)
 
-    logger(f"Success... Time elapsed: {duration} hours.")
+    logger(f"\nSuccess... Time elapsed: {duration} hours.")
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Script for preprocessing, training, or predicting.')
+    parser = argparse.ArgumentParser(description='Script for preprocessing, training, or predicting on timeseries data.')
     parser.add_argument('--run_all', action='store_true', help='Flag for overriding all other flags except --prune, --predict, and --insert.')
     parser.add_argument('--prune', action='store_true', help='Flag for pruning specific directories.')  
     parser.add_argument('--preprocess', action='store_true', help='Flag for preprocessing.')
@@ -157,6 +157,8 @@ if __name__ == '__main__':
     parser.add_argument('--save_predictions', action='store_true', help='Flag for saving predictions.') 
     parser.add_argument('--update_add_feature', action='store_true', help='Flag for updating additional features into database.') 
     parser.add_argument('--building_file', type=str, help='Building file for prediction (do not include .csv extension).')
+    parser.add_argument('--model_type', type=str, help='Model type for training and predicting.')
+    parser.add_argument('--imputation_method', type=str, help='Imputation method for preprocessing.')
     parser.add_argument('--bldgname', type=str, help='Building name for prediction.')
     parser.add_argument('--y_column', type=str, help='Y_Column for prediction.')
     parser.add_argument('--startDateTime', type=str, help='Start date for prediction.')
@@ -190,6 +192,8 @@ if __name__ == '__main__':
 
     cli_args = {
         'job_id': args.job_id,
+        'model_type': args.model_type,
+        'imputation_method': args.imputation_method,
         'building_file': args.building_file,
         'bldgname': args.bldgname,
         'y_column': args.y_column,
