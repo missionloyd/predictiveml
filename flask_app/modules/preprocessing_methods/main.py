@@ -2,7 +2,7 @@ from datetime import datetime
 import pandas as pd
 from modules.imputation_methods.main import imputation
 from modules.logging_methods.main import logger
-import pickle
+import pickle, os
 import numpy as np
 
 def preprocessing(args, config):
@@ -78,6 +78,9 @@ def preprocessing(args, config):
             model_data = model_data.sort_values(['ds'])
             building_file_name = building_file.replace('.csv', '')
             model_data_path = f'{imp_path}/{building_file_name}_{y_column}_{imputation_method}'
+
+            if not os.path.exists(imp_path):
+                os.makedirs(imp_path)
 
             if save_preprocessed_files == True:
                 # Save the original values into a new column
