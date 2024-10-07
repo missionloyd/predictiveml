@@ -50,11 +50,11 @@ while [[ "$current_timestamp" < "$last_end_date_time" ]]; do
 
     time_step=24
     datelevel="hour"
-    python3 main.py --temperature 0.5 --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time" --endDateTime "$current_timestamp"
+    python3 main.py --model_type xgboost --temperature 0.5 --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time" --endDateTime "$current_timestamp"
     
     time_step=1
     datelevel="day"
-    python3 main.py --temperature 0.5 --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time" --endDateTime "$current_timestamp"
+    python3 main.py --model_type xgboost --temperature 0.5 --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time" --endDateTime "$current_timestamp"
 
     if [[ "$month_day" == "$last_day_of_month" ]]; then
         time_step=1
