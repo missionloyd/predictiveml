@@ -146,7 +146,7 @@ def main(cli_args, flags):
             merged_list = merge_predictions(results, config)
             save_predictions(merged_list, config, cli_args)
             
-        # Predict on all available models and then insert into database (custom for campus heartbeat)
+        # Predict on all available models and then insert into database (custom)
         if insert_flag:
             from modules.prediction_methods.master_prediction import master_prediction
             from modules.prediction_methods.merge_predictions import merge_predictions

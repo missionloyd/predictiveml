@@ -74,7 +74,7 @@ def main(cli_args, flags):
         if predict_flag:
             predict(config, cli_args)
 
-        # Load saved predictions and jsonify (custom for campus heartbeat)
+        # Load saved predictions and jsonify (custom)
         if saved_predict_flag:
             saved_predict(config, cli_args)
 
@@ -82,7 +82,7 @@ def main(cli_args, flags):
         if save_predictions_flag:
             save_predictions(config, cli_args)
             
-        # Predict on all available models and then insert into database (custom for campus heartbeat)
+        # Predict on all available models and then insert into database (custom)
         if insert_flag:
             insert(config, cli_args)
 

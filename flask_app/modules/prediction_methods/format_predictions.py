@@ -1,83 +1,50 @@
 import pandas as pd
 
-def format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step, target_row, results_header, y_column_flag, config):
-    # Assuming datelevel is a string representing the desired level of grouping: 'hour', 'day', 'month', or 'year'
-    
-    startDateTime = config['startDateTime']
-    endDateTime = config['endDateTime']
-
-    future_condition = not startDateTime and not endDateTime
-
-    if not future_condition:
-        if datelevel == 'hour':
-            freq = 'H'
-            offset = pd.DateOffset(hours=int(time_step) * (2 if endDateTime != '' else 1))
-        elif datelevel == 'day':
-            freq = 'D'
-            offset = pd.DateOffset(days=int(time_step) * (1 if endDateTime != '' else 1))
-            end = end.replace(hour=0)
-        elif datelevel == 'month':
-            freq = 'MS'
-            offset = pd.offsets.MonthBegin(int(time_step) * (1 if endDateTime != '' else 1))
-            end = end.replace(hour=0)
-        elif datelevel == 'year':
-            freq = 'YS'
-            offset = pd.offsets.YearBegin(int(time_step) * (1 if endDateTime != '' else 1))
-            end = end.replace(hour=0)
-        else:
-            raise ValueError("Invalid datelevel")
+def format_predictions(start, end, y_pred_lists, y_column_mapping, len_y_pred_list, datelevel, time_step, target_row, results_header, y_column_flag, config):    
+    # Configure date frequency and offset based on datelevel and endDateTime presence
+    if datelevel == 'hour':
+        freq = 'H'
+        offset = pd.DateOffset(hours=int(time_step))
+    elif datelevel == 'day':
+        freq = 'D'
+        offset = pd.DateOffset(days=int(time_step))
+        end = end.replace(hour=0)
+    elif datelevel == 'month':
+        freq = 'MS'
+        offset = pd.DateOffset(months=int(time_step))
+        end = end.replace(hour=0)
+    elif datelevel == 'year':
+        freq = 'YS'
+        offset = pd.DateOffset(years=int(time_step))
+        end = end.replace(hour=0)
     else:
-        if datelevel == 'hour':
-            freq = 'H'
-            offset = pd.DateOffset(hours=int(time_step)-1)
-        elif datelevel == 'day':
-            freq = 'D'
-            offset = pd.DateOffset(days=int(time_step)-1)
-            end = end.replace(hour=0)
-        elif datelevel == 'month':
-            freq = 'MS'
-            offset = pd.offsets.MonthBegin(int(time_step)-1)
-            end = end.replace(hour=0)
-        elif datelevel == 'year':
-            freq = 'YS'
-            offset = pd.offsets.YearBegin(int(time_step)-1)
-            end = end.replace(hour=0)
-        else:
-            raise ValueError("Invalid datelevel")
+        raise ValueError("Invalid datelevel")
     
-    end = end + offset  # Add the offset to the end date
+    end += offset
     timestamp = pd.date_range(end=end, periods=len_y_pred_list, freq=freq)
     aggregated_data = pd.DataFrame({'timestamp': timestamp})
 
-    # Extract the bldgname from target_row using results_header
-    bldgname_index = results_header.index('bldgname')
-    building_file_index = results_header.index('building_file')
-
-    bldgname = target_row[bldgname_index]
-    building_file = target_row[building_file_index]
-
+    # Extract building name and file from target_row using results_header
+    bldgname = target_row[results_header.index('bldgname')]
+    building_file = target_row[results_header.index('building_file')]
     aggregated_data['bldgname'] = bldgname
     aggregated_data['building_file'] = building_file
 
+    # Populate columns based on y_pred_lists and y_column_mapping
     for y_column, building, y_pred_list in y_pred_lists:
-        for column in y_column_mapping:
+        if building == building_file.replace('.csv', ''):
+            for column in y_column_mapping:
+                if column == y_column:
+                    aggregated_data[y_column_mapping[column]] = y_pred_list
+                    # Calculate CO2 emissions if relevant
+                    if column == 'present_elec_kwh':
+                        co2_column = y_column_mapping['present_co2_tonh']
+                        aggregated_data[co2_column] = aggregated_data[y_column_mapping['present_elec_kwh']] * config['CO2EmissionFactor']
 
-            if column == y_column and building == building_file.replace('.csv', ''):
-                aggregated_data[y_column_mapping[column]] = y_pred_list
-
-                if column == 'present_elec_kwh':
-                    aggregated_data[y_column_mapping['present_co2_tonh']] = aggregated_data[y_column_mapping['present_elec_kwh']] * config['CO2EmissionFactor']
-        
-            # else:
-            #     aggregated_data[y_column_mapping[column]] = None
-
-    # Add the missing columns after resampling
+    # Add missing columns for non-present data if flag is 'all'
     if y_column_flag == 'all':
         for column in y_column_mapping.values():
             if column not in aggregated_data.columns:
                 aggregated_data[column] = None
 
-    aggregated_data = aggregated_data.reset_index(drop=True)
-
-    # return results
-    return aggregated_data
+    return aggregated_data.reset_index(drop=True)

@@ -10,7 +10,7 @@ def save(config):
   n_jobs = config['n_jobs']
   results_file_path = config['results_file_path']
   winners_in_file_path = config['winners_in_file_path']
-  winners_out_file_path = config ['winners_out_file_path']
+  winners_out_file_path = config['winners_out_file_path']
   winners_out_file = config['winners_out_file']
 
   save_args(results_file_path, winners_in_file_path, winners_out_file_path, config)

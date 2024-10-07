@@ -9,9 +9,8 @@ from flask_cors import CORS
 server = Flask(__name__, template_folder='templates', static_folder='static')
 CORS(server, origins=[
     'http://localhost:8080', 
-    'http://localhost:3000', 
-    'https://prev-uwyo-campus-heartbeat.vercel.app', 
-    'https://uwyo-campus-heartbeat.vercel.app'
+    'http://localhost:3000',  
+    'http://localhost:3001',
 ])
 socketio = SocketIO(server)
 

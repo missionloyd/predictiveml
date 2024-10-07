@@ -1,13 +1,12 @@
-# https://towardsdatascience.com/how-to-build-a-relational-database-from-csv-files-using-python-and-heroku-20ea89a55c63
+# https://naysan.ca/2020/05/09/pandas-to-postgresql-using-psycopg2-bulk-insert-performance-benchmark/
+from io import StringIO
 import psycopg2
+import psycopg2.extras
 import pandas as pd
-import os, sys
-from datetime import datetime
+import os
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv()   
 
-# python3 create_tables.py
-# python3 populate_tables.py
 
 def run_syntax(db_connection: psycopg2, syntax: str, entry: tuple) -> None:
     """
@@ -24,12 +23,13 @@ def run_syntax(db_connection: psycopg2, syntax: str, entry: tuple) -> None:
     if entry:
         statement = cur.mogrify(syntax, entry)
         
-    # print(entry)
+    # print(statement)
+    print(entry)
     cur.execute(statement)
     cur.close()
 
 
-def create_table(schema: str, table: str) -> None:
+def create_table(db: str, schema: str, table: str) -> None:
     """
     Create a table in the DB based on a schema.
 
@@ -39,10 +39,10 @@ def create_table(schema: str, table: str) -> None:
     :param table: The name of the table.
     """
     db_connection = psycopg2.connect(
-        host=os.environ["hostname"],
-        user=os.environ["user"],
-        password=os.environ["password"],
-        dbname=os.environ["database"],
+        host=os.environ[f"{db}-hostname"],
+        user=os.environ[f"{db}-user"],
+        password=os.environ[f"{db}-password"],
+        dbname=os.environ[f"{db}-database"],
     )
 
     # Create table if it does not yet exist
@@ -52,73 +52,89 @@ def create_table(schema: str, table: str) -> None:
     db_connection.close()
 
 
-def populate_table(table_name: str, df: pd.DataFrame) -> None:
+def drop_table(db: str, table: str) -> None:
     """
-    Populate a table in the database from a pandas dataframe.
+    Drop a table from the database.
 
-    :param table_name: The name of the table in the DB that we will add the values in df to.
-    :param df: The dataframe that we use for puplating the table.
+    :param table: The name of the table to drop.
     """
+    try:
+        db_connection = psycopg2.connect(
+            host=os.environ[f"{db}-hostname"],
+            user=os.environ[f"{db}-user"],
+            password=os.environ[f"{db}-password"],
+            dbname=os.environ[f"{db}-database"],
+        )
+        cursor = db_connection.cursor()
+
+        # Drop table if it exists
+        cursor.execute(f"DROP TABLE IF EXISTS {table}")
+
+        db_connection.commit()
+        print(f"Table '{table}' dropped successfully.")
+    except psycopg2.Error as e:
+        print("Error dropping table:", e)
+    finally:
+        if db_connection:
+            db_connection.close()
+
+def populate_table(db: str, table_name: str, df: pd.DataFrame, target_col: str, db_connection: psycopg2.extensions.connection) -> None:
     db_connection = psycopg2.connect(
-        host=os.environ["hostname"],
-        user=os.environ["user"],
-        password=os.environ["password"],
-        dbname=os.environ["database"],
+        host=os.environ[f"{db}-hostname"],
+        user=os.environ[f"{db}-user"],
+        password=os.environ[f"{db}-password"],
+        dbname=os.environ[f"{db}-database"],
     )
 
-    # Check that all columns are present in the CSV file
     cur = db_connection.cursor()
     cur.execute(f"SELECT * FROM {table_name} LIMIT 0")
-    cur.close()
-
-    col_names = [i[0] for i in cur.description]
-    # df["row_timestamp"] = [datetime.now().strftime("%m-%d-%Y %H:%M:%S")] * len(df.index)
+    col_names = [desc[0] for desc in cur.description]
 
     missing_columns = set(col_names).difference(df.columns)
     assert not missing_columns, f"The following columns are missing in your CSV file: {','.join(missing_columns)}"
-
-    # Re-order CSV
     df = df[col_names]
 
-    # NaN -> NULL
-    # df = df.where(pd.notnull(df), None)
-    value_placeholders = "("
+    df = df.drop_duplicates(subset=[target_col, 'ts'])    
+    df = df.where(pd.notnull(df), None)
 
-    for i in (range(0, len(col_names) - 1)):
-        value_placeholders += "%s, "
+    # Get the list of columns from the DataFrame
+    columns = df.columns.tolist()
+    
+    # Generate the SET clause dynamically
+    set_clause = ', '.join([f"{col} = EXCLUDED.{col}" for col in columns if col not in (target_col, 'ts')])
 
-    value_placeholders += "%s)"
+    buffer = StringIO()
+    df.to_csv(buffer, index=False, header=False, sep=",")
+    buffer.seek(0)
 
+    # try:
+    #     cur.copy_expert(f"COPY {table_name} FROM STDIN WITH CSV", buffer)
+    # except psycopg2.errors.UniqueViolation:
 
-    # https://stackoverflow.com/questions/55922003/update-multiple-columns-on-conflict-postgres
-    excluded_placeholders = "("
-    excluded_col_names = "("
-    str_col_names = "("
+    # Reset buffer position to start for re-reading
+    buffer.seek(0)
 
-    for i in (range(0, len(col_names) - 1)):
-        str_col_names += str(col_names[i]) + ", "
+    # Roll back the transaction to handle the error
+    db_connection.rollback()
 
-        if col_names[i] != 'ts' and col_names[i] != 'bldgname':
-            excluded_placeholders += "EXCLUDED." + str(col_names[i]) + ", "
-            excluded_col_names += str(col_names[i]) + ", "
+    # Reopen cursor
+    cur = db_connection.cursor()
 
-    excluded_placeholders += "EXCLUDED." + str(col_names[len(col_names)-1]) + ")"
-    str_col_names += str(col_names[len(col_names)-1]) + ")"
-    excluded_col_names += str(col_names[len(col_names)-1]) + ")"
+    # Temporarily create a staging table
+    cur.execute(f"CREATE TEMP TABLE temp_{table_name} (LIKE {table_name} INCLUDING ALL);")
+    cur.copy_expert(f"COPY temp_{table_name} FROM STDIN WITH CSV", buffer)
 
-    # Inject data
-    for index, row in df.iterrows():
+    # Perform upsert from staging table to the main table
+    cur.execute(f"""
+        INSERT INTO {table_name} ({', '.join(columns)})
+        SELECT {', '.join(columns)}
+        FROM temp_{table_name}
+        ON CONFLICT ({target_col}, ts) DO UPDATE
+        SET {set_clause};
+    """)
 
-        new_row = row.where(pd.notnull(row), None)
-        run_syntax(db_connection=db_connection, syntax=f"INSERT INTO {table_name} VALUES {value_placeholders} ON CONFLICT(bldgname, ts) DO UPDATE SET {excluded_col_names} = {excluded_placeholders};", entry=tuple(new_row.values))
+    # Drop the temporary staging table
+    cur.execute(f"DROP TABLE temp_{table_name};")
 
     db_connection.commit()
-    db_connection.close()
-
-
-    # Original Inject data
-    # for index, row in df.iterrows():
-    #     new_row = row.where(pd.notnull(row), None) 
-    #     run_syntax(db_connection=db_connection, syntax=f"INSERT INTO {table_name} VALUES {value_placeholders};", entry=tuple(new_row.values))
-    #     run_syntax(db_connection=db_connection, syntax=f"INSERT INTO {table_name} VALUES{tuple(new_row.values)}" , entry=tuple())
-    
+    cur.close()

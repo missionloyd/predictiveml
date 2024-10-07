@@ -92,15 +92,6 @@ python3 main.py --preprocess --train --save --time_step 1 --datelevel year
 python3 main.py --predict --building_file Stadium_Data_Extended --y_column all --time_step 48 --datelevel hour
 ```
 
-Current Heartbeat Examples:
-```shell
-python3 main.py --prune --save_preprocessed_files --preprocess
-python3 main.py --run_all --time_step 48 --datelevel hour --results_file 48_hour.csv
-python3 main.py --run_all --time_step 30 --datelevel day --results_file 30_day.csv
-python3 main.py --run_all --time_step 12 --datelevel month --results_file 12_month.csv
-python3 main.py --run_all --time_step 1 --datelevel year --results_file 1_year.csv
-```
-
 Note: If no flags are specified, the script will display a message and exit without performing any action.
 
 ## Configuration

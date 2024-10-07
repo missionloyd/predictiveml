@@ -73,7 +73,7 @@ def train_model(args, config):
         end_datetime_obj = datetime.strptime(endDateTime, datetime_format)
         model_data = model_data.loc[model_data.index <= end_datetime_obj]
 
-    future_condition = not startDateTime and not endDateTime and save_model_file == True
+    future_condition = not endDateTime and save_model_file == True
 
     # Comment out if you would like to view selected features without datetimes
     if future_condition:
@@ -95,27 +95,27 @@ def train_model(args, config):
     scaler = StandardScaler()
     data_scaled = scaler.fit_transform(model_data['y'].values.reshape(-1, 1))
 
-    # normalize additional features
-    add_data_scaled = np.empty((model_data.shape[0], 0))
-
-    for feature in add_feature:
-        feature_scaler = StandardScaler()
-        add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
-        add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
-
     # check if selected_features are already saved
-    if selected_features_delimited:
-        selected_features = selected_features_delimited.split('|')
-    else:
-        # identify most important features and eliminate less important features
+    selected_features = selected_features_delimited.split('|')
+    
+    # identify most important features and eliminate less important features    
+    if selected_features[0] == '' and not save_model_file:
+        # normalize additional features
+        add_data_scaled = np.empty((model_data.shape[0], 0))
+
+        for feature in add_feature:
+            feature_scaler = StandardScaler()
+            add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
+            add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
+
         selected_features = feature_engineering(feature_method, n_fold, add_data_scaled, data_scaled, add_feature)
         selected_features_delimited = '|'.join(selected_features)
-        updated_n_feature = len(selected_features)
+        updated_n_feature = min(n_feature, len(selected_features))
 
-    # normalize selected features
-    add_data_scaled = np.empty((model_data.shape[0], 0))
+    if len(selected_features) > 0 and selected_features[0] != '' and n_feature > 0:
+        # normalize selected features
+        add_data_scaled = np.empty((model_data.shape[0], 0))
 
-    if len(selected_features) > 0 and n_feature > 0:
         for feature in selected_features:
             feature_scaler = StandardScaler()
             add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
@@ -130,6 +130,7 @@ def train_model(args, config):
         pca = PCA(n_components=updated_n_feature)
         pca_data = pca.fit_transform(add_data_scaled)
         data_scaled = np.concatenate((data_scaled, pca_data), axis=1)
+        
     else:
         # Handle the case where no features are selected
         updated_n_feature = 0

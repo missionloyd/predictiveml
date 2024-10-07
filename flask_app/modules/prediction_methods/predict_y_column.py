@@ -87,7 +87,7 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
         model_data = model_data.loc[model_data.index > end_datetime_obj]
         end_index = model_data.index.searchsorted(end_datetime_obj, side='right')
 
-    future_condition = not startDateTime and not endDateTime and save_model_file == True
+    future_condition = not endDateTime and save_model_file == True
 
     # Comment out if you would like to view selected features without datetimes
     if future_condition:
@@ -110,14 +110,6 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
     scaler = StandardScaler()
     data_scaled = scaler.fit_transform(model_data['y'].values.reshape(-1, 1))
 
-    # normalize additional features
-    add_data_scaled = np.empty((model_data.shape[0], 0))
-
-    for feature in add_feature:
-        feature_scaler = StandardScaler()
-        add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
-        add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
-
     # check if selected_features are already saved
     selected_features = selected_features_delimited.split('|')
 
@@ -129,11 +121,6 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
             feature_scaler = StandardScaler()
             add_feature_scaled = feature_scaler.fit_transform(model_data[feature].values.reshape(-1, 1))
             add_data_scaled = np.concatenate((add_data_scaled, add_feature_scaled), axis=1)
-
-        # ensures that updated_n_feature does not exceed the number of selected features or the number of samples in add_data_scaled
-        max_nfeatures_nsamples = min(add_data_scaled.shape[0], add_data_scaled.shape[1])
-        if updated_n_feature > max_nfeatures_nsamples:
-            updated_n_feature = max_nfeatures_nsamples
 
         # train PCA (Linear Dimensionality Reduction) with multi-feature output
         pca = PCA(n_components=updated_n_feature)
