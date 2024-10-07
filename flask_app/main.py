@@ -5,7 +5,7 @@ import time
 import argparse
 import sys
 
-arcc_path = '/home/lmacy1/predictiveml'
+arcc_path = '/home/lmacy1/predictiveml/flask_app'
 sys.path.append(arcc_path)  # if running on ARCC
 
 from config import load_config
