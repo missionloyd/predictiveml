@@ -1,0 +1,8 @@
+campus,bldgname,ts,latitude,longitude,year,month,day,hour,predicted_elec_kwh,predicted_htwt_mmbtuh,predicted_chll_tonh,predicted_co2_tonh
+East,Arena Auditorium,2023-02-06T00:00:00,41.313276,-105.569515,2023,2,6,0,78159.8,,,53.93026
+East,Arena Auditorium,2023-02-07T00:00:00,41.313276,-105.569515,2023,2,7,0,76733.14,,,52.94587
+East,Arena Auditorium,2023-02-08T00:00:00,41.313276,-105.569515,2023,2,8,0,79131.98,,,54.601067
+East,Arena Auditorium,2023-02-09T00:00:00,41.313276,-105.569515,2023,2,9,0,75878.64,,,52.356262
+East,Arena Auditorium,2023-02-10T00:00:00,41.313276,-105.569515,2023,2,10,0,77937.24,,,53.7767
+East,Arena Auditorium,2023-02-11T00:00:00,41.313276,-105.569515,2023,2,11,0,81787.26,,,56.43321
+East,Arena Auditorium,2023-02-12T00:00:00,41.313276,-105.569515,2023,2,12,0,78893.47,,,54.436493

@@ -1,0 +1,8 @@
+campus,bldgname,ts,latitude,longitude,year,month,day,hour,predicted_elec_kwh,predicted_htwt_mmbtuh,predicted_chll_tonh,predicted_co2_tonh
+West,Williams Conservatory,2023-02-06T00:00:00,41.312693,-105.584754,2023,2,6,0,327.57227,,,0.22602487
+West,Williams Conservatory,2023-02-07T00:00:00,41.312693,-105.584754,2023,2,7,0,680.9455,,,0.4698524
+West,Williams Conservatory,2023-02-08T00:00:00,41.312693,-105.584754,2023,2,8,0,681.2517,,,0.4700637
+West,Williams Conservatory,2023-02-09T00:00:00,41.312693,-105.584754,2023,2,9,0,665.4779,,,0.45917976
+West,Williams Conservatory,2023-02-10T00:00:00,41.312693,-105.584754,2023,2,10,0,660.82117,,,0.45596662
+West,Williams Conservatory,2023-02-11T00:00:00,41.312693,-105.584754,2023,2,11,0,648.4796,,,0.44745094
+West,Williams Conservatory,2023-02-12T00:00:00,41.312693,-105.584754,2023,2,12,0,649.77545,,,0.44834507

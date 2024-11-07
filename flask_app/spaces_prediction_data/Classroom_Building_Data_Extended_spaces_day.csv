@@ -1,0 +1,8 @@
+campus,bldgname,ts,latitude,longitude,year,month,day,hour,predicted_elec_kwh,predicted_htwt_mmbtuh,predicted_chll_tonh,predicted_co2_tonh
+West,Classroom Building,2023-02-06T00:00:00,41.313339,-105.584502,2023,2,6,0,1614.6433,,,1.1141039
+West,Classroom Building,2023-02-07T00:00:00,41.313339,-105.584502,2023,2,7,0,2116.211,,,1.4601855
+West,Classroom Building,2023-02-08T00:00:00,41.313339,-105.584502,2023,2,8,0,2070.0188,,,1.428313
+West,Classroom Building,2023-02-09T00:00:00,41.313339,-105.584502,2023,2,9,0,2011.7142,,,1.3880829
+West,Classroom Building,2023-02-10T00:00:00,41.313339,-105.584502,2023,2,10,0,2089.4197,,,1.4416996
+West,Classroom Building,2023-02-11T00:00:00,41.313339,-105.584502,2023,2,11,0,2125.4333,,,1.466549
+West,Classroom Building,2023-02-12T00:00:00,41.313339,-105.584502,2023,2,12,0,2108.0376,,,1.454546
