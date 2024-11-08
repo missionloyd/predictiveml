@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   predictiveml:
     container_name: predictiveml
@@ -7,7 +5,14 @@ services:
     build: ./flask_app
     ports:
       - "8080:8080"
-    command: python3 -m gunicorn -b 0.0.0.0:8080 app:server > /app/logs/flask_log/0.log 2>&1
+    volumes:
+      - ./flask_app/results:/flask_app/results
+      - ./flask_app/logs:/flask_app/logs
+      - ./flask_app/end_date_time_record.txt:/flask_app/end_date_time_record.txt
+      - ./flask_app/spaces_prediction_data:/flask_app/spaces_prediction_data
+    runtime: nvidia
+
+  #  command: python3 -m gunicorn -b 0.0.0.0:8080 app:server > /app/logs/flask_log/0.log 2>&1
 
   # nginx:
   #   container_name: nginx

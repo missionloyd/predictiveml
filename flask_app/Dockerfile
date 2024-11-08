@@ -79,11 +79,7 @@ COPY env_vars.sh /etc/conda/activate.d/env_vars.sh
 RUN chmod +x /etc/conda/activate.d/env_vars.sh \
     && echo "source /etc/conda/activate.d/env_vars.sh" >> /root/.bashrc
 
-RUN mkdir -p /flask_app/logs/api_log \
-    && mkdir -p /flask_app/logs/debug_log \
-    && mkdir -p /flask_app/logs/error_log \
-    && mkdir -p /flask_app/logs/flask_log \
-    && mkdir -p /flask_app/logs/info_log
+RUN mkdir -p /flask_app/logs/{api_log,debug_log,error_log,flask_log,info_log}
 
 # Copy the remaining project files
 COPY . .

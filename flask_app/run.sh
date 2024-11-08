@@ -1,6 +1,8 @@
 #!/bin/bash
 export TZ="UTC"  # Set timezone to UTC
 
+source activate tf-gpu
+
 # Function to increment timestamp
 increment_timestamp() {
     # current_timestamp=$(date -d "$1" +%s)
