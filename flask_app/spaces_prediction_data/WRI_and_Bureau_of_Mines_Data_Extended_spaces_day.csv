@@ -1,8 +1,0 @@
-campus,bldgname,ts,latitude,longitude,year,month,day,hour,predicted_elec_kwh,predicted_htwt_mmbtuh,predicted_chll_tonh,predicted_co2_tonh
-West,WRI and Bureau of Mines,2023-02-06T00:00:00,41.314769,-105.584838,2023,2,6,0,1270.3185,,,0.8765198
-West,WRI and Bureau of Mines,2023-02-07T00:00:00,41.314769,-105.584838,2023,2,7,0,1365.1305,,,0.94194007
-West,WRI and Bureau of Mines,2023-02-08T00:00:00,41.314769,-105.584838,2023,2,8,0,1369.3033,,,0.94481933
-West,WRI and Bureau of Mines,2023-02-09T00:00:00,41.314769,-105.584838,2023,2,9,0,1370.6226,,,0.9457296
-West,WRI and Bureau of Mines,2023-02-10T00:00:00,41.314769,-105.584838,2023,2,10,0,1330.6462,,,0.91814595
-West,WRI and Bureau of Mines,2023-02-11T00:00:00,41.314769,-105.584838,2023,2,11,0,1349.2511,,,0.9309833
-West,WRI and Bureau of Mines,2023-02-12T00:00:00,41.314769,-105.584838,2023,2,12,0,1328.1559,,,0.91642755

@@ -1,8 +1,0 @@
-campus,bldgname,ts,latitude,longitude,year,month,day,hour,predicted_elec_kwh,predicted_htwt_mmbtuh,predicted_chll_tonh,predicted_co2_tonh
-West,College of Education,2023-02-06T00:00:00,41.314148,-105.579381,2023,2,6,0,739.95215,,,0.510567
-West,College of Education,2023-02-07T00:00:00,41.314148,-105.579381,2023,2,7,0,1041.9923,,,0.7189747
-West,College of Education,2023-02-08T00:00:00,41.314148,-105.579381,2023,2,8,0,1215.9576,,,0.8390108
-West,College of Education,2023-02-09T00:00:00,41.314148,-105.579381,2023,2,9,0,1237.404,,,0.8538088
-West,College of Education,2023-02-10T00:00:00,41.314148,-105.579381,2023,2,10,0,1227.8197,,,0.8471956
-West,College of Education,2023-02-11T00:00:00,41.314148,-105.579381,2023,2,11,0,1229.1095,,,0.8480856
-West,College of Education,2023-02-12T00:00:00,41.314148,-105.579381,2023,2,12,0,1224.4625,,,0.84487915

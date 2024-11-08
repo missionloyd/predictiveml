@@ -79,10 +79,9 @@ def preprocessing(args, config):
             building_file_name = building_file.replace('.csv', '')
             model_data_path = f'{imp_path}/{building_file_name}_{y_column}_{imputation_method}'
 
-            if not os.path.exists(imp_path):
-                os.makedirs(imp_path)
-
             if save_preprocessed_files == True:
+                os.makedirs(os.path.dirname(model_data_path), exist_ok=True)
+                
                 # Save the original values into a new column
                 model_data['y'] = model_data['y'].astype(np.float32)
                 model_data['y_saved'] = model_data['y']

@@ -1,8 +1,0 @@
-campus,bldgname,ts,latitude,longitude,year,month,day,hour,predicted_elec_kwh,predicted_htwt_mmbtuh,predicted_chll_tonh,predicted_co2_tonh
-East,Indoor Practice Facility,2023-02-06T00:00:00,41.312724,-105.566145,2023,2,6,0,578.9192,,,0.39945424
-East,Indoor Practice Facility,2023-02-07T00:00:00,41.312724,-105.566145,2023,2,7,0,838.39667,,,0.5784937
-East,Indoor Practice Facility,2023-02-08T00:00:00,41.312724,-105.566145,2023,2,8,0,700.33575,,,0.4832317
-East,Indoor Practice Facility,2023-02-09T00:00:00,41.312724,-105.566145,2023,2,9,0,785.653,,,0.5421006
-East,Indoor Practice Facility,2023-02-10T00:00:00,41.312724,-105.566145,2023,2,10,0,768.4415,,,0.5302247
-East,Indoor Practice Facility,2023-02-11T00:00:00,41.312724,-105.566145,2023,2,11,0,680.0995,,,0.46926865
-East,Indoor Practice Facility,2023-02-12T00:00:00,41.312724,-105.566145,2023,2,12,0,655.6427,,,0.45239347

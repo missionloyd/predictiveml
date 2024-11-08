@@ -19,7 +19,7 @@ increment_timestamp() {
 start_date_time="2019-10-01T00:00:00"
 
 # First and last n-1 prediction points
-first_end_date_time="2023-02-03T23:00:00"
+first_end_date_time="2022-01-31T23:00:00"
 last_end_date_time="2023-02-04T23:00:00"
 
 end_date_time_record_file="end_date_time_record.txt"
