@@ -72,19 +72,21 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
     else:
         end_index = len(model_data.index)
 
+    # Correct slicing with time_step adjustment
     model_data = model_data.iloc[-(end_index - start_index + time_step):, :]
 
-
-    # Filter the dataframe to include data within the startDateTime and endDateTime
+    # Apply greater than/less than filtering
     if startDateTime and endDateTime:
-        model_data = model_data.loc[(model_data.index < start_datetime_obj) & (model_data.index > end_datetime_obj)]
-        start_index = model_data.index.searchsorted(start_datetime_obj)
-        end_index = model_data.index.searchsorted(end_datetime_obj, side='right')
+        model_data = model_data.loc[(model_data.index >= start_datetime_obj) & (model_data.index > end_datetime_obj)]
     elif startDateTime:
-        model_data = model_data.loc[model_data.index < start_datetime_obj]
-        start_index = model_data.index.searchsorted(start_datetime_obj)
+        model_data = model_data.loc[model_data.index >= start_datetime_obj]
     elif endDateTime:
         model_data = model_data.loc[model_data.index > end_datetime_obj]
+
+    # Update start and end indexes after filtering
+    if startDateTime:
+        start_index = model_data.index.searchsorted(start_datetime_obj)
+    if endDateTime:
         end_index = model_data.index.searchsorted(end_datetime_obj, side='right')
 
     future_condition = not endDateTime and save_model_file == True

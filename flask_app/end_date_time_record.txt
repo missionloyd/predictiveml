@@ -1,0 +1,1 @@
+Current last_end_date_time in the loop:
