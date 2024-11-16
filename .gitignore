@@ -1,4 +1,3 @@
 **/__pycache__
 *.log
 .env
-end_date_time_record.txt
