@@ -1,0 +1,28 @@
+services:
+  flask_app:
+    container_name: flask_app
+    build:
+      context: ./flask_app
+      dockerfile: Dockerfile-Flask
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./flask_app/results:/flask_app/results
+      - ./flask_app/logs:/flask_app/logs
+      - ./flask_app/models:/flask_app/models
+      - ./flask_app/end_date_time_record.txt:/flask_app/end_date_time_record.txt
+      - ./flask_app/spaces_prediction_data:/flask_app/spaces_prediction_data
+      - ./flask_app/app.py:/flask_app/app.py
+    runtime: nvidia
+
+    command: python3 -m gunicorn --reload -b 0.0.0.0:8080 app:server > /app/logs/flask_log/0.log 2>&1
+
+  nginx:
+    container_name: nginx
+    restart: always
+    build: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - flask_app

@@ -238,8 +238,8 @@ def run_forecast():
     # Extract parameters from the request body
     y_column = request.json.get('y_column')
     startDateTime = request.json.get('startDateTime') or ''
-    endDateTime = request.json.get('endDateTime') or ''
-    datelevel = request.json.get('datelevel') 
+    endDateTime = request.json.get('endDateTime').split('T')[0] or ''
+    datelevel = request.json.get('dateLevel') 
     table = request.json.get('table')
     time_step = frequency_mapping[datelevel]
     # time_step = request.json.get('time_step')
