@@ -11,4 +11,3 @@ services:
       - ./flask_app/end_date_time_record.txt:/flask_app/end_date_time_record.txt
       - ./flask_app/spaces_prediction_data:/flask_app/spaces_prediction_data
       - ./flask_app/app.py:/flask_app/app.py
-    runtime: nvidia

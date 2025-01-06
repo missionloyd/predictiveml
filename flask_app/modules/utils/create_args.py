@@ -35,6 +35,8 @@ def create_args(config):
         }
         arguments.append(argument_dict)
 
+    arguments.sort(key=lambda x: (x["model_type"], x["n_feature"], x["updated_n_feature"], x["feature_method"]))
+
     # Generate a list of arguments for preprocessing
     preprocessing_arguments = []
     for combo in product(
@@ -49,5 +51,6 @@ def create_args(config):
         }
         preprocessing_arguments.append(argument_dict)
 
-
+    preprocessing_arguments.sort(key=lambda x: (x["imputation_method"]))
+    
     return arguments, preprocessing_arguments

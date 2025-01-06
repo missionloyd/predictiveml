@@ -37,7 +37,7 @@ current_timestamp=$first_end_date_time
 echo "Current last_end_date_time in the loop:" > $end_date_time_record_file
 
 # Loop until the current timestamp is less than the end date
-while [[ "$current_timestamp" < "$last_end_date_time" ]]; do
+while [[ $(date -d "$current_timestamp" +%s) -lt $(date -d "$last_end_date_time" +%s) ]]; do    
     echo "Running script with --endDateTime $current_timestamp"
 
     # Extract year and month from the current timestamp
@@ -54,15 +54,15 @@ while [[ "$current_timestamp" < "$last_end_date_time" ]]; do
     datelevel="hour"
     python3 main.py --model_type xgboost --temperature 0.5 --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time" --endDateTime "$current_timestamp"
     
-    time_step=1
-    datelevel="day"
-    python3 main.py --model_type xgboost --temperature 0.5 --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time" --endDateTime "$current_timestamp"
+    # time_step=1
+    # datelevel="day"
+    # python3 main.py --model_type xgboost --temperature 0.5 --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time" --endDateTime "$current_timestamp"
 
-    if [[ "$month_day" == "$last_day_of_month" ]]; then
-        time_step=1
-        datelevel="month"
-        python3 main.py --prune --run_all --temperature 1.0 --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time" --endDateTime "$current_timestamp"
-    fi
+    # if [[ "$month_day" == "$last_day_of_month" ]]; then
+    #     time_step=1
+    #     datelevel="month"
+    #     python3 main.py --prune --run_all --temperature 1.0 --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time" --endDateTime "$current_timestamp"
+    # fi
 
     # if [[ "$year_day" == "$last_day_of_year" ]]; then
     #     time_step=1
@@ -82,13 +82,13 @@ time_step=24
 datelevel="hour"
 python3 main.py --model_type xgboost --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time"
 
-time_step=7
-datelevel="day"
-python3 main.py --model_type xgboost --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time"
+# time_step=7
+# datelevel="day"
+# python3 main.py --model_type xgboost --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time"
 
-time_step=6
-datelevel="month"
-python3 main.py --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time"
+# time_step=6
+# datelevel="month"
+# python3 main.py --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time"
 
 # time_step=1
 # datelevel="year"

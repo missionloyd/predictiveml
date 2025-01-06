@@ -140,12 +140,12 @@ def predict_y_column(args, startDateTime, endDateTime, config, model_data, model
         X, y = np.array(X), np.array(y)
         X = np.reshape(X, (X.shape[0], X.shape[1]*X.shape[2]))
 
-        # Pad with zeros if the lengths are still not equal
-        if len(X) < len(dataset):
-            num_missing = len(dataset) - len(X)
-            missing_data = np.zeros((num_missing, X.shape[1]))
-            X = np.concatenate((X, missing_data), axis=0)
-            y = np.concatenate((y, np.zeros(num_missing)))
+        # # Pad with zeros if the lengths are still not equal
+        # if len(X) < len(dataset):
+        #     num_missing = len(dataset) - len(X)
+        #     missing_data = np.zeros((num_missing, X.shape[1]))
+        #     X = np.concatenate((X, missing_data), axis=0)
+        #     y = np.concatenate((y, np.zeros(num_missing)))
 
         return X, y
 
