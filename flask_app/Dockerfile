@@ -91,7 +91,7 @@ COPY . .
 # RUN /usr/bin/crontab /etc/cron.d/crontab
 # RUN echo $PYTHONPATH
 
-EXPOSE 8080
+EXPOSE 8000
 
 CMD ["bash", "run.sh"]
 

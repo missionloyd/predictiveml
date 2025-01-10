@@ -92,11 +92,3 @@ COPY . .
 # RUN echo $PYTHONPATH
 
 EXPOSE 8080
-
-CMD ["bash", "run.sh"]
-
-# run the main.py script, and start the Flask server
-# CMD python3 app.py
-# CMD python3 main.py --preprocess >> /flask_app/logs/info_log/0.log 2>> /flask_app/logs/error_log/0.log & flask run --host=0.0.0.0 --port=8080 >> /flask_app/logs/flask_log.log 2>&1
-# CMD python3 -m flask run --host=0.0.0.0 --port=8080 > /flask_app/logs/flask_log/0.log 2>&1
-# CMD ["cron", "-f"]

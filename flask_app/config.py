@@ -69,7 +69,7 @@ def load_config(path='', data_path='', clean_data_path='', table=''):
     'save_model_file': False,
     'save_model_plot': False,
     'n_jobs': -1,
-    'batch_size': 8,
+    'batch_size': 32,
     'memory_limit': 102400,
     'updated_n_feature': -1,
     'y_column': y_column,

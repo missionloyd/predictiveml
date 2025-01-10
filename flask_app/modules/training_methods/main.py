@@ -138,8 +138,6 @@ def train_model(args, config):
     
     # split the data into training and testing sets
     if save_model_file == True and save_model_plot == False:
-        # data_scaled = data_scaled[-time_step:, :]
-        # model_data = model_data.iloc[-time_step:]
         train_size = int(len(data_scaled) * train_test_split)
         train_data = data_scaled
         test_data = data_scaled
@@ -168,14 +166,6 @@ def train_model(args, config):
         X, y = np.array(X), np.array(y)
         X = np.reshape(X, (X.shape[0], X.shape[1]*X.shape[2]))
 
-        # # Pad with existing values if the lengths are still not equal
-        # if len(X) < len(dataset):
-        #     num_missing = len(dataset) - len(X)
-        #     missing_data = dataset[-num_missing:, :]
-        #     missing_data = np.tile(missing_data, (1, X.shape[1] // missing_data.shape[1]))
-        #     X = np.concatenate((X, missing_data), axis=0)
-        #     y = np.concatenate((y, missing_data[:, 0]))
-
         # Pad with zeros if the lengths are still not equal
         if len(X) < len(dataset):
             num_missing = len(dataset) - len(X)
@@ -185,7 +175,7 @@ def train_model(args, config):
 
         return X, y
 
-    if len(train_data) > time_step and len(test_data) > time_step:
+    if len(train_data) >= time_step and len(test_data) >= time_step:
         # create the training and testing data sets with sliding door
         X_train, y_train = create_dataset(train_data, time_step)
         X_test, _ = create_dataset(test_data, time_step)
