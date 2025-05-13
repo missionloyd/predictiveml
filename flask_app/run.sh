@@ -21,7 +21,7 @@ increment_timestamp() {
 start_date_time="2019-10-01T00:00:00"
 
 # First and last n-1 prediction points
-first_end_date_time="2021-12-31T23:00:00"
+first_end_date_time="2022-08-28T23:00:00"
 last_end_date_time="2023-02-04T23:00:00"
 
 end_date_time_record_file="end_date_time_record.txt"
@@ -49,14 +49,15 @@ while [[ $(date -d "$current_timestamp" +%s) -lt $(date -d "$last_end_date_time"
     last_day_of_year=$(date -d "${year}-12-31" +%j)
 
     table="spaces"
+    model_type="ensembles"
 
     time_step=24
     datelevel="hour"
-    python3 main.py --model_type xgboost --temperature 1.0 --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time" --endDateTime "$current_timestamp"
-    
+    python3 main.py --model_type "$model_type" --temperature 1.0 --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time" --endDateTime "$current_timestamp"
+
     # time_step=1
     # datelevel="day"
-    # python3 main.py --model_type xgboost --temperature 1.0 --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time" --endDateTime "$current_timestamp"
+    # python3 main.py --model_type "$model_type" --temperature 1.0 --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time" --endDateTime "$current_timestamp"
 
     # if [[ "$month_day" == "$last_day_of_month" ]]; then
     #     time_step=1
@@ -94,4 +95,8 @@ done
 # datelevel="year"
 # python3 main.py --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv"
 
-python3 main.py --prune --table "$table"
+# time_step=2880
+# datelevel="hour"
+# python3 main.py --model_type xgboost --prune --run_all --save_predictions --time_step "$time_step" --datelevel "$datelevel" --table "$table" --results_file "${table}_${datelevel}.csv" --startDateTime "$start_date_time"
+
+# python3 main.py --prune --table "$table"

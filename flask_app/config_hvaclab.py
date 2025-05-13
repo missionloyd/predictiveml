@@ -2,18 +2,20 @@ from modules.utils.get_file_names import get_file_names
 from modules.utils.get_add_features import get_add_features
 from modules.utils.create_results_file_path import create_results_file_path
 
-def load_config():
-  path = '.'
-  data_path = f'{path}/hvaclab_data'
-  clean_data_path = ''
-  tmp_path = f'{path}/models/tmp'
-  imp_path = f'{path}/models/imp'
+def load_config(path='', data_path='', clean_data_path='', table=''):
+  path = path or '.'
+  table = table or 'spaces'
+  data_path = data_path or f'{path}/hvaclab_data'
+  clean_data_path = clean_data_path or f'{path}/{table}_data'
+  prediction_data_path = f'{path}/{table}_prediction_data'
+  tmp_path = f'{path}/models/{table}_tmp'
+  imp_path = f'{path}/models/{table}_imp'
   log_path = f'{path}/logs'
-  results_file = 'results.csv'
+  args_file_path = f'{path}/models/{table}_tmp/_args'
+  winners_in_file_path = f'{path}/models/{table}_tmp'
+  winners_out_file_path = f'{path}/models/{table}_tmp'
+  results_file = 'hvaclab_results.csv'
   results_file_path = create_results_file_path(path, results_file)
-  args_file_path = f'{path}/models/tmp/_args'
-  winners_in_file_path = f'{path}/models/tmp'
-  winners_out_file_path = f'{path}/models/tmp'
   winners_out_file = f'{winners_out_file_path}/_winners.out'
   results_header = ['model_type', 'bldgname', 'y_column', 'imputation_method', 'feature_method', 'n_feature', 'updated_n_feature', 'time_step', 'datelevel', 'rmse', 'mae', 'mape', 'model_file', 'model_data_path', 'building_file', 'selected_features_delimited']
   y_column = ['total_ele (kw)']
@@ -26,33 +28,34 @@ def load_config():
 
   config = {
     # preprocessing/training scope
-    'model_type': ["xgboost"],                      # fastest and most lightweight setting
-    'imputation_method': ['linear_interpolation'],  # fastest and most lightweight setting
+    'model_type': ["xgboost"],           # fastest and most lightweight setting
+    # 'imputation_method': ['zero_fill'],  # fastest and most lightweight setting
     # 'model_type': ["xgboost", "solos", "ensembles"],
-    # 'imputation_method': ['linear_interpolation', 'linear_regression', 'prophet', 'lstm'],
+    'imputation_method': ['linear_interpolation'],
     'feature_method': ['rfecv', 'lassocv'],
-    'time_step': [24],             # window size of the sliding window technique and unit length of forecasts
-    'datelevel': ['hour'],
+    'time_step': [24],            # window size of the sliding window technique and unit length of forecasts
+    'datelevel': ['month'],
     'train_test_split': 0.8,
     'train_ratio_threshold': 0.8, # minimum percent non-nans in training set
     'test_ratio_threshold': 0.8,  # minimum percent non-nans in testing set
-    'datetime_format': '%m/%d/%Y %H:%M',
+    'datetime_format': '%Y-%m-%dT%H:%M:%S',
     'startDateTime': '',
     'endDateTime': '',
         
     # hyperparameters
     'n_feature': n_feature,
     'n_fold': 5,                
-    'minutes_per_model': 2,
+    'minutes_per_model': 1,
     'temperature': -1,
     'target_error': 'mape',
 
     # settings
     'job_id': 0,
-    'table': '',
+    'table': table,
     'path': path,
     'data_path': data_path,
     'clean_data_path': clean_data_path,
+    'prediction_data_path': prediction_data_path,
     'tmp_path': tmp_path,
     'imp_path': imp_path,
     'log_path': log_path,
@@ -62,24 +65,28 @@ def load_config():
     'exclude_file': exclude_file,
     'exclude_column': exclude_column,
     'update_add_feature': False,
-    'save_preprocessed_files': True,
+    'save_preprocessed_files': False,
     'save_model_file': False,
-    'save_model_plot': False,
+    'save_model_plot': True,
     'n_jobs': -1,
-    'batch_size': 8,
+    'batch_size': 32,
     'memory_limit': 102400,
     'updated_n_feature': -1,
     'y_column': y_column,
     'add_feature': add_feature,
     'header': header,
     'results_header': results_header,
+    'selected_features_delimited': '',
     'args_file_path': args_file_path,
     'winners_in_file_path': winners_in_file_path,
     'winners_out_file_path': winners_out_file_path,
     'winners_out_file': winners_out_file,
-    'selected_features_delimited': '',
-    'y_column_mapping': {
-      'total_ele (kw)': 'electricity',
+    "y_column_mapping": {
+      'present_elec_kwh': 'electricity',
+      'present_htwt_mmbtuh': 'hot_water',
+      'present_wtr_usgal': 'water',
+      'present_chll_tonh': 'chilled_water',
+      'present_co2_tonh': 'co2_emissions'
     },
     'directories_to_prune': [
       'logs/api_log',
@@ -87,11 +94,12 @@ def load_config():
       'logs/error_log',
       'logs/flask_log',
       'logs/info_log',
-      'models/tmp',
-      'models/ensembles',
-      'models/solos',
-      'models/xgboost',
-      'models/imp',
+      f'models/{table}_tmp',
+      f'models/{table}_ensembles',
+      f'models/{table}_solos',
+      f'models/{table}_xgboost',
+      # 'models/imp',
+      # 'prediction_data'
     ],
     'CO2EmissionFactor': 0.00069,
   }

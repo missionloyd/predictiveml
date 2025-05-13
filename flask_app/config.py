@@ -45,7 +45,7 @@ def load_config(path='', data_path='', clean_data_path='', table=''):
     # hyperparameters
     'n_feature': n_feature,
     'n_fold': 5,                
-    'minutes_per_model': 2,
+    'minutes_per_model': 1,
     'temperature': -1,
     'target_error': 'mape',
 
@@ -69,7 +69,7 @@ def load_config(path='', data_path='', clean_data_path='', table=''):
     'save_model_file': False,
     'save_model_plot': False,
     'n_jobs': -1,
-    'batch_size': 32,
+    'batch_size': 4,
     'memory_limit': 102400,
     'updated_n_feature': -1,
     'y_column': y_column,

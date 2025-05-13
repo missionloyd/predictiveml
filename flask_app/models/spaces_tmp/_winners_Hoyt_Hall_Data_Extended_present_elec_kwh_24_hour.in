@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
+ensembles,Hoyt Hall,present_elec_kwh,zero_fill,lassocv,3,0,24,hour,2.8223306114888405,2.2860706719968333,0.22860706719968335,./models/spaces_ensembles/Hoyt_Hall_Data_Extended_present_elec_kwh_zero_fill_lassocv_3_0_24_hour,./models/spaces_imp/Hoyt_Hall_Data_Extended_present_elec_kwh_zero_fill,Hoyt_Hall_Data_Extended.csv,

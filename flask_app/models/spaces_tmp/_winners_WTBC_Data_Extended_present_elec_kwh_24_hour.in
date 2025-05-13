@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
+ensembles,WTBC,present_elec_kwh,lstm,rfecv,2,2,24,hour,7.207089580853356,5.620018224677321,0.10821767512348925,./models/spaces_ensembles/WTBC_Data_Extended_present_elec_kwh_lstm_rfecv_2_2_24_hour,./models/spaces_imp/WTBC_Data_Extended_present_elec_kwh_lstm,WTBC_Data_Extended.csv,temp_c|direct_radiation_w/m2

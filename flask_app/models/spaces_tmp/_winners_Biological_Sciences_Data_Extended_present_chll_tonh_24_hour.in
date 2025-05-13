@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
+ensembles,Biological Sciences,present_chll_tonh,lstm,rfecv,0,0,24,hour,2.7271902049989323,1.7430195722588657,0.4435248226060661,./models/spaces_ensembles/Biological_Sciences_Data_Extended_present_chll_tonh_lstm_rfecv_0_0_24_hour,./models/spaces_imp/Biological_Sciences_Data_Extended_present_chll_tonh_lstm,Biological_Sciences_Data_Extended.csv,

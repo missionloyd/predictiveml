@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
+ensembles,Enzi-STEM,present_elec_kwh,prophet,rfecv,3,2,24,hour,22.14539534938828,17.80045563747979,0.10767992739198123,./models/spaces_ensembles/Enzi-STEM_Data_Extended_present_elec_kwh_prophet_rfecv_3_2_24_hour,./models/spaces_imp/Enzi-STEM_Data_Extended_present_elec_kwh_prophet,Enzi-STEM_Data_Extended.csv,temp_c|direct_radiation_w/m2

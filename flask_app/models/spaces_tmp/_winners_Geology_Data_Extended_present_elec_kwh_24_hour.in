@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
+ensembles,Geology,present_elec_kwh,linear_regression,lassocv,4,3,24,hour,5.926642830468509,4.787010038462483,0.3510549964646528,./models/spaces_ensembles/Geology_Data_Extended_present_elec_kwh_linear_regression_lassocv_4_3_24_hour,./models/spaces_imp/Geology_Data_Extended_present_elec_kwh_linear_regression,Geology_Data_Extended.csv,temp_c|cloud_cover_%|direct_radiation_w/m2

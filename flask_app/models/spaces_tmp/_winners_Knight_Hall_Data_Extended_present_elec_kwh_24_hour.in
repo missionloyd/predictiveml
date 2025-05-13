@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
+ensembles,Knight Hall,present_elec_kwh,linear_regression,lassocv,0,0,24,hour,14.344094590886574,9.772289408071039,0.2903473315044392,./models/spaces_ensembles/Knight_Hall_Data_Extended_present_elec_kwh_linear_regression_lassocv_0_0_24_hour,./models/spaces_imp/Knight_Hall_Data_Extended_present_elec_kwh_linear_regression,Knight_Hall_Data_Extended.csv,

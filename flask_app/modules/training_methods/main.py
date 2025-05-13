@@ -167,11 +167,11 @@ def train_model(args, config):
         X = np.reshape(X, (X.shape[0], X.shape[1]*X.shape[2]))
 
         # Pad with zeros if the lengths are still not equal
-        if len(X) < len(dataset):
-            num_missing = len(dataset) - len(X)
-            missing_data = np.zeros((num_missing, X.shape[1]))
-            X = np.concatenate((X, missing_data), axis=0)
-            y = np.concatenate((y, np.zeros(num_missing)))
+        # if len(X) < len(dataset):
+        #     num_missing = len(dataset) - len(X)
+        #     missing_data = np.zeros((num_missing, X.shape[1]))
+        #     X = np.concatenate((X, missing_data), axis=0)
+        #     y = np.concatenate((y, np.zeros(num_missing)))
 
         return X, y
 
@@ -183,12 +183,15 @@ def train_model(args, config):
         # reshape the input data
         X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1]))
         X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1]))
-
+  
+        # if y_train is all zeros, add a tiny noise to make it continuous
+        if np.unique(y_train).size < 3:
+            y_train = y_train + np.random.normal(0, 1e-6, size=y_train.shape)
     else:
         # handle the case where train_data length is smaller than time_step
         print("Error: the 'train_test_split' value is too high for the current number of samples. Please lower it or adjust the 'time_step' value.")
         sys.exit(0)
-    
+
     # minutes per each model
     time_dist = 60 * minutes_per_model
 
@@ -197,6 +200,7 @@ def train_model(args, config):
         model = AutoSklearnRegressor(
             time_left_for_this_task=time_dist,
             memory_limit = memory_limit,
+            include={'feature_preprocessor': ['no_preprocessing']},
             ensemble_kwargs = {'ensemble_size': 1}
         )
         # Train the model
@@ -208,6 +212,7 @@ def train_model(args, config):
     elif model_type == 'ensembles':
         model = AutoSklearnRegressor(
             time_left_for_this_task=time_dist,
+            include={'feature_preprocessor': ['no_preprocessing']},
             memory_limit = memory_limit,
         )
 
@@ -248,6 +253,11 @@ def train_model(args, config):
     y_pred = np.insert(y_pred, 0, y_test.iloc[0])
     y_pred = y_pred[:-1]
 
+    # shape fix (to match y_pred with y_test)
+    if len(y_pred) < len(y_test):
+        y_test = y_test.iloc[:len(y_pred)].reset_index(drop=True)
+        saved_y_test = saved_y_test.iloc[:len(y_pred)].reset_index(drop=True)
+
     # Comment out if you would like to view selected features without datetimes
     if future_condition:
         n_feature = saved_n_feature
@@ -262,6 +272,8 @@ def train_model(args, config):
     # logger(model.leaderboard())
 
     nan_mask = np.isnan(saved_y_test)  # boolean mask of NaN values in saved_y_test
+    if len(nan_mask) > len(y_pred):
+        nan_mask = nan_mask[:len(y_pred)]
 
     rmse = np.sqrt(mean_squared_error(y_test[~nan_mask], y_pred[~nan_mask]))
     # logger('RMSE: %.3f' % rmse)

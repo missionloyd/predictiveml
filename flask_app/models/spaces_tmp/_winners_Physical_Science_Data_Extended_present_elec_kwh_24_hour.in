@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
+ensembles,Physical Science,present_elec_kwh,prophet,rfecv,2,1,24,hour,31.8988531899123,25.588946930913004,0.09154246446440041,./models/spaces_ensembles/Physical_Science_Data_Extended_present_elec_kwh_prophet_rfecv_2_1_24_hour,./models/spaces_imp/Physical_Science_Data_Extended_present_elec_kwh_prophet,Physical_Science_Data_Extended.csv,direct_radiation_w/m2

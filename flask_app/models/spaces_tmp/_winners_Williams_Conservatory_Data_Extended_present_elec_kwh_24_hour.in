@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
+ensembles,Williams Conservatory,present_elec_kwh,lstm,lassocv,0,0,24,hour,5.652286959311935,4.55825489707393,0.2672789230548353,./models/spaces_ensembles/Williams_Conservatory_Data_Extended_present_elec_kwh_lstm_lassocv_0_0_24_hour,./models/spaces_imp/Williams_Conservatory_Data_Extended_present_elec_kwh_lstm,Williams_Conservatory_Data_Extended.csv,

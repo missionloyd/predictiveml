@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
+ensembles,Coe Library,present_elec_kwh,lstm,rfecv,3,3,24,hour,35.910022016173286,28.19826348927864,0.0917971064999886,./models/spaces_ensembles/Coe_Library_Data_Extended_present_elec_kwh_lstm_rfecv_3_3_24_hour,./models/spaces_imp/Coe_Library_Data_Extended_present_elec_kwh_lstm,Coe_Library_Data_Extended.csv,temp_c|rel_humidity_%|cloud_cover_%|direct_radiation_w/m2|wind_speed_ground_km/h

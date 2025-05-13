@@ -1,0 +1,2 @@
+model_type,bldgname,y_column,imputation_method,feature_method,n_feature,updated_n_feature,time_step,datelevel,rmse,mae,mape,model_file,model_data_path,building_file,selected_features_delimited
+ensembles,Fieldhouse,present_elec_kwh,zero_fill,rfecv,1,1,24,hour,3.361165960153917,2.31269301339518,0.23126930133951798,./models/spaces_ensembles/Fieldhouse_Data_Extended_present_elec_kwh_zero_fill_rfecv_1_1_24_hour,./models/spaces_imp/Fieldhouse_Data_Extended_present_elec_kwh_zero_fill,Fieldhouse_Data_Extended.csv,temp_c|direct_radiation_w/m2
